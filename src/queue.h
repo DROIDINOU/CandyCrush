@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #define TAILLE 20  // Taille de la queue
 
 typedef struct {
