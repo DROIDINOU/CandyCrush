@@ -5,7 +5,6 @@
 #define TAILLE 20  // Taille de la queue
 
 
-
 void initialiser_queue(Queue *q) {
     q->debut = 0;
     q->fin = -1;
@@ -42,7 +41,7 @@ Coordonnees defiler(Queue *q) {
 }
 
 int main() {
-    Queue q;
+   /* Queue q;
     initialiser_queue(&q);
 
     Coordonnees c1 = {1, 2};
@@ -56,7 +55,7 @@ int main() {
     while (!est_vide(&q)) {
         Coordonnees c = defiler(&q);
         printf("Coordonnées : (%d, %d)\n", c.x, c.y);
-    }
+    }*/
 
     return 0;
 }

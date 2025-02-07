@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #define TAILLE 20  // Taille de la queue
 
-
-
-
-
 typedef struct {
     int x;
     int y;
 } Coordonnees;
+
+typedef struct{
+    char actionName[20];
+    Coordonnees pion1;
+    Coordonnees pion2;
+
+} Actions;
+
+
 
 typedef struct {
     Coordonnees elements[TAILLE];  // Tableau de structures Coordonnees

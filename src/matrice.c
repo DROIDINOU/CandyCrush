@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "queue.h"
+
 
 #define TAILLE 20  // Taille de la grille
 #define NOMBREMESSAGES 4
@@ -10,17 +12,14 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
      {"\nVoulez-vous continuer?","O","N"},
     {"\nMode affichage simple ou complet?","S","C"},
     {"Veuillez entrer la colonne (a, b, c, d, e, f, g, h) : ", "abcdefgh"},
-    {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"} };
+    {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"} 
+    };
 
-typedef struct {
-    int x;
-    int y;
-} Coordonnees;
 
-typedef struct {
-    int coupAJouer
-} Niveau;
+/***************************************************************************************************************************
+                                                  INIT GRILLE
 
+ ****************************************************************************************************************************/
 typedef struct {
     char pion;
     bool gelatine;
@@ -32,11 +31,6 @@ typedef struct {
     Case tableau[TAILLE][TAILLE];
 } GrilleBonbons;
 
-void InitialiserCoordonnees(Coordonnees *c, int x, int y) {
-    c->x = x;
-    c->y = y;
-}
-
 void initialiser_grille(GrilleBonbons *grille) {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     for (int i = 0; i < grille->lignes; i++) {
@@ -47,12 +41,7 @@ void initialiser_grille(GrilleBonbons *grille) {
     }
 }
 
-Coordonnees CoordonneeGelatine(Coordonnees *c) {
-    c->x = rand() % TAILLE;
-    c->y = rand() % TAILLE;
-
-    return *c;
-}
+   
 
 void initialiserGrilleGelatine(GrilleBonbons *grille) {
     int nombreGelatine = rand() % 5 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
@@ -64,11 +53,12 @@ void initialiserGrilleGelatine(GrilleBonbons *grille) {
     }
 
     while (nombreGelatine > 0) {
-        Coordonnees c;
-        c = CoordonneeGelatine(&c);
-        if (grille->tableau[c.x][c.y].pion == '.') {
-            grille->tableau[c.x][c.y].gelatine = true;  // Placement de la gelatine
-            grille->tableau[c.x][c.y].pion = 'G';  // Afficher 'G' pour les cases avec gelatine
+        int x = rand() % TAILLE;
+        int y = rand() % TAILLE;
+        if (!grille->tableau[x][y].gelatine) {
+            grille->tableau[x][y].pion = 'G';  // Initialisation de la grille
+
+            grille->tableau[x][y].gelatine = true;  // Placement de la gelatine
             nombreGelatine--;
         }
     }
@@ -83,6 +73,7 @@ void afficher_grille(GrilleBonbons *grille) {
     }
 }
 
+
 int caractereDansChaine(const char chaine[], char caractere) {
     for (int i = 0; chaine[i] != '\0'; i++) {
         if (chaine[i] == caractere) {
@@ -91,6 +82,8 @@ int caractereDansChaine(const char chaine[], char caractere) {
     }
     return -1;  // Caractère non trouvé
 }
+
+
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
     char reponse;
@@ -110,6 +103,57 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
     return indexReponse;
 }
 
+
+
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
+                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
+                       int coordonneeYDeuxiemePion, Queue *q ) {
+    printf("Coordonnées du premier pion : (%d, %d)\n", coordonneeXPremierPion, coordonneeYPremierPion);
+    printf("Coordonnées du deuxième pion : (%d, %d)\n", coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
+    // ajouter action ici dans la queue;
+    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+    printf("Action : %s\n", action.actionName);
+}
+
+void Deplacement (GrilleBonbons *grille, int coordonneeXPremierPion, 
+                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
+                       int coordonneeYDeuxiemePion){
+    char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
+    grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion = grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion;
+    grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
+        Actions action = {"CALCUL", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*_____________________________________________________________________________________________________________________________*/
+
+typedef struct {
+    int coupAJouer;
+} Niveau;
+
+
+
+
+
+
 int main() {
     GrilleBonbons maGrille;
     maGrille.lignes = TAILLE;
@@ -120,9 +164,6 @@ int main() {
     printf("\nGrille generee :\n");
     afficher_grille(&maGrille);
 
-    int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-    int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-    printf("Case selectionnee : %c\n", maGrille.tableau[ligne][colonne].pion);
 
     GrilleBonbons maGrilleGelatine;
     maGrilleGelatine.lignes = TAILLE;
@@ -130,6 +171,11 @@ int main() {
 
     initialiserGrilleGelatine(&maGrilleGelatine);
     afficher_grille(&maGrilleGelatine);
+    Queue q;
+    initialiser_queue(&q);
+    LirePionsAChanger(&maGrille, 1, 2, 3, 4, &q);
+    Deplacement(&maGrille, 1, 2, 3, 4);
+    afficher_grille(&maGrille);
 
     return 0;
 }
