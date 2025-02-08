@@ -2,26 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define TAILLE 20  // Taille de la queue
 
 
-typedef struct {
-    int x;
-    int y;
-} Coordonnees;
 
-typedef struct {
-    char actionName[20];
-    Coordonnees pion1;
-    Coordonnees pion2;
-} Actions;
-
-typedef struct {
-    Actions elements[TAILLE];  // Tableau d'éléments de type Actions
-    int debut;
-    int fin;
-    int taille;
-} Queue;
 
 void initialiser_queue(Queue *q) {
     q->debut = 0;
@@ -57,8 +40,9 @@ Actions defiler(Queue *q) {
     q->taille--;
     return action;
 }
-
+/*
 int main() {
    Queue q;
    return 0;
 }
+*/

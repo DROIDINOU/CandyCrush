@@ -1,7 +1,8 @@
+#include "queue.h"
+#include "matrice.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "queue.h"
 #include <time.h>
 #define TAILLE 20  // Taille de la grille
 #define NOMBREMESSAGES 4
@@ -13,6 +14,7 @@
 // BONUS FAIRE FONCTION CASCADE
 // TU N AS PAS ENCORE AJOUTER LES ACTIONS DANS LA QUEUE
 // ajouter queue en parametre de toutes les fonctions qui ajoutent des actions
+// supprimer struct en double
 
 
 const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
@@ -27,16 +29,6 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
                                                   INIT GRILLE
 
  ****************************************************************************************************************************/
-typedef struct {
-    char pion;
-    bool gelatine;
-} Case;
-
-typedef struct {
-    int lignes;
-    int colonnes;
-    Case tableau[TAILLE][TAILLE];
-} GrilleBonbons;
 
 void initialiser_grille(GrilleBonbons *grille) {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
@@ -254,7 +246,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
     if (!suiteDetectee){
         Actions action = {"VERIFICATION", {x1, yDebut}, {x1, yFin}};
         printf("Action: %s\n", action.actionName);
-        printf("Pas de suite détecter\n");
+        printf("Pas de suite detectee\n");
 
     }
 }

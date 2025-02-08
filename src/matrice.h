@@ -3,13 +3,6 @@
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
 
-const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
-     {"\nVoulez-vous continuer?","O","N"},
-    {"\nMode affichage simple ou complet?","S","C"},
-    {"Veuillez entrer la colonne (a, b, c, d, e, f, g, h) : ", "abcdefgh"},
-    {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"} 
-    };
-
 
 /***************************************************************************************************************************
                                                   INIT GRILLE
@@ -30,9 +23,9 @@ void initialiser_grille(GrilleBonbons *grille);
 void initialiserGrilleGelatine(GrilleBonbons *grille);
 
 void afficher_grille(GrilleBonbons *grille);
+
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
-
-
+void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2);
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
                        int coordonneeYDeuxiemePion, Queue *q );
@@ -54,14 +47,13 @@ arrêter le programme*/
 
 /*_____________________________________________________________________________________________________________________________*/
 
-void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2);
 
-void SuppressionH(){}
+void SuppressionH();
 
 
-void SuppressionV(){}
+void SuppressionV();
 
-void Verification(){}
+void Verification();
 
 
 
