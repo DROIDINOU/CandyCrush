@@ -3,10 +3,17 @@
 #include <stdbool.h>
 #include "queue.h"
 #include <time.h>
-
 #define TAILLE 20  // Taille de la grille
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
+
+
+// A FAIRE INITIALISER DOIT VERIFIER TOUT DANS CALCUL 
+// FAIRE FONCTION VERIFICATION
+// BONUS FAIRE FONCTION CASCADE
+// TU N AS PAS ENCORE AJOUTER LES ACTIONS DANS LA QUEUE
+// ajouter queue en parametre de toutes les fonctions qui ajoutent des actions
+
 
 const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
      {"\nVoulez-vous continuer?","O","N"},
@@ -73,34 +80,21 @@ void afficher_grille(GrilleBonbons *grille) {
     }
 }
 
-
-int caractereDansChaine(const char chaine[], char caractere) {
-    for (int i = 0; chaine[i] != '\0'; i++) {
-        if (chaine[i] == caractere) {
-            return i;  // Caractère trouvé
-        }
-    }
-    return -1;  // Caractère non trouvé
-}
-
-
-
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
-    char reponse;
+    int reponse;
 
     do {
         printf("%s", message[index][0]);  // Affiche le message
-        scanf(" %1c", &reponse);  // Lit un seul caractère
+        int result = scanf(" %d", &reponse);  // Lit un seul caractère
         while (getchar() != '\n');
 
         // Vérifie que la réponse est valide
-        if (caractereDansChaine(message[index][1], reponse) == -1) {
+        if (result == -1) {
             printf("Réponse invalide. Essayez encore.\n");
         }
-    } while (caractereDansChaine(message[index][1], reponse) == -1);  // Si la réponse n'est pas valide, on redemande
+    } while (reponse < 0 || reponse > 20);  // Si la réponse n'est pas valide, on redemande
 
-    int indexReponse = caractereDansChaine(message[index][1], reponse);
-    return indexReponse;
+    return reponse -1;
 }
 
 
@@ -115,7 +109,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
     printf("Action : %s\n", action.actionName);
 }
 
-void Deplacement (GrilleBonbons *grille, int coordonneeXPremierPion, 
+void Deplacement (Queue *q,GrilleBonbons *grille, int coordonneeXPremierPion, 
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
                        int coordonneeYDeuxiemePion){
     char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
@@ -137,7 +131,8 @@ arrêter le programme*/
 
 /*_____________________________________________________________________________________________________________________________*/
 
-void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
+void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
+    bool suiteDetectee = false;
     int compteur = 1;
     char pion = grille->tableau[x2][y2].pion;
     int i, j;
@@ -161,8 +156,9 @@ void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         i--;
     }
 
-    if (compteur >= 3) {
+    if (compteur == 3) {
         Actions action = {"SUPPRESSIONV", {xDebut, y2}, {xFin, y2}};
+        suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
@@ -188,8 +184,10 @@ void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         j--;
     }
 
-    if (compteur >= 3) {
+    if (compteur == 3) {
         Actions action = {"SUPPRESSIONH", {x2, yDebut}, {x2, yFin}};
+        suiteDetectee = true;
+
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
@@ -217,8 +215,9 @@ void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         i--;
     }
 
-    if (compteur >= 3) {
+    if (compteur == 3) {
         Actions action = {"SUPPRESSIONV", {xDebut, y1}, {xFin, y1}};
+        suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
@@ -244,11 +243,19 @@ void Calcul(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         j--;
     }
 
-    if (compteur >= 3) {
+    if (compteur == 3) {
         Actions action = {"SUPPRESSIONH", {x1, yDebut}, {x1, yFin}};
+        suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
+    }
+
+    if (!suiteDetectee){
+        Actions action = {"VERIFICATION", {x1, yDebut}, {x1, yFin}};
+        printf("Action: %s\n", action.actionName);
+        printf("Pas de suite détecter\n");
+
     }
 }
 
@@ -257,22 +264,16 @@ void SuppressionH(){}
 
 void SuppressionV(){}
 
+void Verification(){}
+
+
+
 
 
 /***************************************************************************************************************************
                                                   MAIN
 
  ****************************************************************************************************************************/
-
-
-
-
-typedef struct {
-    int coupAJouer;
-} Niveau;
-
-
-
 
 
 
@@ -300,10 +301,10 @@ int main() {
     int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
     int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
     int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-    LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
-    Deplacement(&maGrille, ligne, colonne, ligne1, colonne1);
+    LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1,&q);
+    Deplacement(&q,&maGrille, ligne, colonne, ligne1, colonne1);
     afficher_grille(&maGrille);
-    Calcul(&maGrille,ligne, colonne, ligne1, colonne1);
+    Calcul(&q,&maGrille,ligne, colonne, ligne1, colonne1);
 
     return 0;
 }

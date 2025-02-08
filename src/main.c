@@ -3,6 +3,8 @@
 
 #define TAILLE_PETITE 4
 
+
+/*
 typedef struct {
     int lignes;
     int colonnes;
@@ -101,7 +103,7 @@ int main(int argc, char** argv) {
 
 // gcc src/main.c -o bin/prog -I include -L lib -lmingw32 -lSDL2main -lSDL2
 
-
+*/
 
 
 

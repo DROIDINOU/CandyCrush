@@ -5,6 +5,24 @@
 #define TAILLE 20  // Taille de la queue
 
 
+typedef struct {
+    int x;
+    int y;
+} Coordonnees;
+
+typedef struct {
+    char actionName[20];
+    Coordonnees pion1;
+    Coordonnees pion2;
+} Actions;
+
+typedef struct {
+    Actions elements[TAILLE];  // Tableau d'éléments de type Actions
+    int debut;
+    int fin;
+    int taille;
+} Queue;
+
 void initialiser_queue(Queue *q) {
     q->debut = 0;
     q->fin = -1;
@@ -19,43 +37,28 @@ bool est_pleine(Queue *q) {
     return q->taille == TAILLE;
 }
 
-void enfiler(Queue *q, Coordonnees c) {
+void enfiler(Queue *q, Actions action) {
     if (est_pleine(q)) {
         fprintf(stderr, "Erreur : la queue est pleine\n");
         exit(EXIT_FAILURE);
     }
     q->fin = (q->fin + 1) % TAILLE;
-    q->elements[q->fin] = c;
+    q->elements[q->fin] = action;
     q->taille++;
 }
 
-Coordonnees defiler(Queue *q) {
+Actions defiler(Queue *q) {
     if (est_vide(q)) {
         fprintf(stderr, "Erreur : la queue est vide\n");
         exit(EXIT_FAILURE);
     }
-    Coordonnees c = q->elements[q->debut];
+    Actions action = q->elements[q->debut];
     q->debut = (q->debut + 1) % TAILLE;
     q->taille--;
-    return c;
+    return action;
 }
 
 int main() {
-   /* Queue q;
-    initialiser_queue(&q);
-
-    Coordonnees c1 = {1, 2};
-    Coordonnees c2 = {3, 4};
-    Coordonnees c3 = {5, 6};
-
-    enfiler(&q, c1);
-    enfiler(&q, c2);
-    enfiler(&q, c3);
-
-    while (!est_vide(&q)) {
-        Coordonnees c = defiler(&q);
-        printf("Coordonnées : (%d, %d)\n", c.x, c.y);
-    }*/
-
-    return 0;
+   Queue q;
+   return 0;
 }
