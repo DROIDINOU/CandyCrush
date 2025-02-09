@@ -48,6 +48,27 @@ void initialiser_grille(GrilleBonbons *grille) {
             grille->tableau[i][j].gelatine = false;  // Par défaut, pas de gelatine
         }
     }
+
+int nombreGelatine = rand() % 30 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
+    for (int i = 0; i < grille->lignes; i++) {
+        for (int j = 0; j < grille->colonnes; j++) {
+            grille->tableau[i][j].gelatine = false;  // Initialisation sans gelatine
+        }
+    }
+
+    while (nombreGelatine > 0) {
+        int x = rand() % TAILLE;
+        int y = rand() % TAILLE;
+        if (!grille->tableau[x][y].gelatine) {
+
+            grille->tableau[x][y].gelatine = true;  // Placement de la gelatine
+            nombreGelatine--;
+        }
+    }
+
+
+
+
 }
 
 void VerificationInitit(Queue *q, GrilleBonbons *grille){
@@ -63,36 +84,28 @@ void VerificationInitit(Queue *q, GrilleBonbons *grille){
 }
 
    
-
-void initialiserGrilleGelatine(GrilleBonbons *grille) {
-    int nombreGelatine = rand() % 30 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            grille->tableau[i][j].pion = '.';  // Initialisation de la grille
-            grille->tableau[i][j].gelatine = false;  // Initialisation sans gelatine
-        }
-    }
-
-    while (nombreGelatine > 0) {
-        int x = rand() % TAILLE;
-        int y = rand() % TAILLE;
-        if (!grille->tableau[x][y].gelatine) {
-            grille->tableau[x][y].pion = 'G';  // Initialisation de la grille
-
-            grille->tableau[x][y].gelatine = true;  // Placement de la gelatine
-            nombreGelatine--;
-        }
-    }
-}
-
 void afficher_grille(GrilleBonbons *grille) {
+    printf("Grille des Pions:\n");
     for (int i = 0; i < grille->lignes; i++) {
         for (int j = 0; j < grille->colonnes; j++) {
-            printf(" %c ", grille->tableau[i][j].pion);  // Affichage de la grille
+            printf(" %c ", grille->tableau[i][j].pion);  // Affichage de la grille des pions
+        }
+        printf("\n");
+    }
+
+    printf("\nGrille de la Gélatine:\n");
+    for (int i = 0; i < grille->lignes; i++) {
+        for (int j = 0; j < grille->colonnes; j++) {
+            if (grille->tableau[i][j].gelatine) {
+                printf(" %c ", 'G');  // Affichage des cases avec gélatine
+            } else {
+                printf(" %c ", '.');  // Affichage des cases sans gélatine
+            }
         }
         printf("\n");
     }
 }
+
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
     int reponse;
@@ -381,8 +394,6 @@ int main() {
     maGrilleGelatine.lignes = TAILLE;
     maGrilleGelatine.colonnes = TAILLE;
 
-    initialiserGrilleGelatine(&maGrilleGelatine);
-    afficher_grille(&maGrilleGelatine);
     initialiser_queue(&q);
     afficher_grille(&maGrille);
     int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
@@ -395,7 +406,6 @@ int main() {
     Calcul(&q,&maGrille,ligne, colonne, ligne1, colonne1);
     Verification(&maGrille);
     afficher_grille(&maGrille);
-    afficher_grille(&maGrilleGelatine);
 
 
 
