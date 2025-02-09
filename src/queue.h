@@ -4,9 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-
-#define TAILLE 20  // Taille de la queue
+#define LONGUEUR 20  // Taille de la queue
 
 typedef struct {
     int x;
@@ -23,7 +21,7 @@ typedef struct{
 
 
 typedef struct {
-    Actions elements[TAILLE];  // Tableau de structures Actions
+    Actions elements[LONGUEUR];  // Tableau de structures Actions
     int debut;  // Indice de début de la queue
     int fin;    // Indice de fin de la queue
     int taille; // Taille actuelle de la queue
@@ -34,5 +32,6 @@ bool est_vide(Queue *q);
 bool est_pleine(Queue *q);
 void enfiler(Queue *q, Actions action);
 Actions defiler(Queue *q);
+void imprimer_queue(Queue *q);
 #endif // QUEUE_H
 

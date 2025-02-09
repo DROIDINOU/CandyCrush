@@ -1,8 +1,7 @@
 #include "queue.h"
-#define TAILLE 20  // Taille de la grille
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
-
+#define TAILLE 20
 
 /***************************************************************************************************************************
                                                   INIT GRILLE
@@ -29,6 +28,12 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2);
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
                        int coordonneeYDeuxiemePion, Queue *q );
+bool Verification(GrilleBonbons *grille);
+void VerificationInitit(Queue *q, GrilleBonbons *grille);
+void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2);
+void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2);
+void ConfigureConsoleForC(); 
+
 
 typedef struct {
     int coupAJouer;
@@ -48,12 +53,6 @@ arrêter le programme*/
 /*_____________________________________________________________________________________________________________________________*/
 
 
-void SuppressionH();
-
-
-void SuppressionV();
-
-void Verification();
 
 
 
