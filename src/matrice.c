@@ -1,5 +1,6 @@
-#include "queue.h"
 #include "matrice.h"
+#include "affichage.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -25,16 +26,7 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
     };
 
 
-void ConfigureConsoleForC() {
-    // Configurer la locale pour UTF-8
-    setlocale(LC_ALL, ".UTF-8");
-    // Configurer l'encodage de sortie de la console sur UTF-8
-    SetConsoleOutputCP(CP_UTF8);
-    // Configurer l'encodage d'entrée de la console sur UTF-8
-    SetConsoleCP(CP_UTF8);
 
-    // Utiliser une page de code UTF-8
-    system("chcp 65001");}
 /***************************************************************************************************************************
                                                   INIT GRILLE
 
@@ -84,28 +76,6 @@ void VerificationInitit(Queue *q, GrilleBonbons *grille){
 }
 
    
-void afficher_grille(GrilleBonbons *grille) {
-    printf("Grille des Pions:\n");
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            printf(" %c ", grille->tableau[i][j].pion);  // Affichage de la grille des pions
-        }
-        printf("\n");
-    }
-
-    printf("\nGrille de la Gélatine:\n");
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            if (grille->tableau[i][j].gelatine) {
-                printf(" %c ", 'G');  // Affichage des cases avec gélatine
-            } else {
-                printf(" %c ", '.');  // Affichage des cases sans gélatine
-            }
-        }
-        printf("\n");
-    }
-}
-
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
     int reponse;
@@ -117,7 +87,7 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
 
         // Vérifie que la réponse est valide
         if (result == -1) {
-            printf("Réponse invalide. Essayez encore.\n");
+            printf("Reponse invalide. Essayez encore.\n");
         }
     } while (reponse < 0 || reponse > 20);  // Si la réponse n'est pas valide, on redemande
 
@@ -312,7 +282,7 @@ bool Verification(GrilleBonbons *grille){
             return false;}
         }
     }
-
+    Actions action = {"FIN NIVEAU", {0, 0}, {0, 0}};
     return true;
 }
 
@@ -324,10 +294,10 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         for (int i = x1; i <= x2; i++) {
             int index = rand() % 5;
             char couleur = couleurs[index];
-            printf("Valeur générée : %c\n", couleur);  // Débogage
+            printf("Valeur generee : %c\n", couleur);  // Débogage
             grille->tableau[i][y1].pion = couleur;
             if (grille->tableau[i][y1].gelatine) {
-                  printf("t'as eu une gelatine!!");
+                  printf("t as eu une gelatine!!");
 
             }
         }
@@ -335,10 +305,10 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         for (int i = x1; i >= x2; i--) {
             int index = rand() % 5;
             char couleur = couleurs[index];
-            printf("Valeur générée : %c\n", couleur);  // Débogage
+            printf("Valeur generee : %c\n", couleur);  // Débogage
             grille->tableau[i][y1].pion = couleur;
             if (grille->tableau[i][y1].gelatine) {
-                printf("t'as eu une gelatine!!");
+                printf("t as eu une gelatine!!");
             }
         }
     }
@@ -350,10 +320,10 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         for (int i = y1; i <= y2; i++){
             int index = rand() % 5;
             char couleur = couleurs[index];
-            printf("Valeur générée : %c\n", couleur);  // Débogage
+            printf("Valeur generee : %c\n", couleur);  // Débogage
              grille->tableau[x1][i].pion = couleur; 
              if(grille->tableau[x1][i].gelatine){ 
-                                printf("t'as eu une gelatine!!");
+                                printf("t as eu une gelatine!!");
 } } } 
     else if (y1 > y2) { 
         for (int i = y1; i >= y2; i--){ 
@@ -361,7 +331,7 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
             char couleur = couleurs[index];
             grille->tableau[x1][i].pion = couleur; 
             if(grille->tableau[x1][i].gelatine){ 
-                    printf("t'as eu une gelatine!!");
+                    printf("t as eu une gelatine!!");
 } 
                 } 
                 } 

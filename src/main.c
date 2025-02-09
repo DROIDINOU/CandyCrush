@@ -1,7 +1,93 @@
 #include <SDL.h>
 #include <stdio.h>
+//#define TAILLE_PETITE 4
+#define NIVEAU1 0
+#define NIVEAU2 1
+#define NIVEAU3 2
 
-#define TAILLE_PETITE 4
+
+typedef struct {
+    int coupAJouer;
+} Niveau;
+
+/*Pseudo-Code général
+Voici un pseudo code qui donne la structure générale de la solution.
+PGM
+Niveau = 1
+Tant Que Niveau <= 3
+AddQueue (INITIALISATION)
+Tant Que Action = GetQueue() > 0 and Action not = FINNIVEAU
+Si Action = AFFICHAGE
+Alors Appel de la fonction Affichage-AfficherMatrices avec comme paramètres
+o Matrice de jeu
+o Queue
+Si Action = LECTURE
+Alors Appel de la fonction Affichage-LirePionAChanger avec comme paramètres
+o X et Y du premier pion
+o X et Y du deuxième pion
+o Queue
+Si Action = CALCUL
+Alors Appel de la fonction Matrice-Calcul avec comme paramètres
+o X et Y du premier pion
+o X et Y du deuxième pion
+o Matrice de jeu
+o Queue
+Si Action = SUPPRESSION-V
+Alors Appel de la fonction Matrice-SuppressionV avec comme paramètres :
+o X et Y du premier pion
+o X et Y du deuxième pion
+o Matrice de jeu
+o Queue
+Si Action = SUPPRESSION-H
+Alors Appel de la fonction Matrice-SuppressionH avec comme paramètres :
+o X et Y du premier pion
+o X et Y du deuxième pion
+o Matrice de jeu
+o Queue
+Si Action = VERIFICATION
+Alors Appel de la fonction Matrice-Verification avec comme paramètres :
+o Matrice de jeu
+Si Action = INITIALISATION
+Alors Appel de la fonction Matrice-Initialisation avec comme paramètres :
+o Matrice de jeu
+Si Action = FINNIVEAU
+Alors Fin du niveau*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*

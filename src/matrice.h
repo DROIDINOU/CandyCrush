@@ -1,12 +1,17 @@
+// queue.h (ou le nom de ton fichier d'en-tête)
+#ifndef MATRICE_H
+#define MATRICE_H
 #include "queue.h"
+#include <stdbool.h>
+
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
 #define TAILLE 20
 
 /***************************************************************************************************************************
                                                   INIT GRILLE
-
  ****************************************************************************************************************************/
+
 typedef struct {
     char pion;
     bool gelatine;
@@ -20,9 +25,6 @@ typedef struct {
 
 void initialiser_grille(GrilleBonbons *grille);
 void initialiserGrilleGelatine(GrilleBonbons *grille);
-
-void afficher_grille(GrilleBonbons *grille);
-
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
 void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2);
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
@@ -32,12 +34,8 @@ bool Verification(GrilleBonbons *grille);
 void VerificationInitit(Queue *q, GrilleBonbons *grille);
 void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2);
 void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2);
-void ConfigureConsoleForC(); 
 
 
-typedef struct {
-    int coupAJouer;
-} Niveau;
 
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
@@ -53,12 +51,8 @@ arrêter le programme*/
 /*_____________________________________________________________________________________________________________________________*/
 
 
-
-
-
-
-
 /***************************************************************************************************************************
                                                   MAIN
-
  ****************************************************************************************************************************/
+
+#endif // QUEUE_H
