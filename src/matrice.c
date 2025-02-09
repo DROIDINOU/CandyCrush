@@ -51,8 +51,8 @@ void initialiser_grille(GrilleBonbons *grille) {
 }
 
 void VerificationInitit(Queue *q, GrilleBonbons *grille){
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
+    for (int i = 0; i < grille->lignes - 2; i++) {
+        for (int j = 0; j < grille->colonnes -2; j++) {
             // VERIFICATION HORIZONTALE
             // VERIFICATION VERTICLAE
             Actions action = {"ACTION", {i,j}, {i+2, j+2}};
@@ -65,7 +65,7 @@ void VerificationInitit(Queue *q, GrilleBonbons *grille){
    
 
 void initialiserGrilleGelatine(GrilleBonbons *grille) {
-    int nombreGelatine = rand() % 5 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % 30 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
     for (int i = 0; i < grille->lignes; i++) {
         for (int j = 0; j < grille->colonnes; j++) {
             grille->tableau[i][j].pion = '.';  // Initialisation de la grille
@@ -173,9 +173,10 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         i--;
     }
 
-    if (compteur == 3) {
+    if (compteur >= 3) {
+        xFin = xDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONV", {xDebut, y2}, {xFin, y2}};
-        enfiler(q,action);
+        enfiler(q, action);
         imprimer_queue(q);
         suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
@@ -204,16 +205,16 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         j--;
     }
 
-    if (compteur == 3) {
+    if (compteur >= 3) {
+        yFin = yDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONH", {x2, yDebut}, {x2, yFin}};
         suiteDetectee = true;
-        enfiler(q,action);
+        enfiler(q, action);
         imprimer_queue(q);
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
         SuppressionH(grille, x2, yDebut, x2, yFin);
-
     }
 
     // Vérification pour le pion en (x1, y1)
@@ -225,22 +226,23 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
     xFin = x1;
 
     i = x1 + 1;
-    while ( i < TAILLE && grille->tableau[i][y1].pion == pion) {
+    while (i < TAILLE && grille->tableau[i][y1].pion == pion) {
         compteur++;
         xFin = i;
         i++;
     }
 
     i = x1 - 1;
-    while ( i >= 0 && grille->tableau[i][y1].pion == pion) {
+    while (i >= 0 && grille->tableau[i][y1].pion == pion) {
         compteur++;
         xDebut = i;
         i--;
     }
 
-    if (compteur == 3) {
+    if (compteur >= 3) {
+        xFin = xDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONV", {xDebut, y1}, {xFin, y1}};
-        enfiler(q,action);
+        enfiler(q, action);
         imprimer_queue(q);
         suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
@@ -269,25 +271,24 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
         j--;
     }
 
-    if (compteur == 3) {
+    if (compteur >= 3) {
+        yFin = yDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONH", {x1, yDebut}, {x1, yFin}};
-        enfiler(q,action);
+        enfiler(q, action);
         imprimer_queue(q);
         suiteDetectee = true;
         printf("Action: %s\n", action.actionName);
         printf("Pion 1: (%d, %d)\n", action.pion1.x, action.pion1.y);
         printf("Pion 2: (%d, %d)\n", action.pion2.x, action.pion2.y);
         SuppressionH(grille, x1, yDebut, x1, yFin);
-
     }
 
-    if (!suiteDetectee){
+    if (!suiteDetectee) {
         Actions action = {"VERIFICATION", {x1, yDebut}, {x1, yFin}};
-        enfiler(q,action);
+        enfiler(q, action);
         imprimer_queue(q);
     }
 }
-
 
 bool Verification(GrilleBonbons *grille){
     
@@ -303,41 +304,55 @@ bool Verification(GrilleBonbons *grille){
 }
 
 
+void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2) {
+    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
 
-void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2){
+    if (x1 < x2) {
+        for (int i = x1; i <= x2; i++) {
+            int index = rand() % 5;
+            char couleur = couleurs[index];
+            printf("Valeur générée : %c\n", couleur);  // Débogage
+            grille->tableau[i][y1].pion = couleur;
+            if (grille->tableau[i][y1].gelatine) {
+                  printf("t'as eu une gelatine!!");
 
-     if (x1 < x2){
-
-        for (int i = x1; i <= x2; i++){
-        grille->tableau[i][y1].pion = 'Y';
+            }
+        }
+    } else if (x1 > x2) {
+        for (int i = x1; i >= x2; i--) {
+            int index = rand() % 5;
+            char couleur = couleurs[index];
+            printf("Valeur générée : %c\n", couleur);  // Débogage
+            grille->tableau[i][y1].pion = couleur;
+            if (grille->tableau[i][y1].gelatine) {
+                printf("t'as eu une gelatine!!");
+            }
+        }
     }
-     }
-
-     else if (x1 > x2) {
-          for (int i = x1; i >= x2; i--){
-              grille->tableau[i][y1].pion = 'Z';
-                       }
-                       }
-    
 }
 
-void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2){
-
-     if (y1 < y2){
-
+ void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2){ 
+        char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
+    if (y1 < y2){ 
         for (int i = y1; i <= y2; i++){
-        grille->tableau[x1][i].pion = 'S';
-    }
-     }
-
-     else if (y1 > y2) {
-          for (int i = y1; i >= y2; i--){
-              grille->tableau[x1][i].pion = 'N';
-                       }
-                       }
-    
-}
-
+            int index = rand() % 5;
+            char couleur = couleurs[index];
+            printf("Valeur générée : %c\n", couleur);  // Débogage
+             grille->tableau[x1][i].pion = couleur; 
+             if(grille->tableau[x1][i].gelatine){ 
+                                printf("t'as eu une gelatine!!");
+} } } 
+    else if (y1 > y2) { 
+        for (int i = y1; i >= y2; i--){ 
+            int index = rand() % 5;
+            char couleur = couleurs[index];
+            grille->tableau[x1][i].pion = couleur; 
+            if(grille->tableau[x1][i].gelatine){ 
+                    printf("t'as eu une gelatine!!");
+} 
+                } 
+                } 
+                } 
 
 
 
@@ -369,6 +384,7 @@ int main() {
     initialiserGrilleGelatine(&maGrilleGelatine);
     afficher_grille(&maGrilleGelatine);
     initialiser_queue(&q);
+    afficher_grille(&maGrille);
     int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
     int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
     int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
@@ -379,6 +395,8 @@ int main() {
     Calcul(&q,&maGrille,ligne, colonne, ligne1, colonne1);
     Verification(&maGrille);
     afficher_grille(&maGrille);
+    afficher_grille(&maGrilleGelatine);
+
 
 
     return 0;
