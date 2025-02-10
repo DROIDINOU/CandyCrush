@@ -4,11 +4,18 @@
 #define NIVEAU1 0
 #define NIVEAU2 1
 #define NIVEAU3 2
+#define MaxLongueurNiveau 3
 
 
 typedef struct {
     int coupAJouer;
-} Niveau;
+    int coupsJoues;   // Le nombre de coups joués par le joueur
+} Coups;
+
+typedef struct {
+    int niveau;
+    Coups tableau[MaxLongueurNiveau][MaxLongueurNiveau];
+}  Niveaux;
 
 /*Pseudo-Code général
 Voici un pseudo code qui donne la structure générale de la solution.
