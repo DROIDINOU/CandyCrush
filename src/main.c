@@ -42,17 +42,17 @@ int main() {
             } else if (strcmp(action.actionName, "SUPPRESSIONH") == 0) {
                
                 SuppressionH(&maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &q);
-                afficher_grille(&maGrille);
+                //afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "VERIFICATION") == 0) {
                 printf("entre dans la verification");
                 Verification(&maGrille, &q);
             } else if (strcmp(action.actionName, "DEPLACEMENT") == 0) {
                 
                 Deplacement(&q, &maGrille,action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-                afficher_grille(&maGrille);
+                //afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "INITIALISATION") == 0) {
                 initialiser_grille(&maGrille);
-                afficher_grille(&maGrille);
+                //afficher_grille(&maGrille);
                 VerificationInitit(&q, &maGrille, &isVerificationInit);
             }
         }
