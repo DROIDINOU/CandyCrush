@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define LONGUEUR 20  // Taille de la queue
+#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+
+#define LONGUEUR 2000  // Taille de la queue
 
 typedef struct {
     int x;
@@ -15,6 +17,7 @@ typedef struct{
     char actionName[20];
     Coordonnees pion1;
     Coordonnees pion2;
+
 
 } Actions;
 

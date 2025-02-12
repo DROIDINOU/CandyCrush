@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <locale.h>
 #include "matrice.h"
+#include "constante.h"
 
 
 void afficher_grille(GrilleBonbons *grille) {

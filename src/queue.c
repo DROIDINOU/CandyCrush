@@ -1,18 +1,23 @@
 #include "queue.h"
+#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h> // Inclure pour utiliser strcpy et strcmp
+
 
 
 
 
 void initialiser_queue(Queue *q) {
+    printf("Initialisation de la queue\n");
     q->debut = 0;
     q->fin = -1;
     q->taille = 0;
 }
 
 bool est_vide(Queue *q) {
+    printf("taille de la queue :");
     return q->taille == 0;
 }
 
@@ -31,9 +36,14 @@ void enfiler(Queue *q, Actions action) {
 }
 
 Actions defiler(Queue *q) {
-    if (est_vide(q)) {
-        fprintf(stderr, "Erreur : la queue est vide\n");
-        exit(EXIT_FAILURE);
+    if (q->taille == 0) {
+        Actions emptyAction;
+        strcpy(emptyAction.actionName, "QUEUE_VIDE");
+        emptyAction.pion1.x = 0;
+        emptyAction.pion1.y = 0;
+        emptyAction.pion2.x = 0;
+        emptyAction.pion2.y = 0;
+        return emptyAction;
     }
     Actions action = q->elements[q->debut];
     q->debut = (q->debut + 1) % LONGUEUR;
