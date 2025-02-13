@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
-
+#include "constante.h" 
 #define LONGUEUR 2000  // Taille de la queue
 
+
+// A deplacer dans le fichier des constantes
 typedef struct {
     int x;
     int y;

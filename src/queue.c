@@ -1,12 +1,10 @@
-#include "queue.h"
-#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h> // Inclure pour utiliser strcpy et strcmp
-
-
-
+#include <string.h>
+#include "constante.h"  
+#include "queue.h"
 
 
 void initialiser_queue(Queue *q) {
@@ -69,10 +67,3 @@ void imprimer_queue(Queue *q) {
         index = (index + 1) % LONGUEUR;
     }
 }
-
-/*
-int main() {
-   Queue q;
-   return 0;
-}
-*/
