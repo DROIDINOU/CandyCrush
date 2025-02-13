@@ -31,8 +31,8 @@ void initialiser_grille(GrilleBonbons *grille) {
         }
 
     }
-
-int nombreGelatine = rand() % 5 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
+// verifier si 0 pas possible
+int nombreGelatine = rand() % 20 + 1;  // Nombre de gelatines aléatoire entre 1 et 5
     for (int i = 0; i < grille->lignes; i++) {
         for (int j = 0; j < grille->colonnes; j++) {
             grille->tableau[i][j].gelatine = false;  // Initialisation sans gelatine

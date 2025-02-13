@@ -9,39 +9,14 @@
 #include "raylib.h"  // Chemin relatif vers Raylibs
 
 
-/*void afficher_grille(GrilleBonbons *grille) {
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            int x = j * 64;
-            int y = i * 64;
-            
-            // Afficher un bonbon (par exemple, un rectangle coloré)
-            if (grille->tableau[i][j].pion == 'M') {
-                DrawRectangle(x, y, 64, 64, RED);  // Bonbon rouge
-            } else {
-                DrawRectangle(x, y, 64, 64, BLUE); // Autre bonbon
-            }
-
-            // Afficher la gélatine (rectangle violet)
-            if (grille->tableau[i][j].gelatine) {
-                DrawRectangle(x, y, 64, 64, PURPLE);
-            }
-        }
-    }
-}
-*/
-
-
 void afficher_grille(GrilleBonbons *grille) {
     int tailleCase = 40;
-    int largeurFenetre = 1280; // Change selon ta fenêtre
-    int hauteurFenetre = 1280; // Change selon ta fenêtre
+    int largeurFenetre = 1280;
+    int hauteurFenetre = 1280;
 
-    // Calcul de la taille totale de la grille
+    // Calcul du centrage de la grille
     int grilleLargeur = grille->colonnes * tailleCase;
     int grilleHauteur = grille->lignes * tailleCase;
-
-    // Calcul du décalage pour centrer
     int offsetX = (largeurFenetre - grilleLargeur) / 1.5;
     int offsetY = (hauteurFenetre - grilleHauteur) / 2;
 
@@ -50,33 +25,38 @@ void afficher_grille(GrilleBonbons *grille) {
             int x = offsetX + j * tailleCase;
             int y = offsetY + i * tailleCase;
 
+            Color couleurBonbon = WHITE; // Couleur par défaut
+
+            // Déterminer la couleur du bonbon
             if (grille->tableau[i][j].pion == 'M') {
-                DrawRectangle(x, y, tailleCase, tailleCase, PURPLE);
+                couleurBonbon = PURPLE;
             } else if (grille->tableau[i][j].pion == 'R') {
-                DrawRectangle(x, y, tailleCase, tailleCase, RED);
+                couleurBonbon = RED;
             } else if (grille->tableau[i][j].pion == 'B') {
-                DrawRectangle(x, y, tailleCase, tailleCase, BLUE);
+                couleurBonbon = BLUE;
+            } else if (grille->tableau[i][j].pion == 'V') {
+                couleurBonbon = GREEN;
+            } else if (grille->tableau[i][j].pion == 'J') {
+                couleurBonbon = YELLOW;
             }
-            else if (grille->tableau[i][j].pion == 'V') {
-                DrawRectangle(x, y, tailleCase, tailleCase, GREEN);
+
+            // Dessiner le bonbon
+            DrawRectangle(x, y, tailleCase, tailleCase, couleurBonbon);
+
+            // Effet gélatine (si la case a de la gélatine)
+            if (grille->tableau[i][j].gelatine) {
+                // Ajout d'une couche semi-transparente
+                DrawRectangle(x, y, tailleCase, tailleCase, Fade(couleurBonbon, 0.5f));
+
+                // Reflet en haut à gauche pour donner un effet glossy
+                DrawCircle(x + tailleCase / 4, y + tailleCase / 4, tailleCase / 6, Fade(WHITE, 0.6f));
+
+                // Deuxième reflet plus grand, plus diffus
+                DrawCircle(x + tailleCase / 3, y + tailleCase / 3, tailleCase / 4, Fade(WHITE, 0.3f));
+
+                // Bordure douce pour mieux distinguer
+                DrawRectangleLinesEx((Rectangle){x, y, tailleCase, tailleCase}, 2, Fade(DARKGRAY, 0.7f));
             }
-            else if (grille->tableau[i][j].pion == 'J') {
-                DrawRectangle(x, y, tailleCase, tailleCase, YELLOW);
-            }
-            
         }
     }
 }
-
-    /*printf("Grille de la Gelatine:\n");
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            if (grille->tableau[i][j].gelatine) {
-                printf(" %c ", 'G');  // Affichage des cases avec gélatine
-            } else {
-                printf(" %c ", '.');  // Affichage des cases sans gélatine
-            }
-        }
-        printf("\n");
-    }
-}*/
