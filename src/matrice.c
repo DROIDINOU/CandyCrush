@@ -122,143 +122,78 @@ arrêter le programme*/
 
 /*_____________________________________________________________________________________________________________________________*/
 
-void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2,bool *isVerificationInit) {
+void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2, bool *isVerificationInit) {
     afficher_grille(grille);
-    bool suiteDetectee = false;
-    int compteur = 1;
-    char pion = grille->tableau[x2][y2].pion;
+    int compteur;
+    char pion;
     int i, j;
 
     // Vérification pour le pion en (x2, y2)
+    pion = grille->tableau[x2][y2].pion;
+
     // Vérification verticale (colonne)
-    int xDebut = x2;
-    int xFin = x2;
-
+    compteur = 1;
+    int xDebut = x2, xFin = x2;
     i = x2 + 1;
-    while (i < TAILLE && grille->tableau[i][y2].pion == pion) {
-        compteur++;
-        xFin = i;
-        i++;
-    }
-
+    while (i < TAILLE && grille->tableau[i][y2].pion == pion) { compteur++; xFin = i; i++; }
     i = x2 - 1;
-    while (i >= 0 && grille->tableau[i][y2].pion == pion) {
-        compteur++;
-        xDebut = i;
-        i--;
-    }
+    while (i >= 0 && grille->tableau[i][y2].pion == pion) { compteur++; xDebut = i; i--; }
 
     if (compteur >= 3) {
-        xFin = xDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONV", {xDebut, y2}, {xFin, y2}};
-        if (q->taille < LONGUEUR) {
-            enfiler(q, action);
-        } else {
-        }
-        suiteDetectee = true;
+        enfiler(q, action);
+        return;  // On sort directement après avoir trouvé une suppression
     }
 
     // Vérification horizontale (ligne)
     compteur = 1;
-    pion = grille->tableau[x2][y2].pion;
-    int yDebut = y2;
-    int yFin = y2;
-
+    int yDebut = y2, yFin = y2;
     j = y2 + 1;
-    while (j < TAILLE && grille->tableau[x2][j].pion == pion) {
-        compteur++;
-        yFin = j;
-        j++;
-    }
-
+    while (j < TAILLE && grille->tableau[x2][j].pion == pion) { compteur++; yFin = j; j++; }
     j = y2 - 1;
-    while (j >= 0 && grille->tableau[x2][j].pion == pion) {
-        compteur++;
-        yDebut = j;
-        j--;
-    }
+    while (j >= 0 && grille->tableau[x2][j].pion == pion) { compteur++; yDebut = j; j--; }
 
     if (compteur >= 3) {
-        yFin = yDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONH", {x2, yDebut}, {x2, yFin}};
-        if (q->taille < LONGUEUR) {
-            enfiler(q, action);
-        } else {
-        }
-
-        suiteDetectee = true;
+        enfiler(q, action);
+        return; 
     }
 
     // Vérification pour le pion en (x1, y1)
-    compteur = 1;
     pion = grille->tableau[x1][y1].pion;
 
     // Vérification verticale (colonne)
-    xDebut = x1;
-    xFin = x1;
-
+    compteur = 1;
+    xDebut = x1, xFin = x1;
     i = x1 + 1;
-    while (i < TAILLE && grille->tableau[i][y1].pion == pion) {
-        compteur++;
-        xFin = i;
-        i++;
-    }
-
+    while (i < TAILLE && grille->tableau[i][y1].pion == pion) { compteur++; xFin = i; i++; }
     i = x1 - 1;
-    while (i >= 0 && grille->tableau[i][y1].pion == pion) {
-        compteur++;
-        xDebut = i;
-        i--;
-    }
+    while (i >= 0 && grille->tableau[i][y1].pion == pion) { compteur++; xDebut = i; i--; }
 
     if (compteur >= 3) {
-        xFin = xDebut + 2;  // Limite la suppression à 3 pions alignés
         Actions action = {"SUPPRESSIONV", {xDebut, y1}, {xFin, y1}};
-        if (q->taille < LONGUEUR) {
-            enfiler(q, action);
-        } else {
-        }
-
-        suiteDetectee = true;
+        enfiler(q, action);
+        return; 
     }
 
     // Vérification horizontale (ligne)
     compteur = 1;
-    pion = grille->tableau[x1][y1].pion;
-    yDebut = y1;
-    yFin = y1;
-
+    yDebut = y1, yFin = y1;
     j = y1 + 1;
-    while (j < TAILLE && grille->tableau[x1][j].pion == pion) {
-        compteur++;
-        yFin = j;
-        j++;
-    }
-
+    while (j < TAILLE && grille->tableau[x1][j].pion == pion) { compteur++; yFin = j; j++; }
     j = y1 - 1;
-    while (j >= 0 && grille->tableau[x1][j].pion == pion) {
-        compteur++;
-        yDebut = j;
-        j--;
-    }
+    while (j >= 0 && grille->tableau[x1][j].pion == pion) { compteur++; yDebut = j; j--; }
 
     if (compteur >= 3) {
-        yFin = yDebut + 2;  // Limite la suppression à 3 pions alignés
-        Actions action = {"SUPPRESSIONH", {x1, yDebut}, {x1, yFin}};       
-        if (q->taille < LONGUEUR) {
-            enfiler(q, action);
-        } else {
-        }
-
-        suiteDetectee = true;
+        Actions action = {"SUPPRESSIONH", {x1, yDebut}, {x1, yFin}};
+        enfiler(q, action);
+        return;
     }
 
-    if (!suiteDetectee && est_vide(q)){
+    // Ajout de "VERIFICATION" si aucune suppression n'a été trouvée et que la queue est vide
+    if (est_vide(q)) {
         Actions action = {"VERIFICATION", {0, 0}, {0, 0}};
-        if (q->taille < LONGUEUR) {
-            enfiler(q, action);
-        } else {
-        }
+        enfiler(q, action);
     }
 }
 
