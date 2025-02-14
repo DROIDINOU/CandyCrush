@@ -261,6 +261,8 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2,bool
         }
     }
 }
+
+// transformer en bool et laisser calcul gerer l action supprmier parametre queue
 Actions Verification(GrilleBonbons *grille, Queue *q) {
     bool gelatinePresente = false;  // On suppose qu'il n'y a pas de gélatine au début
 
