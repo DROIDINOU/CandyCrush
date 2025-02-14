@@ -5,58 +5,57 @@
 #include <locale.h>
 #include "matrice.h"
 #include "constante.h"
-#include "affichage.h"  // Inclure l'en-tête d'affichage
-#include "raylib.h"  // Chemin relatif vers Raylibs
+#include "affichage.h"
+#include "raylib.h"
 
 
-void afficher_grille(GrilleBonbons *grille) {
-    int tailleCase = 40;
-    int largeurFenetre = 1280;
-    int hauteurFenetre = 1280;
 
-    // Calcul du centrage de la grille
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures) {
+    int tailleCase = 50;
+    int largeurFenetre = 800;
+    int hauteurFenetre = 800;
+
     int grilleLargeur = grille->colonnes * tailleCase;
     int grilleHauteur = grille->lignes * tailleCase;
-    int offsetX = (largeurFenetre - grilleLargeur) / 1.5;
+    int offsetX = (largeurFenetre - grilleLargeur) / 2;
     int offsetY = (hauteurFenetre - grilleHauteur) / 2;
+
+    BeginDrawing();
+    ClearBackground(DARKGRAY);
 
     for (int i = 0; i < grille->lignes; i++) {
         for (int j = 0; j < grille->colonnes; j++) {
             int x = offsetX + j * tailleCase;
             int y = offsetY + i * tailleCase;
 
-            Color couleurBonbon = WHITE; // Couleur par défaut
+            Texture2D bonbonActuel = { 0 };
 
-            // Déterminer la couleur du bonbon
-            if (grille->tableau[i][j].pion == 'M') {
-                couleurBonbon = PURPLE;
-            } else if (grille->tableau[i][j].pion == 'R') {
-                couleurBonbon = RED;
-            } else if (grille->tableau[i][j].pion == 'B') {
-                couleurBonbon = BLUE;
-            } else if (grille->tableau[i][j].pion == 'V') {
-                couleurBonbon = GREEN;
-            } else if (grille->tableau[i][j].pion == 'J') {
-                couleurBonbon = YELLOW;
+            switch (grille->tableau[i][j].pion) {
+                case 'M': bonbonActuel = textures[0]; break;
+                case 'R': bonbonActuel = textures[1]; break;
+                case 'B': bonbonActuel = textures[2]; break;
+                case 'V': bonbonActuel = textures[3]; break;
+                case 'J': bonbonActuel = textures[4]; break;
+                default: continue;
             }
 
-            // Dessiner le bonbon
-            DrawRectangle(x, y, tailleCase, tailleCase, couleurBonbon);
+            if (bonbonActuel.id != 0) {
+                Rectangle source = { 0, 0, bonbonActuel.width, bonbonActuel.height };
+                Rectangle dest = { x, y, tailleCase, tailleCase };
+                Vector2 origin = { 0, 0 };
 
-            // Effet gélatine (si la case a de la gélatine)
+                DrawTexturePro(bonbonActuel, source, dest, origin, 0.0f, WHITE);
+                DrawRectangleLines(x, y, tailleCase, tailleCase, RED);
+            } else {
+                DrawRectangle(x, y, tailleCase, tailleCase, BLACK);
+            }
+
             if (grille->tableau[i][j].gelatine) {
-                // Ajout d'une couche semi-transparente
-                DrawRectangle(x, y, tailleCase, tailleCase, Fade(couleurBonbon, 0.5f));
-
-                // Reflet en haut à gauche pour donner un effet glossy
-                DrawCircle(x + tailleCase / 4, y + tailleCase / 4, tailleCase / 6, Fade(WHITE, 0.6f));
-
-                // Deuxième reflet plus grand, plus diffus
-                DrawCircle(x + tailleCase / 3, y + tailleCase / 3, tailleCase / 4, Fade(WHITE, 0.3f));
-
-                // Bordure douce pour mieux distinguer
-                DrawRectangleLinesEx((Rectangle){x, y, tailleCase, tailleCase}, 2, Fade(DARKGRAY, 0.7f));
+                DrawRectangle(x, y, tailleCase, tailleCase, Fade(WHITE, 0.4f));
+                DrawRectangleLinesEx((Rectangle){ x, y, tailleCase, tailleCase }, 2, Fade(DARKGRAY, 0.7f));
             }
         }
     }
+
+    EndDrawing();
 }

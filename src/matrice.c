@@ -123,7 +123,6 @@ arrêter le programme*/
 /*_____________________________________________________________________________________________________________________________*/
 
 void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2,bool *isVerificationInit) {
-    afficher_grille(grille);
     bool suiteDetectee = false;
     int compteur = 1;
     char pion = grille->tableau[x2][y2].pion;
