@@ -55,6 +55,7 @@ int main() {
             } else if (strcmp(action.actionName, "INITIALISATION") == 0) {
                 initialiser_grille(&maGrille);
                 //afficher_grille(&maGrille);
+                while(!isVerificationInit)
                 VerificationInitit(&q, &maGrille, &currentX, &currentY, &isVerificationInit);  // Appel de VerificationInitit
             }
         }

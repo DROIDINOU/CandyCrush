@@ -54,22 +54,31 @@ int nombreGelatine = rand() % 5 + 1;  // Nombre de gelatines aléatoire entre 1 
 
 }
 
-void VerificationInitit(Queue *q, GrilleBonbons *grille, bool *isVerificationInit) {
-    for (int i = 0; i < grille->lignes - 2; i++) {
-        for (int j = 0; j < grille->colonnes - 2; j++) {
-            // Vérification horizontale et verticale
-            Actions action = {"CALCUL", {i, j}, {i + 2, j + 2}};
-            
-            // Vérifier que la queue n'est pas pleine avant d'enfiler
-            while (q->taille >= LONGUEUR) {
-                Actions dequeuedAction = defiler(q);
-                // Vous pouvez ajouter ici le traitement des actions désenfilées si nécessaire
-            }
-            enfiler(q, action);
-        }
+void VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY, bool *isVerificationInit) {
+    // Ajouter une action à la queue pour l'indice courant
+    Actions action = {"CALCUL", {*currentX, *currentY}, {*currentX + 2, *currentY + 2}};
+    
+    // Vérifier que la queue n'est pas pleine avant d'enfiler
+    while (q->taille >= LONGUEUR) {
+        Actions dequeuedAction = defiler(q); 
+        // Vous pouvez ajouter ici le traitement des actions désenfilées si nécessaire
     }
-    *isVerificationInit = true;  // Indiquer que l'initialisation a eu lieu
+    
+    enfiler(q, action);  // Ajouter l'action à la queue
+    
+    // Incrémenter les indices
+    *currentY += 1;  // Incrémenter Y (en avançant d'une case à chaque fois)
+    if (*currentY >= grille->colonnes - 2) {
+        *currentY = 0;  // Réinitialiser Y et avancer sur la ligne suivante
+        *currentX += 1;  // Incrémenter X pour avancer à la ligne suivante
+    }
+    
+    // Vérifier si on a terminé l'initialisation de la grille
+    if (*currentX >= grille->lignes - 2) {
+        *isVerificationInit = true;  // L'initialisation est terminée
+    }
 }
+
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
     int reponse;
@@ -191,7 +200,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2, boo
     }
 
     // Ajout de "VERIFICATION" si aucune suppression n'a été trouvée et que la queue est vide
-    if (est_vide(q)) {
+    if (est_vide(q) && *isVerificationInit) {
         Actions action = {"VERIFICATION", {0, 0}, {0, 0}};
         enfiler(q, action);
     }
