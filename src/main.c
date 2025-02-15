@@ -12,6 +12,7 @@ int main() {
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires une fois
     Niveaux NiveauJeu;
     int niveau = 0;
+    
     GrilleBonbons maGrille;
     maGrille.lignes = TAILLE;
     maGrille.colonnes = TAILLE;
