@@ -22,7 +22,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
                        int coordonneeYDeuxiemePion, Queue *q );
 Actions Verification(GrilleBonbons *grille,Queue *q);
-void VerificationInitit(Queue *q, GrilleBonbons *grille, bool *isVerificationInit);
+void VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY, bool *isVerificationInit);
 void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q);
 void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q);
 void Deplacement (Queue *q,GrilleBonbons *grille, int coordonneeXPremierPion, 

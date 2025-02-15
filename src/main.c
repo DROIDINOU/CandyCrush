@@ -18,7 +18,8 @@ int main() {
     maGrille.colonnes = TAILLE;
     Queue q;
     initialiser_queue(&q);
-
+    int currentX = 0;
+    int currentY = 0;
     // Initialiser et afficher la grille
     while (niveau < 1) {
         Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}};
@@ -54,7 +55,7 @@ int main() {
             } else if (strcmp(action.actionName, "INITIALISATION") == 0) {
                 initialiser_grille(&maGrille);
                 //afficher_grille(&maGrille);
-                VerificationInitit(&q, &maGrille, &isVerificationInit);
+                VerificationInitit(&q, &maGrille, &currentX, &currentY, &isVerificationInit);  // Appel de VerificationInitit
             }
         }
 
