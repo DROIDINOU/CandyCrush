@@ -20,8 +20,19 @@ typedef struct {
 
 typedef struct {
     Coups tableau[MaxLongueurNiveau];
+    //bool verificationFaite;  // a rajouter pour se passer du boolean en params dans verificationinit et calcul
+
 }  Niveaux;
 
+/* CECI EST PEUT ETRE MIEUX typedef struct {
+    int coupAJouer;   // Nombre total de coups possibles
+    int coupsJoues;   // Nombre de coups effectués
+} Coups;
+
+typedef struct {
+    Coups coups;                  // Infos sur les coups pour ce niveau
+    bool verificationFaite;        // Indique si la vérification a été faite
+} Niveaux;/*/
 
 
 
