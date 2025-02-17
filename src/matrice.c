@@ -136,14 +136,11 @@ arrêter le programme*/
 /*_____________________________________________________________________________________________________________________________*/
 
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2) {
-    afficher_grille(grille);
     int compteur;
     char pion;
     int i, j;
     bool isVerificationInit = true;
-   
-
-    imprimer_queue(q);
+       imprimer_queue(q);
     if (!est_vide(q)) {
         Actions currentAction = q->elements[q->debut];  // Accéder à l'action en cours
         printf("Action en cours : %s\n", currentAction.actionName);
@@ -171,6 +168,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
     if (compteur >= 3) {
         Actions action = {"SUPPRESSIONV", {xDebut, *y2}, {xFin, *y2},false};
+        printf("suppression !!!!!!!!!!!!!!!!!");
         enfiler(q, action);
         return;
     }
@@ -185,6 +183,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
     if (compteur >= 3) {
         Actions action = {"SUPPRESSIONH", {*x2, yDebut}, {*x2, yFin},false};
+        printf("suppression !!!!!!!!!!!!!!!!!");
         enfiler(q, action);
         return;
     }
@@ -202,6 +201,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
     if (compteur >= 3) {
         Actions action = {"SUPPRESSIONV", {xDebut, *y1}, {xFin, *y1},false};
+        printf("suppression !!!!!!!!!!!!!!!!!");
         enfiler(q, action);
         return;
     }
@@ -216,6 +216,8 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
     if (compteur >= 3) {
         Actions action = {"SUPPRESSIONH", {*x1, yDebut}, {*x1, yFin},false};
+        printf("suppression !!!!!!!!!!!!!!!!!");
+
         enfiler(q, action);
         return;
     }
@@ -225,6 +227,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         Actions action = {"VERIFICATION", {0, 0}, {0, 0},false};
         printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         enfiler(q, action);
+        return;
     }
 
     if (!isVerificationInit) {
@@ -232,6 +235,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         printf("voila x1=%d et y1=%d\n", *x1, *y1);
         Actions action = {"CALCUL", {*x1, *x2}, {*y1, *y2}, false};
         enfiler(q, action);
+        return;
     }
     // Si l'initialisation est terminée, ajouter l'action "VERIFICATION" dans la queue
     

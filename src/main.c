@@ -29,6 +29,7 @@ int main() {
         Actions action;
         while (q.taille > 0 && strcmp((action = defiler(&q)).actionName, "FINNIVEAU") != 0) {
             if (strcmp(action.actionName, "AFFICHAGE") == 0) {
+                afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "LECTURE") == 0) {
                 int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
@@ -54,7 +55,6 @@ int main() {
                 //afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "INITIALISATION") == 0) {
                 initialiser_grille(&maGrille);
-                afficher_grille(&maGrille);
                 Actions Init = {"INITIALISATION", {0, 0}, {3, 3}, true};
                 enfiler(&q,Init);
                 Calcul(&q, &maGrille, &initialisationAction.pion1.x,&initialisationAction.pion1.y,&initialisationAction.pion2.x,&initialisationAction.pion2.y);  // Appel de VerificationInitit
