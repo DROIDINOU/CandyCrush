@@ -22,7 +22,7 @@ int main() {
     int currentY = 0;
     // Initialiser et afficher la grille
     while (niveau < 1) {
-        Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}};
+        Actions initialisationAction = {"INITIALISATION", {0, 0}, {3, 3}, true};
         enfiler(&q, initialisationAction);
         bool isVerificationInit = false; // Déclaration du booléen ici
         // Ajouter une action "FINNIVEAU" pour permettre à la boucle interne de se terminer
@@ -36,11 +36,11 @@ int main() {
                 int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
             } else if (strcmp(action.actionName, "CALCUL") == 0) {
-                Calcul(&q, &maGrille,action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &isVerificationInit);
+                Calcul(&q, &maGrille,&action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             } else if (strcmp(action.actionName, "SUPPRESSIONV") == 0) {
                 printf("entre dans le SUPPRESSIONV");
                 SuppressionV(&maGrille,action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &q);
-                afficher_grille(&maGrille);
+                //afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "SUPPRESSIONH") == 0) {
                
                 SuppressionH(&maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &q);
@@ -54,9 +54,10 @@ int main() {
                 //afficher_grille(&maGrille);
             } else if (strcmp(action.actionName, "INITIALISATION") == 0) {
                 initialiser_grille(&maGrille);
-                //afficher_grille(&maGrille);
-                while(!isVerificationInit)
-                VerificationInitit(&q, &maGrille, &currentX, &currentY, &isVerificationInit);  // Appel de VerificationInitit
+                afficher_grille(&maGrille);
+                Actions Init = {"INITIALISATION", {0, 0}, {3, 3}, true};
+                enfiler(&q,Init);
+                Calcul(&q, &maGrille, &initialisationAction.pion1.x,&initialisationAction.pion1.y,&initialisationAction.pion2.x,&initialisationAction.pion2.y);  // Appel de VerificationInitit
             }
         }
 

@@ -17,6 +17,8 @@ typedef struct{
     char actionName[20];
     Coordonnees pion1;
     Coordonnees pion2;
+    bool initialisation;  // Indicateur pour l'initialisation
+
 
 
 } Actions;

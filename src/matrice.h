@@ -17,12 +17,12 @@
 void initialiser_grille(GrilleBonbons *grille);
 void initialiserGrilleGelatine(GrilleBonbons *grille);
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
-void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2, bool *isVerificationInit);
+void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
                        int coordonneeYDeuxiemePion, Queue *q );
 Actions Verification(GrilleBonbons *grille,Queue *q);
-void VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY, bool *isVerificationInit);
+bool VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY,int *currentX2, int *currentY2);
 void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q);
 void SuppressionH(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q);
 void Deplacement (Queue *q,GrilleBonbons *grille, int coordonneeXPremierPion, 

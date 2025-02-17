@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "matrice.h"
 #include "affichage.h"
+#include <string.h>
 
 // UNE ACTION A LA FOIS
 // A FAIRE INITIALISER DOIT VERIFIER TOUT DANS CALCUL 
@@ -49,34 +50,37 @@ int nombreGelatine = rand() % 5 + 1;  // Nombre de gelatines aléatoire entre 1 
         }
     }
 
-
-
-
 }
 
-void VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY, bool *isVerificationInit) {
+bool VerificationInitit(Queue *q, GrilleBonbons *grille, int *currentX, int *currentY, int *currentX2, int *currentY2) {
     // Ajouter une action à la queue pour l'indice courant
-    Actions action = {"CALCUL", {*currentX, *currentY}, {*currentX + 2, *currentY + 2}};
     
     // Vérifier que la queue n'est pas pleine avant d'enfiler
-    while (q->taille >= LONGUEUR) {
-        Actions dequeuedAction = defiler(q); 
-        // Vous pouvez ajouter ici le traitement des actions désenfilées si nécessaire
-    }
+    printf("Entrée VerificationInitit: x1=%d, y1=%d, x2=%d, y2=%d\n", *currentX, *currentY, *currentX2, *currentY2);
     
-    enfiler(q, action);  // Ajouter l'action à la queue
+    // Incrémenter les indices de manière coordonnée
+    *currentY += 1;  // Incrémenter Y pour la première position (currentY)
+    *currentY2 += 1;  // Incrémenter Y pour la deuxième position (currentY2)
     
-    // Incrémenter les indices
-    *currentY += 1;  // Incrémenter Y (en avançant d'une case à chaque fois)
-    if (*currentY >= grille->colonnes - 2) {
+    // Vérifier si on a atteint la fin de la colonne (max colonne)
+    if (*currentY >= grille->colonnes) {  
         *currentY = 0;  // Réinitialiser Y et avancer sur la ligne suivante
-        *currentX += 1;  // Incrémenter X pour avancer à la ligne suivante
+        *currentX += 1;  // Avancer sur la ligne suivante (incrémenter X)
     }
     
-    // Vérifier si on a terminé l'initialisation de la grille
-    if (*currentX >= grille->lignes - 2) {
-        *isVerificationInit = true;  // L'initialisation est terminée
+    // Vérifier si on a atteint la fin de la colonne pour le deuxième indice
+    if (*currentY2 >= grille->colonnes) {  
+        *currentY2 = 0;  // Réinitialiser Y2 et avancer sur la ligne suivante
+        *currentX2 += 1;  // Avancer sur la ligne suivante (incrémenter X2)
     }
+
+    // Vérifier si on a terminé l'initialisation de la grille
+    if (*currentX2 >= grille->lignes) {  // Vérifier si on a fini d'initialiser toute la grille
+        return true;  // L'initialisation est terminée
+    }
+    
+    printf("Après Incrémentation: x1=%d, y1=%d, x2=%d, y2=%d\n", *currentX, *currentY, *currentX2, *currentY2);
+    return false;  // Si la grille n'est pas encore complètement initialisée
 }
 
 
@@ -131,80 +135,108 @@ arrêter le programme*/
 
 /*_____________________________________________________________________________________________________________________________*/
 
-void Calcul(Queue *q, GrilleBonbons *grille, int x1, int y1, int x2, int y2, bool *isVerificationInit) {
+void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2) {
     afficher_grille(grille);
     int compteur;
     char pion;
     int i, j;
+    bool isVerificationInit = true;
+   
 
-    // Vérification pour le pion en (x2, y2)
-    pion = grille->tableau[x2][y2].pion;
+    imprimer_queue(q);
+    if (!est_vide(q)) {
+        Actions currentAction = q->elements[q->debut];  // Accéder à l'action en cours
+        printf("Action en cours : %s\n", currentAction.actionName);
+
+        if (strcmp(currentAction.actionName, "INITIALISATION") == 0) {
+            // Si l'action est INITIALISATION, lancer la vérification
+            printf("Lancement de la vérification initiale...\n");
+            bool isVerificationInit = VerificationInitit(q, grille, x1, y1, x2, y2);
+            printf("Après VerificationInitit: x1=%d, x2=%d\n", *x1, *x2);
+            defiler(q);
+        }
+    }
+
+
+    // Vérification pour le pion en (*x2, *y2)
+    pion = grille->tableau[*x2][*y2].pion;
 
     // Vérification verticale (colonne)
     compteur = 1;
-    int xDebut = x2, xFin = x2;
-    i = x2 + 1;
-    while (i < TAILLE && grille->tableau[i][y2].pion == pion) { compteur++; xFin = i; i++; }
-    i = x2 - 1;
-    while (i >= 0 && grille->tableau[i][y2].pion == pion) { compteur++; xDebut = i; i--; }
+    int xDebut = *x2, xFin = *x2;
+    i = *x2 + 1;
+    while (i < TAILLE && grille->tableau[i][*y2].pion == pion) { compteur++; xFin = i; i++; }
+    i = *x2 - 1;
+    while (i >= 0 && grille->tableau[i][*y2].pion == pion) { compteur++; xDebut = i; i--; }
 
     if (compteur >= 3) {
-        Actions action = {"SUPPRESSIONV", {xDebut, y2}, {xFin, y2}};
-        enfiler(q, action);
-        return;  // On sort directement après avoir trouvé une suppression
-    }
-
-    // Vérification horizontale (ligne)
-    compteur = 1;
-    int yDebut = y2, yFin = y2;
-    j = y2 + 1;
-    while (j < TAILLE && grille->tableau[x2][j].pion == pion) { compteur++; yFin = j; j++; }
-    j = y2 - 1;
-    while (j >= 0 && grille->tableau[x2][j].pion == pion) { compteur++; yDebut = j; j--; }
-
-    if (compteur >= 3) {
-        Actions action = {"SUPPRESSIONH", {x2, yDebut}, {x2, yFin}};
-        enfiler(q, action);
-        return; 
-    }
-
-    // Vérification pour le pion en (x1, y1)
-    pion = grille->tableau[x1][y1].pion;
-
-    // Vérification verticale (colonne)
-    compteur = 1;
-    xDebut = x1, xFin = x1;
-    i = x1 + 1;
-    while (i < TAILLE && grille->tableau[i][y1].pion == pion) { compteur++; xFin = i; i++; }
-    i = x1 - 1;
-    while (i >= 0 && grille->tableau[i][y1].pion == pion) { compteur++; xDebut = i; i--; }
-
-    if (compteur >= 3) {
-        Actions action = {"SUPPRESSIONV", {xDebut, y1}, {xFin, y1}};
-        enfiler(q, action);
-        return; 
-    }
-
-    // Vérification horizontale (ligne)
-    compteur = 1;
-    yDebut = y1, yFin = y1;
-    j = y1 + 1;
-    while (j < TAILLE && grille->tableau[x1][j].pion == pion) { compteur++; yFin = j; j++; }
-    j = y1 - 1;
-    while (j >= 0 && grille->tableau[x1][j].pion == pion) { compteur++; yDebut = j; j--; }
-
-    if (compteur >= 3) {
-        Actions action = {"SUPPRESSIONH", {x1, yDebut}, {x1, yFin}};
+        Actions action = {"SUPPRESSIONV", {xDebut, *y2}, {xFin, *y2},false};
         enfiler(q, action);
         return;
     }
 
-    // Ajout de "VERIFICATION" si aucune suppression n'a été trouvée et que la queue est vide
-    if (est_vide(q) && *isVerificationInit) {
-        Actions action = {"VERIFICATION", {0, 0}, {0, 0}};
+    // Vérification horizontale (ligne)
+    compteur = 1;
+    int yDebut = *y2, yFin = *y2;
+    j = *y2 + 1;
+    while (j < TAILLE && grille->tableau[*x2][j].pion == pion) { compteur++; yFin = j; j++; }
+    j = *y2 - 1;
+    while (j >= 0 && grille->tableau[*x2][j].pion == pion) { compteur++; yDebut = j; j--; }
+
+    if (compteur >= 3) {
+        Actions action = {"SUPPRESSIONH", {*x2, yDebut}, {*x2, yFin},false};
+        enfiler(q, action);
+        return;
+    }
+
+    // Vérification pour le pion en (*x1, *y1)
+    pion = grille->tableau[*x1][*y1].pion;
+
+    // Vérification verticale (colonne)
+    compteur = 1;
+    xDebut = *x1, xFin = *x1;
+    i = *x1 + 1;
+    while (i < TAILLE && grille->tableau[i][*y1].pion == pion) { compteur++; xFin = i; i++; }
+    i = *x1 - 1;
+    while (i >= 0 && grille->tableau[i][*y1].pion == pion) { compteur++; xDebut = i; i--; }
+
+    if (compteur >= 3) {
+        Actions action = {"SUPPRESSIONV", {xDebut, *y1}, {xFin, *y1},false};
+        enfiler(q, action);
+        return;
+    }
+
+    // Vérification horizontale (ligne)
+    compteur = 1;
+    yDebut = *y1, yFin = *y1;
+    j = *y1 + 1;
+    while (j < TAILLE && grille->tableau[*x1][j].pion == pion) { compteur++; yFin = j; j++; }
+    j = *y1 - 1;
+    while (j >= 0 && grille->tableau[*x1][j].pion == pion) { compteur++; yDebut = j; j--; }
+
+    if (compteur >= 3) {
+        Actions action = {"SUPPRESSIONH", {*x1, yDebut}, {*x1, yFin},false};
+        enfiler(q, action);
+        return;
+    }
+
+    // Si aucune suppression n'a été effectuée, vérifier si l'initialisation est terminée
+    if (isVerificationInit) {
+        Actions action = {"VERIFICATION", {0, 0}, {0, 0},false};
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         enfiler(q, action);
     }
+
+    if (!isVerificationInit) {
+        printf("?????????????????????????????????????????????");
+        printf("voila x1=%d et y1=%d\n", *x1, *y1);
+        Actions action = {"CALCUL", {*x1, *x2}, {*y1, *y2}, false};
+        enfiler(q, action);
+    }
+    // Si l'initialisation est terminée, ajouter l'action "VERIFICATION" dans la queue
+    
 }
+
 
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 Actions Verification(GrilleBonbons *grille, Queue *q) {
@@ -214,7 +246,7 @@ Actions Verification(GrilleBonbons *grille, Queue *q) {
         for (int j = 0; j < grille->colonnes; j++) {
             if (grille->tableau[i][j].gelatine) {
                 printf("Bonbon gélatine toujours présent\n");
-                Actions action = {"LECTURE", {0, 0}, {0, 0}};
+                Actions action = {"LECTURE", {0, 0}, {0, 0},false};
                 printf("oooooooooooooooooooo\n");
                 enfiler(q, action);
                 gelatinePresente = true;  // On détecte de la gélatine
@@ -226,12 +258,12 @@ Actions Verification(GrilleBonbons *grille, Queue *q) {
     // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
     if (!gelatinePresente) {
         printf("FIN NIVEAU\n");
-        Actions action = {"FINNIVEAU", {0, 0}, {0, 0}};
+        Actions action = {"FINNIVEAU", {0, 0}, {0, 0},false};
         enfiler(q, action);
         return action;
     }
 
-    Actions action = {"FIN", {0, 0}, {0, 0}};
+    Actions action = {"FIN", {0, 0}, {0, 0},false};
     return action;
 }
 
@@ -239,8 +271,6 @@ Actions Verification(GrilleBonbons *grille, Queue *q) {
 
 // va falloir faire un bool pour que init supprime pas gelatines
 void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q) {
-    printf("Entrée dans SuppressionV avec x1=%d, y1=%d, x2=%d, y2=%d\n", x1, y1, x2, y2);
-    fflush(stdout);
 
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     if (x1 < x2) {
@@ -269,7 +299,7 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q
         
         }
     }
-    Actions action = {"CALCUL", {x1,y1}, {x2, y2}};
+    Actions action = {"CALCUL", {x1,y1}, {x2, y2},false};
         if (q->taille < LONGUEUR) {
             enfiler(q, action);
         } else {printf("memeproblemeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");}
@@ -298,7 +328,7 @@ void SuppressionV(GrilleBonbons *grille, int x1, int y1, int x2, int y2,Queue *q
 } 
                 } 
                 } 
-                Actions action = {"CALCUL", {x1,y1}, {x2, y2}};
+                Actions action = {"CALCUL", {x1,y1}, {x2, y2},false};
                 if (q->taille < LONGUEUR) {
                     enfiler(q, action);
                 } else {printf("memeproblemeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");}
