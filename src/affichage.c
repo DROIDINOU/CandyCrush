@@ -29,4 +29,3 @@ void afficher_grille(GrilleBonbons *grille) {
         printf("\n");
     }
 }
-

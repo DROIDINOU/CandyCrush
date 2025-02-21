@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+// del /p *.exe
+//  affichage.c main.c matrice.c constante.c queue.c
 int main() {
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires une fois
     Niveaux NiveauJeu;
@@ -29,7 +30,6 @@ int main() {
         
         Actions action;
         while (q.taille > 0) {
-            imprimer_queue(&q);
 
             // Récupérer l'action en haut de la queue
             action = defiler(&q);
@@ -71,7 +71,7 @@ int main() {
         // Passer au niveau suivant
         niveau++;
     }
-    imprimer_queue(&q);
+    //imprimer_queue(&q);
 
     printf("FIN DU JEU\n");
 

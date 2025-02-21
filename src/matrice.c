@@ -197,7 +197,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     while (i >= 0 && grille->tableau[i][*y1].pion == pion) { compteur++; xDebut = i; i--; }
 
     if (compteur >= 3) {
-        printf("SUPPRESSIONV détectée : De (%d, %d) à (%d, %d)\n", xDebut, *y1,xFin, *y1);
+        //printf("SUPPRESSIONV détectée : De (%d, %d) à (%d, %d)\n", xDebut, *y1,xFin, *y1);
 
         Actions action = {"SUPPRESSIONV", {xDebut, *y1}, {xFin, *y1}, false};
         enfiler(q, action);
@@ -214,23 +214,26 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     while (j >= 0 && grille->tableau[*x1][j].pion == pion) { compteur++; yDebut = j; j--; }
 
     if (compteur >= 3) {
-        printf("SUPPRESSIONV détectée : De (%d, %d) à (%d, %d)\n", *x1, yDebut,*x1, yFin);
+        //printf("SUPPRESSIONV détectée : De (%d, %d) à (%d, %d)\n", *x1, yDebut,*x1, yFin);
         Actions action = {"SUPPRESSIONH", {*x1, yDebut}, {*x1, yFin}, false};
         enfiler(q, action);
         return;
     }
         grille->calculsRestants--;
-
+    
     // Si aucune suppression n'a été effectuée et que la grille n'était pas encore vérifiée
     // Si tous les calculs sont terminés, on valide la vérification
-    if (grille->calculsRestants == 0) {
+    if (grille->calculsRestants <= 0) {
         grille->estVerifiee = 1;
         printf("Tous les calculs terminés, marquage grille->estVerifiee = 1\n");
-        Verif(q,grille);
+        if(est_vide(q)){
+            Verif(q,grille);
         Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
         enfiler(q, action);
         printf("voici ma queueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-        imprimer_queue(q);
+        }
+        else{        printf("222222222222222222222222222222222222222222222");
+            ;return;}
     }
 }
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
@@ -241,9 +244,10 @@ Actions Verification(GrilleBonbons *grille, Queue *q) {
         for (int j = 0; j < grille->colonnes; j++) {
             if (grille->tableau[i][j].gelatine) {
                 printf("Bonbon gélatine toujours présent\n");
+                
                 Actions action = {"LECTURE", {0, 0}, {0, 0},false};
-                printf("oooooooooooooooooooo\n");
                 enfiler(q, action);
+                printf("oooooooooooooooooooo\n");
                 gelatinePresente = true;  // On détecte de la gélatine
                 return action;  // On quitte immédiatement la fonction
             }
