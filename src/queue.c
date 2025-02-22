@@ -6,9 +6,6 @@
 #include <string.h> // Inclure pour utiliser strcpy et strcmp
 
 
-
-
-
 void initialiser_queue(Queue *q) {
     printf("Initialisation de la queue\n");
     q->debut = 0;

@@ -7,8 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-// del /p *.exe
-//  affichage.c main.c matrice.c constante.c queue.c
+
 int main() {
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires une fois
     Niveaux NiveauJeu;
@@ -47,6 +46,8 @@ int main() {
 
             } else if (strcmp(action.actionName, "VERIFICATION") == 0) {
                 Verification(&maGrille, &q);
+                afficher_grille(&maGrille);
+
             } else if (strcmp(action.actionName, "DEPLACEMENT") == 0) {
                 afficher_grille(&maGrille);
 

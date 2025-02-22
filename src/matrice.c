@@ -150,7 +150,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     int compteur;
     char pion;
     int i, j;
-    printf("nombre ................................... %d", grille->calculsRestants);
+    //printf("nombre ................................... %d", grille->calculsRestants);
 
     // Vérification pour le pion en (*x2, *y2)
     pion = grille->tableau[*x2][*y2].pion;
@@ -233,6 +233,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         printf("voici ma queueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         }
         else{        printf("222222222222222222222222222222222222222222222");
+            afficher_grille(grille);
             ;return;}
     }
 }
@@ -261,19 +262,20 @@ Actions Verification(GrilleBonbons *grille, Queue *q) {
         enfiler(q, action);
         return action;
     }
-
+    afficher_grille(grille);
     Actions action = {"FIN", {0, 0}, {0, 0},false};
     return action;
 }
 
 
-
+// T AS OUBLIE DE SUPPRIMER LA GELATINE ICI 
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q) {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
 
-    // 1 SUPPRESSION DES BONBONS (remplacement par un espace vide)
+    // 1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
     for (int i = *x1; i <= *x2; i++) {
         grille->tableau[i][*y1].pion = ' ';  // Suppression en mettant un espace vide
+        grille->tableau[i][*y1].gelatine = false;  // Suppression de la gélatine
     }
 
     // 2 FAIRE TOMBER LES BONBONS
@@ -289,28 +291,31 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             // Si un bonbon a été trouvé, on le déplace dans la case vide
             if (j >= 0) {
                 grille->tableau[i][*y1].pion = grille->tableau[j][*y1].pion;
+                grille->tableau[i][*y1].gelatine = grille->tableau[j][*y1].gelatine; // Copie aussi l'état de la gélatine
                 grille->tableau[j][*y1].pion = ' ';  // Efface la case d'origine
+                grille->tableau[j][*y1].gelatine = false;  // Supprime la gélatine de l'ancienne case
             } else {
                 // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
                 int index = rand() % 5;
                 grille->tableau[i][*y1].pion = couleurs[index];
+                grille->tableau[i][*y1].gelatine = false;  // Par défaut, pas de gélatine
             }
         }
     }
-
+    afficher_grille(grille);
     // Ajouter une action de recalcul dans la queue pour continuer les vérifications
     Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
     enfiler(q, action);
 }
 
-
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q) {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     
-    // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide)
+    // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
     for (int j = *y1; j <= *y2; j++) {  // On parcourt la ligne horizontale
         for (int i = *x1; i <= *x2; i++) {  // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';  // Remplacement par un espace vide
+            grille->tableau[i][j].gelatine = false;  // Suppression de la gélatine
         }
     }
     
@@ -318,16 +323,18 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int j = *y1; j <= *y2; j++) {  // Parcourir la ligne horizontale
         for (int i = *x1; i > 0; i--) { // Faire descendre les bonbons au-dessus
             grille->tableau[i][j].pion = grille->tableau[i - 1][j].pion;
-            grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine;
+            grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine; // Descendre la gélatine aussi
         }
         // Générer un nouveau bonbon en haut
         int index = rand() % 5;
         grille->tableau[0][j].pion = couleurs[index];
         grille->tableau[0][j].gelatine = false;  // Par défaut, pas de gélatine
     }
-    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2},false};
+    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
     enfiler(q, action);
+    afficher_grille(grille);
 }
+
 
 
     // Créer l'action "CALCUL"
