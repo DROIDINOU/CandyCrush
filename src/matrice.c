@@ -219,7 +219,6 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     printf("decompte : %d", grille->suppressionsRestantes);
     if (grille->calculsRestants <= 0) {
         printf("suppressions restantes :%d", grille->suppressionsRestantes);
-        grille->estVerifiee = 1;
 
         switch (est_vide(q)) {
             case 1: // Si la queue est vide
@@ -229,6 +228,8 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
                     enfiler(q, action);
                 }
                 printf("queue vide calcul");
+                grille->estVerifiee = 1;
+
                 printf("les suppressions restantes si queue vide devraient normalement être ici : %d", grille->suppressionsRestantes);
                 break;
 

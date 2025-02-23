@@ -19,8 +19,6 @@ int main() {
 
     Queue q;
     initialiser_queue(&q);
-    int currentX = 0;
-    int currentY = 0;
     maGrille.estVerifiee = 0;
 
     // Initialiser et afficher la grille
