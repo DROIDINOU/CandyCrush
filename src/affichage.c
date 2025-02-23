@@ -8,6 +8,15 @@
 #include "constante.h"
 
 
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
+    int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
+    int coordonneeYDeuxiemePion, Queue *q ) {
+// ajouter action ici dans la queue;
+Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+enfiler(q, action);
+
+}
+
 void afficher_grille(GrilleBonbons *grille) {
     printf("Grille des Pions:\n");
     for (int i = 0; i < grille->lignes; i++) {

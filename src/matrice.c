@@ -100,14 +100,7 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index) {
 
 
 
-void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
-                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
-                       int coordonneeYDeuxiemePion, Queue *q ) {
-    // ajouter action ici dans la queue;
-    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
-    enfiler(q, action);
 
-}
 
 void Deplacement (Queue *q,GrilleBonbons *grille, int coordonneeXPremierPion, 
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 

@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 // Déclaration d'une constante avec extern
-#define TAILLE 8
+#define TAILLE 12
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
 

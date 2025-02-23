@@ -18,9 +18,7 @@ void initialiser_grille(GrilleBonbons *grille);
 void initialiserGrilleGelatine(GrilleBonbons *grille);
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
-void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
-                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
-                       int coordonneeYDeuxiemePion, Queue *q );
+
 Actions Verification(GrilleBonbons *grille,Queue *q);
 void Verif(Queue *q, GrilleBonbons *grille);
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2,Queue *q);

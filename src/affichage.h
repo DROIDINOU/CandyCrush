@@ -5,5 +5,7 @@
 
 // Déclaration de la fonction afficher_grille
 void afficher_grille(GrilleBonbons *grille);
-
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
+    int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
+    int coordonneeYDeuxiemePion, Queue *q );
 #endif // AFFICHAGE_H
