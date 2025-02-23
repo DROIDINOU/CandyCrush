@@ -9,13 +9,17 @@
 #include <time.h>
 #include <string.h>
 
+// ouvrir via M2 BLEU
+// cd /C/Users/32471/MySDL2
+
 // $ gcc main.c matrice.c constante.c queue.c affichage.c -o mon_programme -lraylib
+// ./mon_programme.exe
 // Ajoute RayGUI plus tard
 
 int main()
 {
-    srand(time(NULL));                         // Initialisation du générateur de nombres aléatoires
-    InitWindow(800, 800, "Candy Crush Clone"); // 🖥️ Création de la fenêtre Raylib
+    srand(time(NULL));                           // Initialisation du générateur de nombres aléatoires
+    InitWindow(1000, 1000, "Candy Crush Clone"); // 🖥️ Création de la fenêtre Raylib
     SetTargetFPS(60);
 
     // Chargement des textures
