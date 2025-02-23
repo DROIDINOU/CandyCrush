@@ -21,10 +21,10 @@ int main() {
     initialiser_queue(&q);
     int currentX = 0;
     int currentY = 0;
-    
+    maGrille.estVerifiee = 0;
+
     // Initialiser et afficher la grille
     while (niveau < 1) {
-        maGrille.estVerifiee = -1;
         Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, initialisationAction);
         
@@ -40,21 +40,20 @@ int main() {
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x,&action.pion2.y);
             } else if (strcmp(action.actionName, "SUPPRESSIONV") == 0) {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                printf("decompte dans pre main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes );
                 maGrille.suppressionsRestantes -=1;
-                afficher_grille(&maGrille);
-                printf("decompte dans main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte V dans main : %d ", maGrille.suppressionsRestantes );
 
             } else if (strcmp(action.actionName, "SUPPRESSIONH") == 0) {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                printf("decompte dans pre main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes );
                 maGrille.suppressionsRestantes -=1;
-                afficher_grille(&maGrille);
-                printf("decompte dans main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte H dans main : %d ", maGrille.suppressionsRestantes );
 
             } else if (strcmp(action.actionName, "VERIFICATION") == 0) {
                 Verification(&maGrille, &q);
-                afficher_grille(&maGrille);
+                printf("Verification dans main");
+
                 //maGrille.suppressionsRestantes -=1;
 
 
@@ -62,7 +61,6 @@ int main() {
                 afficher_grille(&maGrille);
 
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-                afficher_grille(&maGrille);
 
             }
             
