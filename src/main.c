@@ -77,7 +77,7 @@ int main()
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 initialiser_grille(&maGrille);
-                Verif(&q, &maGrille);
+                Verif(&q, &maGrille); // tester deplacement dans initialiser grille
             }
         }
 
