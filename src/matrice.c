@@ -150,6 +150,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     int compteur;
     char pion;
     int i, j;
+
     //printf("nombre ................................... %d", grille->calculsRestants);
 
     // Vérification pour le pion en (*x2, *y2)
@@ -167,6 +168,8 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
         Actions action = {"SUPPRESSIONV", {xDebut, *y2}, {xFin, *y2}, false};
         enfiler(q, action);
+        grille-> suppressionsRestantes+=1;
+
         return;
     }
 
@@ -181,6 +184,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
     if (compteur >= 3) {
         Actions action = {"SUPPRESSIONH", {*x2, yDebut}, {*x2, yFin}, false};
         enfiler(q, action);
+        grille-> suppressionsRestantes+=1;
 
         return;
     }
@@ -201,7 +205,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
         Actions action = {"SUPPRESSIONV", {xDebut, *y1}, {xFin, *y1}, false};
         enfiler(q, action);
-
+        grille-> suppressionsRestantes+=1;
         return;
     }
 
@@ -217,23 +221,32 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         //printf("SUPPRESSIONV détectée : De (%d, %d) à (%d, %d)\n", *x1, yDebut,*x1, yFin);
         Actions action = {"SUPPRESSIONH", {*x1, yDebut}, {*x1, yFin}, false};
         enfiler(q, action);
+        grille-> suppressionsRestantes+=1;
         return;
     }
         grille->calculsRestants--;
     
     // Si aucune suppression n'a été effectuée et que la grille n'était pas encore vérifiée
     // Si tous les calculs sont terminés, on valide la vérification
+    printf("decompte : %d", grille-> suppressionsRestantes );
     if (grille->calculsRestants <= 0) {
         grille->estVerifiee = 1;
-        printf("Tous les calculs terminés, marquage grille->estVerifiee = 1\n");
+        //printf("Tous les calculs terminés, marquage grille->estVerifiee = 1\n");
+        //printf("decompte : %d", grille-> suppressionsRestantes );
         if(est_vide(q)){
             Verif(q,grille);
         Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
         enfiler(q, action);
-        printf("voici ma queueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+        //printf("decompte : %d", grille-> suppressionsRestantes );
+
+        printf("queue vide calcul");
+        printf("les supressions restantes si queue vide devrainet normalement etre ici : %d", grille-> suppressionsRestantes );
+
         }
-        else{        printf("222222222222222222222222222222222222222222222");
+        else{         
+            printf("STADE POST CALCUL");
             afficher_grille(grille);
+            printf("les supressions restantes devrainet normalement etre ici : %d", grille-> suppressionsRestantes );
             ;return;}
     }
 }

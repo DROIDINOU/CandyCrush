@@ -20,6 +20,7 @@ typedef struct {
     Case tableau[TAILLE][TAILLE];
     int estVerifiee;  // Indique si la grille a déjà été vérifiée
     int calculsRestants;  // Nombre d'actions CALCUL en attente
+    int suppressionsRestantes;
 
 
 } GrilleBonbons;

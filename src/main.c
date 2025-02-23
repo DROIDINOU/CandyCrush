@@ -16,6 +16,7 @@ int main() {
     GrilleBonbons maGrille;
     maGrille.lignes = TAILLE;
     maGrille.colonnes = TAILLE;
+
     Queue q;
     initialiser_queue(&q);
     int currentX = 0;
@@ -32,21 +33,30 @@ int main() {
 
             // Récupérer l'action en haut de la queue
             action = defiler(&q);
-
+            maGrille.suppressionsRestantes = 0;
             if (strcmp(action.actionName, "AFFICHAGE") == 0) {
                 afficher_grille(&maGrille);
             }  else if (strcmp(action.actionName, "CALCUL") == 0) {
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x,&action.pion2.y);
             } else if (strcmp(action.actionName, "SUPPRESSIONV") == 0) {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                printf("decompte dans pre main : %d ", maGrille.suppressionsRestantes );
+                maGrille.suppressionsRestantes -=1;
                 afficher_grille(&maGrille);
+                printf("decompte dans main : %d ", maGrille.suppressionsRestantes );
+
             } else if (strcmp(action.actionName, "SUPPRESSIONH") == 0) {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                printf("decompte dans pre main : %d ", maGrille.suppressionsRestantes );
+                maGrille.suppressionsRestantes -=1;
                 afficher_grille(&maGrille);
+                printf("decompte dans main : %d ", maGrille.suppressionsRestantes );
 
             } else if (strcmp(action.actionName, "VERIFICATION") == 0) {
                 Verification(&maGrille, &q);
                 afficher_grille(&maGrille);
+                //maGrille.suppressionsRestantes -=1;
+
 
             } else if (strcmp(action.actionName, "DEPLACEMENT") == 0) {
                 afficher_grille(&maGrille);
