@@ -81,7 +81,7 @@ void Verif(Queue *q, GrilleBonbons *grille)
     }
 
     grille->calculsRestants = nbCalculs;
-    printf("Vérification séquentielle terminée.\n");
+    // printf("Vérification séquentielle terminée.\n");
 }
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
@@ -97,7 +97,7 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
         // Vérifie que la réponse est valide
         if (result == -1)
         {
-            printf("Reponse invalide. Essayez encore.\n");
+            // printf("Reponse invalide. Essayez encore.\n");
         }
     } while (reponse < 1 || reponse > 21); // Si la réponse n'est pas valide, on redemande
 
@@ -108,7 +108,6 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
                  int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
                  int coordonneeYDeuxiemePion)
 {
-    afficher_grille(grille);
     char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
     grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion = grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion;
     grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
@@ -173,7 +172,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         Actions action = {"SUPPRESSIONV", {xDebut, *y2}, {xFin, *y2}, false};
         enfiler(q, action);
         grille->suppressionsRestantes += 1;
-        printf("Ajout suppressions restantes :%d", grille->suppressionsRestantes);
+        // printf("Ajout suppressions restantes :%d", grille->suppressionsRestantes);
         return;
     }
 
@@ -200,7 +199,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         Actions action = {"SUPPRESSIONH", {*x2, yDebut}, {*x2, yFin}, false};
         enfiler(q, action);
         grille->suppressionsRestantes += 1;
-        printf("Ajout suppressions restantes :%d", grille->suppressionsRestantes);
+        // printf("Ajout suppressions restantes :%d", grille->suppressionsRestantes);
         return;
     }
 
@@ -230,7 +229,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         Actions action = {"SUPPRESSIONV", {xDebut, *y1}, {xFin, *y1}, false};
         enfiler(q, action);
         grille->suppressionsRestantes += 1;
-        printf("decompteV : %d", grille->suppressionsRestantes);
+        // printf("decompteV : %d", grille->suppressionsRestantes);
         return;
     }
 
@@ -261,37 +260,40 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         return;
     }
 
-    printf("decompte avant decrementation : %d", grille->suppressionsRestantes);
+    // printf("decompte avant decrementation : %d", grille->suppressionsRestantes);
     grille->calculsRestants--;
 
-    printf("decompte : %d", grille->suppressionsRestantes);
+    // printf("decompte : %d", grille->suppressionsRestantes);
     if (grille->calculsRestants <= 0)
     {
-        printf("suppressions restantes :%d", grille->suppressionsRestantes);
-
+        printf("plus rien a calculer :%d", grille->suppressionsRestantes);
         switch (est_vide(q))
         {
         case 1: // Si la queue est vide
             Verif(q, grille);
             {
+                // printf("on fais la verifif finale ici !!!!!!!!!!!!!!!!!!!!!!!!!");
                 Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
                 enfiler(q, action);
             }
+            grille->estVerifiee = 1;
+
             // printf("queue vide calcul");
 
             // printf("les suppressions restantes si queue vide devraient normalement être ici : %d", grille->suppressionsRestantes);
             break;
 
         case 0: // Si la queue n'est pas vide
-        {
-            Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-            enfiler(q, actionAffichage);
-        }
+
             // printf("STADE POST CALCUL");
             // printf("les suppressions restantes devraient normalement être ici !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! : %d", grille->suppressionsRestantes);
             imprimer_queue(q);
             return;
         }
+        printf("on affiche ici");
+        imprimer_queue(q);
+        Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        enfiler(q, actionAffichage);
     }
 }
 
@@ -332,7 +334,7 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
 
                 Actions action = {"LECTURE", {0, 0}, {0, 0}, false};
                 enfiler(q, action);
-                printf("oooooooooooooooooooo\n");
+                // printf("oooooooooooooooooooo\n");
                 gelatinePresente = true; // On détecte de la gélatine
                 return action;           // On quitte immédiatement la fonction
             }
@@ -347,7 +349,6 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
         enfiler(q, action);
         return action;
     }
-    afficher_grille(grille);
     Actions action = {"FIN", {0, 0}, {0, 0}, false};
     return action;
 }
@@ -361,7 +362,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int i = *x1; i <= *x2; i++)
     {
         grille->tableau[i][*y1].pion = ' '; // Suppression en mettant un espace vide
-        printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
+        // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
 
         if (grille->estVerifiee)
         {
@@ -414,7 +415,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         for (int i = *x1; i <= *x2; i++)
         { // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';
-            printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
+            // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
             if (grille->estVerifiee)
             {                                           // Remplacement par un espace vide
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine
@@ -439,14 +440,3 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     enfiler(q, action);
     afficher_grille(grille);
 }
-
-// Créer l'action "CALCUL"
-
-// === Ajout de la vérification ===
-
-// === Ajout de la vérification ===
-
-/***************************************************************************************************************************
-                                                  MAIN
-
- ****************************************************************************************************************************/

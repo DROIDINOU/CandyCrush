@@ -45,13 +45,13 @@ int main()
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
                 // printf("decompte V dans main : %d ", maGrille.suppressionsRestantes );
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes );
+                printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
                 // printf("decompte H dans main : %d ", maGrille.suppressionsRestantes );
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
