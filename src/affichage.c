@@ -7,32 +7,39 @@
 #include "matrice.h"
 #include "constante.h"
 
-
-void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion, 
-    int coordonneeYPremierPion, int coordonneeXDeuxiemePion, 
-    int coordonneeYDeuxiemePion, Queue *q ) {
-// ajouter action ici dans la queue;
-Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
-enfiler(q, action);
-
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
+                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
+                       int coordonneeYDeuxiemePion, Queue *q)
+{
+    // ajouter action ici dans la queue;
+    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+    enfiler(q, action);
 }
 
-void afficher_grille(GrilleBonbons *grille) {
+void afficher_grille(GrilleBonbons *grille)
+{
     printf("Grille des Pions:\n");
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            printf(" %c ", grille->tableau[i][j].pion);  // Affichage de la grille des pions
+    for (int i = 0; i < grille->lignes; i++)
+    {
+        for (int j = 0; j < grille->colonnes; j++)
+        {
+            printf(" %c ", grille->tableau[i][j].pion); // Affichage de la grille des pions
         }
         printf("\n");
     }
 
     printf("Grille de la Gelatine:\n");
-    for (int i = 0; i < grille->lignes; i++) {
-        for (int j = 0; j < grille->colonnes; j++) {
-            if (grille->tableau[i][j].gelatine) {
-                printf(" %c ", 'G');  // Affichage des cases avec gélatine
-            } else {
-                printf(" %c ", '.');  // Affichage des cases sans gélatine
+    for (int i = 0; i < grille->lignes; i++)
+    {
+        for (int j = 0; j < grille->colonnes; j++)
+        {
+            if (grille->tableau[i][j].gelatine)
+            {
+                printf(" %c ", 'G'); // Affichage des cases avec gélatine
+            }
+            else
+            {
+                printf(" %c ", '.'); // Affichage des cases sans gélatine
             }
         }
         printf("\n");
