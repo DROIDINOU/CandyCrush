@@ -81,7 +81,7 @@ void Verif(Queue *q, GrilleBonbons *grille)
     }
 
     grille->calculsRestants = nbCalculs;
-    // printf("Vérification séquentielle terminée.\n");
+    printf("Vérification séquentielle terminée.\n");
 }
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
@@ -271,11 +271,11 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
         {
         case 1: // Si la queue est vide
             Verif(q, grille);
-            {
-                // printf("on fais la verifif finale ici !!!!!!!!!!!!!!!!!!!!!!!!!");
-                Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
-                enfiler(q, action);
-            }
+
+            // printf("on fais la verifif finale ici !!!!!!!!!!!!!!!!!!!!!!!!!");
+            Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
+            enfiler(q, action);
+
             grille->estVerifiee = 1;
 
             // printf("queue vide calcul");
