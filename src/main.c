@@ -19,7 +19,8 @@
 int main()
 {
     srand(time(NULL));                           // Initialisation du générateur de nombres aléatoires
-    InitWindow(1000, 1000, "Candy Crush Clone"); // 🖥️ Création de la fenêtre Raylib
+    InitWindow(1000, 1000, "Candy Crush Clone"); // Création de la fenêtre Raylib
+    printf("Fenêtre initialisée\n");
     SetTargetFPS(60);
 
     // Chargement des textures
@@ -47,25 +48,50 @@ int main()
     Queue q;
     initialiser_queue(&q);
 
-    // Initialiser la grille avant la boucle
-    initialiser_grille(&maGrille);
-
     while (!WindowShouldClose() && niveau < 1)
-    { // Boucle principale Raylib
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        // Affichage de la grille
-        afficher_grille(&maGrille, textures);
-
-        Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}};
+    {
+        maGrille.estVerifiee = 0;
+        Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, initialisationAction);
-        bool isVerificationInit = false;
-
         Actions action;
-        while (q.taille > 0 && strcmp((action = defiler(&q)).actionName, "FINNIVEAU") != 0)
+
+        while (q.taille > 0)
         {
-            if (strcmp(action.actionName, "LECTURE") == 0)
+            action = defiler(&q);
+            maGrille.suppressionsRestantes = 0;
+
+            if (strcmp(action.actionName, "AFFICHAGE") == 0)
+            {
+                printf("icccccccccccccccccccccccccccccccccccccccccccciaffffff");
+                // Utilisation de Raylib pour afficher la grille
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                afficher_grille(&maGrille, textures);
+                EndDrawing();
+                WaitTime(0.02);
+            }
+            else if (strcmp(action.actionName, "CALCUL") == 0)
+            {
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+            }
+            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
+            {
+                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+            }
+            else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
+            {
+                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+            }
+            else if (strcmp(action.actionName, "VERIFICATION") == 0)
+            {
+                Verification(&maGrille, &q);
+                maGrille.estVerifiee = 1;
+            }
+            else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
+            {
+                Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
+            }
+            else if (strcmp(action.actionName, "LECTURE") == 0)
             {
                 int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
@@ -73,35 +99,14 @@ int main()
                 int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
             }
-            else if (strcmp(action.actionName, "CALCUL") == 0)
-            {
-                Calcul(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &isVerificationInit);
-            }
-            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
-            {
-                SuppressionV(&maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &q);
-            }
-            else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
-            {
-                SuppressionH(&maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y, &q);
-            }
-            else if (strcmp(action.actionName, "VERIFICATION") == 0)
-            {
-                Verification(&maGrille, &q);
-            }
-            else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
-            {
-                Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-            }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 initialiser_grille(&maGrille);
-                VerificationInitit(&q, &maGrille, &isVerificationInit);
+                Verif(&q, &maGrille);
             }
         }
 
-        EndDrawing(); // Fin du rendu graphique
-        niveau++;     // Passer au niveau suivant
+        niveau++;
     }
 
     // Décharger les textures après usage
@@ -110,7 +115,8 @@ int main()
         UnloadTexture(textures[i]);
     }
 
-    CloseWindow(); // 🛑 Fermer proprement Raylib
+    CloseWindow(); // Fermer proprement Raylib
     printf("FIN DU JEU\n");
+
     return 0;
 }

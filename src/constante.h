@@ -4,20 +4,26 @@
 #include <stdbool.h>
 
 // Déclaration d'une constante avec extern
-#define TAILLE 20
+#define TAILLE 10
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
 
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
-typedef struct {
+typedef struct
+{
     char pion;
     bool gelatine;
 } Case;
 
-typedef struct {
+typedef struct
+{
     int lignes;
     int colonnes;
     Case tableau[TAILLE][TAILLE];
+    int estVerifiee;     // Indique si la grille a déjà été vérifiée
+    int calculsRestants; // Nombre d'actions CALCUL en attente
+    int suppressionsRestantes;
+
 } GrilleBonbons;
 
 #endif // CONSTANTS_H

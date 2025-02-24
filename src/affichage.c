@@ -8,6 +8,15 @@
 #include "affichage.h"
 #include "raylib.h"
 
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
+                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
+                       int coordonneeYDeuxiemePion, Queue *q)
+{
+    // ajouter action ici dans la queue;
+    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+    enfiler(q, action);
+}
+
 void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
 {
     int tailleCase = 50;
@@ -21,7 +30,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
 
     BeginDrawing();
     ClearBackground(DARKGRAY);
-
+    printf("salut de affichage!!!!!!!");
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
