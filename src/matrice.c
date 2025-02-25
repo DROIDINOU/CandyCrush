@@ -55,7 +55,8 @@ void initialiser_grille(GrilleBonbons *grille)
 void Verif(Queue *q, GrilleBonbons *grille)
 {
     printf("Début de la vérification séquentielle...\n");
-
+    Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+    enfiler(q, actionAffichage);
     int nbCalculs = 0;
 
     // Vérification des alignements horizontaux
@@ -262,7 +263,6 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
     // printf("decompte avant decrementation : %d", grille->suppressionsRestantes);
     grille->calculsRestants--;
-
     // printf("decompte : %d", grille->suppressionsRestantes);
     if (grille->calculsRestants <= 0)
     {
@@ -399,7 +399,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
         }
     }
-    afficher_grille(grille);
     // Ajouter une action de recalcul dans la queue pour continuer les vérifications
     Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
     enfiler(q, action);
@@ -438,5 +437,4 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     }
     Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
     enfiler(q, action);
-    afficher_grille(grille);
 }
