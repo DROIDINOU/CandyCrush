@@ -1,0 +1,82 @@
+# Fichiers de sauvegarde temporaires et de session de l'éditeur
+*~
+*.swp
+
+# Répertoires Visual Studio
+.vs/
+.vscode/
+**/.vscode/
+
+# Fichiers générés par Visual Studio
+*.code-workspace
+*.VC.db
+*.VC.VC.opendb
+*.VC.opendb
+*.log
+
+# Fichiers de solution et projet Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Répertoire des builds
+build/
+Build/
+Debug/
+DebugPublic/
+Release/
+x64/Debug/
+x64/Release/
+x64/
+Win32/Debug/
+Win32/Release/
+Release/
+.obj/
+libs/
+bin/
+
+# Répertoires des bibliothèques et des DLL
+*.dll
+*.lib
+*.pdb
+
+# Fichiers générés par CMake
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+CTestTestfile.cmake
+_builds/
+build/
+install_manifest.txt
+
+# Répertoire des fichiers temporaires de l'éditeur
+.idea/
+*.iml
+
+# Répertoires de bibliothèque et de dépendances externes
+external/
+externals/
+
+# Logs et bases de données de l'environnement
+*.log
+*.dmp
+*.sql
+*.sqlite
+
+# Fichiers de sortie binaires et objets
+*.exe
+*.out
+*.o
+*.obj
+
+# Cores Dump files
+core.*
+
+# SDL2 specific ignores (if any SDL2-specific directories or files)
+sdl2/
+
+# Ajoutez d'autres fichiers spécifiques à votre projet
