@@ -116,6 +116,8 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
     char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
     grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion = grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion;
     grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
+    grille->calcX = 0;
+    grille->calcY = 0;
     Actions action = {"CALCUL", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
     enfiler(q, action);
 }

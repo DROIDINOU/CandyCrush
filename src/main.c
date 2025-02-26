@@ -63,6 +63,7 @@ int main()
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
+                maGrille.estVerifiee = 0;
 
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
