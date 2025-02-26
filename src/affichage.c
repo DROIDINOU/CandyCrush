@@ -44,5 +44,6 @@ void afficher_grille(GrilleBonbons *grille)
         }
         printf("\n");
     }
-    return;
+    grille->calcX = 0;
+    grille->calcY = 0;
 }

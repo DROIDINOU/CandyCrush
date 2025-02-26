@@ -38,6 +38,7 @@ int main()
             {
                 printf("on est dans affichage main ");
                 afficher_grille(&maGrille);
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {
@@ -53,12 +54,11 @@ int main()
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
                 printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
-                // printf("decompte H dans main : %d ", maGrille.suppressionsRestantes );
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
                 Verification(&maGrille, &q);
-                // printf("Verification dans main");
+                printf("Verification dans main");
                 maGrille.estVerifiee = 1;
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
@@ -80,7 +80,10 @@ int main()
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 initialiser_grille(&maGrille);
-                Verif(&q, &maGrille); // tester deplacement dans initialiser grille
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+                printf("initialisation");
+                // Verif(&q, &maGrille); // ON VA DEVOIR SE PASSER DE VERIF
+                //  (Ici, {0,0}, {0,0} n’auront plus trop de sens, mais ça ne gêne pas.)
             }
         }
 

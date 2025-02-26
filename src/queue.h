@@ -4,32 +4,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+#include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
 
-#define LONGUEUR 300  // Taille de la queue
+#define LONGUEUR 300 // Taille de la queue
 
-typedef struct {
+typedef struct
+{
     int x;
     int y;
 } Coordonnees;
 
-typedef struct{
+typedef struct
+{
     char actionName[20];
     Coordonnees pion1;
     Coordonnees pion2;
-    bool initialisation;  // Indicateur pour l'initialisation
-
-
+    bool initialisation; // Indicateur pour l'initialisation
+    // bool verificationInitiale
 
 } Actions;
 
-
-
-typedef struct {
-    Actions elements[LONGUEUR];  // Tableau de structures Actions
-    int debut;  // Indice de début de la queue
-    int fin;    // Indice de fin de la queue
-    int taille; // Taille actuelle de la queue
+typedef struct
+{
+    Actions elements[LONGUEUR]; // Tableau de structures Actions
+    int debut;                  // Indice de début de la queue
+    int fin;                    // Indice de fin de la queue
+    int taille;                 // Taille actuelle de la queue
 } Queue;
 
 void initialiser_queue(Queue *q);
@@ -39,4 +39,3 @@ void enfiler(Queue *q, Actions action);
 Actions defiler(Queue *q);
 void imprimer_queue(Queue *q);
 #endif // QUEUE_H
-
