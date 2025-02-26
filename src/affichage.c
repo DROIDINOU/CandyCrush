@@ -84,4 +84,6 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
     }
 
     EndDrawing();
+    grille->calcX = 0;
+    grille->calcY = 0;
 }

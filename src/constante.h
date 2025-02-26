@@ -20,6 +20,8 @@ typedef struct
     int lignes;
     int colonnes;
     Case tableau[TAILLE][TAILLE];
+    int calcX;           // Coordonnée X qu’on est en train de vérifier
+    int calcY;           // Coordonnée Y qu’on est en train de vérifier
     int estVerifiee;     // Indique si la grille a déjà été vérifiée
     int calculsRestants; // Nombre d'actions CALCUL en attente
     int suppressionsRestantes;
