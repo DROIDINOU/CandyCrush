@@ -20,7 +20,7 @@ int main()
 {
     srand(time(NULL)); // Initialisation du RNG
     InitWindow(1000, 1000, "Candy Crush Clone");
-    SetTargetFPS(60);
+    SetTargetFPS(1800);
 
     // Chargement des textures (exemple)
     Texture2D textures[5];

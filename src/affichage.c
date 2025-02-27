@@ -28,9 +28,8 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
     int offsetX = (largeurFenetre - grilleLargeur) / 2;
     int offsetY = (hauteurFenetre - grilleHauteur) / 2;
 
-    BeginDrawing();
-    ClearBackground(DARKGRAY);
-    printf("salut de affichage!!!!!!!");
+    // Pas de BeginDrawing() ni EndDrawing() ici !
+
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -83,7 +82,5 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
         }
     }
 
-    EndDrawing();
-    grille->calcX = 0;
-    grille->calcY = 0;
+    // Ici, pas de recalcul de calcX ou calcY, à moins que tu veuilles le faire dans une autre partie du code.
 }
