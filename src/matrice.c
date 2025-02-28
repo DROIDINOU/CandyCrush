@@ -253,6 +253,8 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     {
         printf("Fin du parcours : pas d'alignement trouvé.\n");
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        grille->calcX = 0;
+        grille->calcY = 0;
         enfiler(q, aff);
         grille->estVerifiee = true;
         return;
@@ -380,6 +382,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     // Ajouter une action de recalcul dans la queue
     Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = 0;
+    grille->calcY = 0;
     enfiler(q, action);
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }
@@ -423,6 +427,8 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     // Ajouter une action de recalcul dans la queue
     Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = 0;
+    grille->calcY = 0;
     enfiler(q, action);
     // afficher_grille(grille);
 
