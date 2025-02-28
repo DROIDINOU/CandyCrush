@@ -177,6 +177,13 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // 2) Même logique que ton code actuel pour détecter
     //    un alignement vertical/horizontal sur la case (x,y).
     // ─────────────────────────────────────────────────
+    if (grille->affiche)
+    {
+        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        enfiler(q, aff);
+        grille->affiche = 0;
+        return;
+    }
 
     char pion = grille->tableau[x][y].pion;
     if (pion != ' ') // si pas déjà supprimé
@@ -253,6 +260,8 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     {
         printf("Fin du parcours : pas d'alignement trouvé.\n");
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        grille->calcX = 0;
+        grille->calcY = 0;
         enfiler(q, aff);
         grille->estVerifiee = true;
         return;
@@ -291,7 +300,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 Actions Verification(GrilleBonbons *grille, Queue *q)
 {
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
-
+    imprimer_queue(q);
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -326,6 +335,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf("avant");
+    printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
+
     // afficher_grille(grille);
     //  1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
     for (int i = *x1; i <= *x2; i++)
@@ -373,13 +384,12 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     // Vérification pour éviter la suppression horizontale en double
     int yDebut = *y1, yFin = *y1;
-    if (actionExiste(q, "SUPPRESSIONH", *x2, yDebut, *x2, yFin))
-    {
-        printf(" SUPPRESSIONH déjà en attente (%d,%d) -> (%d,%d), ANNULÉE.\n", *x2, yDebut, *x2, yFin);
-    }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
+    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = 0;
+    grille->calcY = 0;
+    grille->affiche = 1;
     enfiler(q, action);
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }
@@ -388,6 +398,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf("entre dans suppression H");
+    printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
     for (int j = *y1; j <= *y2; j++)
     { // On parcourt la ligne horizontale
@@ -416,13 +427,12 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine
     }
     int yDebut = *y1, yFin = *y1;
-    if (actionExiste(q, "SUPPRESSIONH", *x2, yDebut, *x2, yFin))
-    {
-        // printf(" SUPPRESSIONH déjà en attente (%d,%d) -> (%d,%d), ANNULÉE.\n", *x2, yDebut, *x2, yFin);
-    }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
+    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = 0;
+    grille->calcY = 0;
+    grille->affiche = 1;
     enfiler(q, action);
     // afficher_grille(grille);
 

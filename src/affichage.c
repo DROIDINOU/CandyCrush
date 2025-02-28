@@ -17,7 +17,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
     enfiler(q, action);
 }
 
-void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
 {
     int tailleCase = 50;
     int largeurFenetre = 1000;
@@ -66,7 +66,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
                 Rectangle dest = {x, y, tailleCase, tailleCase};
                 Vector2 origin = {0, 0};
 
-                DrawTexturePro(bonbonActuel, source, dest, origin, 0.0f, WHITE);
+                DrawTexturePro(bonbonActuel, source, dest, origin, 0.0f, GRAY);
                 DrawRectangleLines(x, y, tailleCase, tailleCase, RED);
             }
             else
@@ -81,6 +81,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures)
             }
         }
     }
-
+    Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
+    enfiler(q, actionAffichage);
     // Ici, pas de recalcul de calcX ou calcY, à moins que tu veuilles le faire dans une autre partie du code.
 }

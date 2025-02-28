@@ -63,69 +63,40 @@ int main()
         // A) Traitement d'UNE action par frame (si la file n'est pas vide)
         while (q.taille > 0)
         {
+
+            // Récupérer l'action en haut de la queue
             Actions action = defiler(&q);
-
-            maGrille.suppressionsRestantes = 0; // Peut‐être remis à zéro avant chaque action
-
-            if (strcmp(action.actionName, "INITIALISATION") == 0)
+            maGrille.suppressionsRestantes = 0;
+            if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
-                // On initialise la grille
-                initialiser_grille(&maGrille);
-
-                // Ensuite, on peut lancer un premier CALCUL
-                Actions calcAction = {"CALCUL", {0, 0}, {0, 0}, false};
-                enfiler(&q, calcAction);
-
-                printf("Grille initialisée\n");
-            }
-            else if (strcmp(action.actionName, "AFFICHAGE") == 0)
-            {
-                printf("Action AFFICHAGE déclenchée\n");
-                // Si tu veux vraiment forcer l’affichage *immédiat* (hors de la boucle),
-                // tu peux dessiner la grille ici. Sinon, tu t'appuies sur la boucle de rendering plus bas.
-                // ex:
-                // BeginDrawing();
-                // ClearBackground(RAYWHITE);
-                // afficher_grille(&maGrille, textures);
-                // EndDrawing();
-                // WaitTime(0.02);
-
-                // Si besoin, tu peux enchaîner d’autres actions ici...
+                // printf("on est dans affichage main ");
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {
-                Calcul(&q, &maGrille,
-                       &action.pion1.x, &action.pion1.y,
-                       &action.pion2.x, &action.pion2.y);
+                printf("ca sert a quoi cela ????: %d\n", action.pion1);
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
-                SuppressionV(&maGrille,
-                             &action.pion1.x, &action.pion1.y,
-                             &action.pion2.x, &action.pion2.y, &q);
-                printf("Suppression verticale exécutée\n");
+                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                // printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
-                SuppressionH(&maGrille,
-                             &action.pion1.x, &action.pion1.y,
-                             &action.pion2.x, &action.pion2.y, &q);
-                printf("Suppression horizontale exécutée\n");
+                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                // printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
                 Verification(&maGrille, &q);
                 maGrille.estVerifiee = 1;
-                printf("Vérification de la grille\n");
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 maGrille.estVerifiee = 0;
-                Deplacement(&q, &maGrille,
-                            action.pion1.x, action.pion1.y,
-                            action.pion2.x, action.pion2.y);
-                printf("Déplacement exécuté\n");
+                Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
+
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
                 maGrille.estVerifiee = 1;
@@ -134,19 +105,21 @@ int main()
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
-                printf("Lecture (changement de pions) exécutée\n");
             }
-            // Si tu veux une action "FINNIVEAU" ou "FINJEU", tu peux la gérer ici
-            // else if (strcmp(action.actionName, "FINJEU") == 0) { ... }
+            else if (strcmp(action.actionName, "INITIALISATION") == 0)
+            {
+                initialiser_grille(&maGrille);
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+                printf("initialisation");
+            }
         }
 
         // B) Rendu Raylib (affichage) à CHAQUE frame
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        afficher_grille(&maGrille, textures);
+        afficher_grille(&maGrille, textures, &q);
 
         EndDrawing();
 
