@@ -7,6 +7,12 @@
 #include "matrice.h"
 #include "constante.h"
 
+/*____________________________________________________________________________________________________________________________
+-> Params : grille - coordonnées pions (2) - queue
+-> Lire coordonnées pions choisis par utilisateur
+-> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE
+______________________________________________________________________________________________________________________________
+*/
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
                        int coordonneeYDeuxiemePion, Queue *q)
@@ -16,24 +22,32 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
     enfiler(q, action);
 }
 
+/*____________________________________________________________________________________________________________________________
+-> Params : grille - queue
+-> Afficher la grille des bonbons
+-> Afficher la grille des gelatines
+-> **** PLACER ACTION CALCUL DANS LA QUEUE
+______________________________________________________________________________________________________________________________
+*/
+
 void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
     printf("Grille des Pions:\n");
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            printf(" %c ", grille->tableau[i][j].pion); // Affichage de la grille des pions
+            printf(" %c ", grille->tableau[ligne][colonne].pion); // Affichage des cases avec bonbons
         }
         printf("\n");
     }
 
     printf("Grille de la Gelatine:\n");
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            if (grille->tableau[i][j].gelatine)
+            if (grille->tableau[ligne][colonne].gelatine)
             {
                 printf(" %c ", 'G'); // Affichage des cases avec gélatine
             }
