@@ -37,8 +37,7 @@ int main()
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
                 printf("on est dans affichage main ");
-                afficher_grille(&maGrille);
-                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+                afficher_grille(&maGrille, &q);
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {

@@ -177,6 +177,13 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // 2) Même logique que ton code actuel pour détecter
     //    un alignement vertical/horizontal sur la case (x,y).
     // ─────────────────────────────────────────────────
+    if (grille->affiche)
+    {
+        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        enfiler(q, aff);
+        grille->affiche = 0;
+        return;
+    }
 
     char pion = grille->tableau[x][y].pion;
     if (pion != ' ') // si pas déjà supprimé
@@ -381,9 +388,10 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
-    grille->calcX = 0;
-    grille->calcY = 0;
+    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = *x1;
+    grille->calcY = *y1;
+    grille->affiche = 1;
     enfiler(q, action);
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }
@@ -426,9 +434,10 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"AFFICHAGE", {*x1, *y1}, {*x2, *y2}, false};
-    grille->calcX = 0;
-    grille->calcY = 0;
+    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    grille->calcX = *x1;
+    grille->calcY = *y1;
+    grille->affiche = 1;
     enfiler(q, action);
     // afficher_grille(grille);
 

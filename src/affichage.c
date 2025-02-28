@@ -16,7 +16,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
     enfiler(q, action);
 }
 
-void afficher_grille(GrilleBonbons *grille)
+void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
     printf("Grille des Pions:\n");
     for (int i = 0; i < grille->lignes; i++)
@@ -44,4 +44,6 @@ void afficher_grille(GrilleBonbons *grille)
         }
         printf("\n");
     }
+    Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}};
+    enfiler(q, actionAffichage);
 }
