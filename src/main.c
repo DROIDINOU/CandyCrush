@@ -10,7 +10,15 @@
 
 int main()
 {
-    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires une fois
+
+    /*
+    ____________________________________________________________________________________________________________________________
+
+                                                         INITIALISATION
+    ____________________________________________________________________________________________________________________________
+    */
+
+    srand(time(NULL)); // Generateur de nombres aleatoires
     Niveaux NiveauJeu; // A améliorer
     int niveau = 0;    // A améliorer
 
@@ -21,6 +29,10 @@ int main()
     Queue q;
     initialiser_queue(&q);
 
+    /*____________________________________________________________________________________________________________________________
+
+                                                            BOUCLE DE JEU
+    ___________________________________________________________________________________________________________________________   */
     // Initialiser et afficher la grille
     while (niveau < 1)
     {
@@ -36,34 +48,32 @@ int main()
             maGrille.suppressionsRestantes = 0;
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
-                printf("on est dans affichage main ");
+                // printf("on est dans affichage main ");
                 afficher_grille(&maGrille, &q);
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {
+                printf("ca sert a quoi cela ????: %d\n", action.pion1);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
-                // printf("decompte V dans main : %d ", maGrille.suppressionsRestantes );
+                // printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
+                // printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
                 Verification(&maGrille, &q);
-                printf("Verification dans main");
                 maGrille.estVerifiee = 1;
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 maGrille.estVerifiee = 0;
-
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
 
@@ -82,15 +92,12 @@ int main()
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
                 printf("initialisation");
-                // Verif(&q, &maGrille); // ON VA DEVOIR SE PASSER DE VERIF
-                //  (Ici, {0,0}, {0,0} n’auront plus trop de sens, mais ça ne gêne pas.)
             }
         }
 
         // Passer au niveau suivant
         niveau++;
     }
-    // imprimer_queue(&q);
 
     printf("FIN DU JEU\n");
 
