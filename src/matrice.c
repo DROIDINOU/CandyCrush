@@ -54,10 +54,11 @@ void initialiser_grille(GrilleBonbons *grille)
         }
     }
 
-    grille->calcX = 0;
+    grille->calcX = 0; // mettre ca ici ???
     grille->calcY = 0;
 }
 
+// a ameliorer et a deplacer dans main ou creer fichier
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
 {
     int reponse;
@@ -91,17 +92,6 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
     enfiler(q, action);
 }
 
-/*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
-suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
-action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
-action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
-arrêter le programme*/
-
-// faut retourner pion sup et inf !!
-// prevoir une verification des victoires deja presentes
-
-/*_____________________________________________________________________________________________________________________________*/
-
 bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 {
     for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEUR)
@@ -115,6 +105,19 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
     }
     return false; // Action non trouvée
 }
+
+/*______________________________________________________________________________________________________________________________
+
+Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
+suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
+action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
+action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
+arrêter le programme*/
+
+// faut retourner pion sup et inf !!
+// prevoir une verification des victoires deja presentes
+
+/*_____________________________________________________________________________________________________________________________*/
 
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
@@ -243,28 +246,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     return;
 }
 
-/*if (grille->calculsRestants <= 0) {
-    grille->estVerifiee = 1;
-
-    // Enfile l'action AFFICHAGE
-    Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-    enfiler(q, actionAffichage);
-
-    // Vérifie si la queue est vide après affichage
-    if (est_vide(q)) {
-        // Enfile une action de vérification seulement si la queue est vide
-        Actions actionVerif = {"VERIFICATION", {0, 0}, {0, 0}, false};
-        enfiler(q, actionVerif);
-    }
-
-    // Débogage / Affichage des actions restantes
-    printf("STADE POST CALCUL\n");
-    imprimer_queue(q);
-
-    return;
-}
-
-*/
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 Actions Verification(GrilleBonbons *grille, Queue *q)
 {
