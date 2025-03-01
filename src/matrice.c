@@ -14,28 +14,31 @@
 // FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
 
 /***************************************************************************************************************************
-                                                  INIT GRILLE
+-> parametres : grille
+-> place les bonbons aléatoirement dans la grille
+-> place aleatoirement les gelatines dans la grille
+-> initialise les elements de la grille???? mettre les initialisation des elements ici ????
 
  ****************************************************************************************************************************/
 
 void initialiser_grille(GrilleBonbons *grille)
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[i][j].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
-            grille->tableau[i][j].gelatine = false;            // Par défaut, pas de gelatine
+            grille->tableau[ligne][colonne].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
+            grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
         }
     }
 
     int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[i][j].gelatine = false; // Initialisation sans gelatine
+            grille->tableau[ligne][colonne].gelatine = false; // Initialisation sans gelatine
         }
     }
 
