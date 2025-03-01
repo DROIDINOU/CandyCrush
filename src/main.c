@@ -48,28 +48,23 @@ int main()
             maGrille.suppressionsRestantes = 0;
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
-                // printf("on est dans affichage main ");
                 afficher_grille(&maGrille, &q);
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {
-                printf("ca sert a quoi cela ????: %d\n", action.pion1);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
                 Verification(&maGrille, &q);
-                maGrille.estVerifiee = 1;
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
@@ -79,7 +74,6 @@ int main()
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-                maGrille.estVerifiee = 1;
 
                 int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);

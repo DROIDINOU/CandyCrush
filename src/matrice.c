@@ -55,40 +55,6 @@ void initialiser_grille(GrilleBonbons *grille)
     grille->calcY = 0;
 }
 
-// ON VA DEVOIR SUPPRIMER VERIF
-void Verif(Queue *q, GrilleBonbons *grille)
-{
-    // printf("Début de la vérification séquentielle...\n");
-    Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-    enfiler(q, actionAffichage);
-    int nbCalculs = 0;
-
-    // Vérification des alignements horizontaux
-    for (int x = 0; x < TAILLE; x++)
-    {
-        for (int y = 0; y < TAILLE - 2; y++)
-        { // -2 pour ne pas dépasser la grille
-            Actions action = {"CALCUL", {x, y}, {x, y + 2}, false};
-            enfiler(q, action);
-            nbCalculs++;
-        }
-    }
-
-    // Vérification des alignements verticaux
-    for (int x = 0; x < TAILLE - 2; x++)
-    { // -2 pour ne pas dépasser la grille
-        for (int y = 0; y < TAILLE; y++)
-        {
-            Actions action = {"CALCUL", {x, y}, {x + 2, y}, false};
-            enfiler(q, action);
-            nbCalculs++;
-        }
-    }
-
-    grille->calculsRestants = nbCalculs;
-    // printf("Vérification séquentielle terminée.\n");
-}
-
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
 {
     int reponse;
@@ -299,7 +265,9 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 Actions Verification(GrilleBonbons *grille, Queue *q)
 {
+    grille->estVerifiee = 1;
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
+
     imprimer_queue(q);
     for (int i = 0; i < grille->lignes; i++)
     {
