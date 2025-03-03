@@ -14,28 +14,31 @@
 // FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
 
 /***************************************************************************************************************************
-                                                  INIT GRILLE
+-> parametres : grille
+-> place les bonbons aléatoirement dans la grille
+-> place aleatoirement les gelatines dans la grille
+-> initialise les elements de la grille???? mettre les initialisation des elements ici ????
 
  ****************************************************************************************************************************/
 
 void initialiser_grille(GrilleBonbons *grille)
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[i][j].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
-            grille->tableau[i][j].gelatine = false;            // Par défaut, pas de gelatine
+            grille->tableau[ligne][colonne].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
+            grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
         }
     }
 
     int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
-    for (int i = 0; i < grille->lignes; i++)
+    for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
-        for (int j = 0; j < grille->colonnes; j++)
+        for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[i][j].gelatine = false; // Initialisation sans gelatine
+            grille->tableau[ligne][colonne].gelatine = false; // Initialisation sans gelatine
         }
     }
 
@@ -51,44 +54,11 @@ void initialiser_grille(GrilleBonbons *grille)
         }
     }
 
-    grille->calcX = 0;
+    grille->calcX = 0; // mettre ca ici ???
     grille->calcY = 0;
 }
 
-// ON VA DEVOIR SUPPRIMER VERIF
-void Verif(Queue *q, GrilleBonbons *grille)
-{
-    // printf("Début de la vérification séquentielle...\n");
-    Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-    enfiler(q, actionAffichage);
-    int nbCalculs = 0;
-
-    // Vérification des alignements horizontaux
-    for (int x = 0; x < TAILLE; x++)
-    {
-        for (int y = 0; y < TAILLE - 2; y++)
-        { // -2 pour ne pas dépasser la grille
-            Actions action = {"CALCUL", {x, y}, {x, y + 2}, false};
-            enfiler(q, action);
-            nbCalculs++;
-        }
-    }
-
-    // Vérification des alignements verticaux
-    for (int x = 0; x < TAILLE - 2; x++)
-    { // -2 pour ne pas dépasser la grille
-        for (int y = 0; y < TAILLE; y++)
-        {
-            Actions action = {"CALCUL", {x, y}, {x + 2, y}, false};
-            enfiler(q, action);
-            nbCalculs++;
-        }
-    }
-
-    grille->calculsRestants = nbCalculs;
-    // printf("Vérification séquentielle terminée.\n");
-}
-
+// a ameliorer et a deplacer dans main ou creer fichier
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
 {
     int reponse;
@@ -122,17 +92,6 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
     enfiler(q, action);
 }
 
-/*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
-suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
-action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
-action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
-arrêter le programme*/
-
-// faut retourner pion sup et inf !!
-// prevoir une verification des victoires deja presentes
-
-/*_____________________________________________________________________________________________________________________________*/
-
 bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 {
     for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEUR)
@@ -146,6 +105,19 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
     }
     return false; // Action non trouvée
 }
+
+/*______________________________________________________________________________________________________________________________
+
+Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
+suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
+action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
+action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
+arrêter le programme*/
+
+// faut retourner pion sup et inf !!
+// prevoir une verification des victoires deja presentes
+
+/*_____________________________________________________________________________________________________________________________*/
 
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
@@ -274,32 +246,12 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     return;
 }
 
-/*if (grille->calculsRestants <= 0) {
-    grille->estVerifiee = 1;
-
-    // Enfile l'action AFFICHAGE
-    Actions actionAffichage = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-    enfiler(q, actionAffichage);
-
-    // Vérifie si la queue est vide après affichage
-    if (est_vide(q)) {
-        // Enfile une action de vérification seulement si la queue est vide
-        Actions actionVerif = {"VERIFICATION", {0, 0}, {0, 0}, false};
-        enfiler(q, actionVerif);
-    }
-
-    // Débogage / Affichage des actions restantes
-    printf("STADE POST CALCUL\n");
-    imprimer_queue(q);
-
-    return;
-}
-
-*/
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 Actions Verification(GrilleBonbons *grille, Queue *q)
 {
+    grille->estVerifiee = 1;
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
+
     imprimer_queue(q);
     for (int i = 0; i < grille->lignes; i++)
     {

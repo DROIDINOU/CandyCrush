@@ -20,15 +20,15 @@ int main()
 {
     srand(time(NULL)); // Initialisation du RNG
     InitWindow(1000, 1000, "Candy Crush Clone");
-    SetTargetFPS(1800);
+    SetTargetFPS(60); // Limiter à 60 FPS
 
-    // Chargement des textures (exemple)
+    // Chargement des textures
     Texture2D textures[5];
-    textures[0] = LoadTexture("candyimages/candy-sprite.png");       // Violet
-    textures[1] = LoadTexture("candyimages/poignee_de_bonbons.png"); // Rouge
-    textures[2] = LoadTexture("candyimages/CANDYCANEPOLE.png");      // Bleu
-    textures[3] = LoadTexture("candyimages/poignee_de_bonbons.png"); // Vert
-    textures[4] = LoadTexture("candyimages/candy-sprite.png");       // Jaune
+    textures[0] = LoadTexture("candyimages/candy-sprite.png");             // Violet
+    textures[1] = LoadTexture("candyimages/poignee_de_bonbons.png");       // Rouge
+    textures[2] = LoadTexture("candyimages/CANDYCANEPOLE.png");            // Bleu
+    textures[3] = LoadTexture("candyimages/580b57fcd9996e24bc43c517.png"); // Vert
+    textures[4] = LoadTexture("candyimages/candy-sprite.png");             // Jaune
 
     for (int i = 0; i < 5; i++)
     {
@@ -41,66 +41,58 @@ int main()
     // Un seul niveau pour l'exemple
     int niveau = 0;
 
-    // Init de la grille et de la queue
+    // Initialisation de la grille et de la queue
     GrilleBonbons maGrille;
     maGrille.lignes = TAILLE;
     maGrille.colonnes = TAILLE;
 
     Queue q;
     initialiser_queue(&q);
+    maGrille.estVerifiee = 0;
 
-    // 1) On enfile une première action d'initialisation
+    // Ajout d'une action d'initialisation
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
     enfiler(&q, initAction);
-
-    // ─────────────────────────────────────────────
-    // 2) Boucle principale Raylib
-    //    Reste jusqu’à ce que la fenêtre soit fermée
-    //    ou qu’on ait fini notre "niveau < 1"
-    // ─────────────────────────────────────────────
+    Actions action;
+    // Boucle principale Raylib
     while (!WindowShouldClose() && niveau < 1)
     {
-        // A) Traitement d'UNE action par frame (si la file n'est pas vide)
-        while (q.taille > 0)
+        // Traitement d'une action par frame (si la file n'est pas vide)
+        if (q.taille > 0)
         {
-
-            // Récupérer l'action en haut de la queue
             Actions action = defiler(&q);
             maGrille.suppressionsRestantes = 0;
-            if (strcmp(action.actionName, "AFFICHAGE") == 0)
+
+            if (strcmp(action.actionName, "CALCUL") == 0)
             {
-                // printf("on est dans affichage main ");
-            }
-            else if (strcmp(action.actionName, "CALCUL") == 0)
-            {
-                printf("ca sert a quoi cela ????: %d\n", action.pion1);
+                printf("Traitement de CALCUL\n");
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
+                printf("Traitement de SUPPRESSIONV\n");
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte V dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
+                printf("Traitement de SUPPRESSIONH\n");
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                // printf("decompte H dans pre main : %d ", maGrille.suppressionsRestantes);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
+                printf("Traitement de VERIFICATION\n");
                 Verification(&maGrille, &q);
                 maGrille.estVerifiee = 1;
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
+                printf("Traitement de DEPLACEMENT\n");
                 maGrille.estVerifiee = 0;
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
-
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-                maGrille.estVerifiee = 1;
-
+                printf("Traitement de LECTURE\n");
                 int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
@@ -109,24 +101,22 @@ int main()
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
+                printf("Initialisation\n");
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-                printf("initialisation");
+            }
+            else if (strcmp(action.actionName, "AFFICHAGE") == 0)
+            {
+                printf("Action : AFFICHAGE\n");
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                afficher_grille(&maGrille, textures, &q);
+                EndDrawing();
+                // Relancer une action de CALCUL après l'affichage
             }
         }
 
-        // B) Rendu Raylib (affichage) à CHAQUE frame
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
-        afficher_grille(&maGrille, textures, &q);
-
-        EndDrawing();
-
-        // C) Condition de fin du niveau (ex: plus de gélatine ?)
-        //    Ici, tu peux faire un test : si gélatine = 0 => niveau++
-        //    Par exemple :
-
+        // Vérification de fin du niveau (ex: plus de gélatine ?)
         bool gelatinePresente = false;
         for (int i = 0; i < maGrille.lignes; i++)
         {
@@ -143,20 +133,18 @@ int main()
         }
         if (!gelatinePresente)
         {
-            // plus de gélatine => niveau fini
             niveau++;
             printf("NIVEAU TERMINE\n");
         }
     }
 
-    // On sort de la boucle si la fenêtre est fermée ou si niveau >= 1
-    // Déchargement des textures
+    // Fermeture du jeu
     for (int i = 0; i < 5; i++)
     {
         UnloadTexture(textures[i]);
     }
     CloseWindow();
-
     printf("FIN DU JEU\n");
+
     return 0;
 }

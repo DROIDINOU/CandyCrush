@@ -19,6 +19,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
 
 void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
 {
+
     int tailleCase = 50;
     int largeurFenetre = 1000;
     int hauteurFenetre = 1000;
@@ -68,10 +69,14 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
 
                 DrawTexturePro(bonbonActuel, source, dest, origin, 0.0f, GRAY);
                 DrawRectangleLines(x, y, tailleCase, tailleCase, RED);
+
+                // Message de débogage pour l'affichage du bonbon
+                // printf("Affichage bonbon à la position (%d, %d) avec type %c\n", x, y, grille->tableau[i][j].pion);
             }
             else
             {
                 DrawRectangle(x, y, tailleCase, tailleCase, BLACK);
+                printf("Erreur : type de bonbon invalide à la position (%d, %d)\n", i, j);
             }
 
             if (grille->tableau[i][j].gelatine)
@@ -81,7 +86,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
             }
         }
     }
+
     Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
     enfiler(q, actionAffichage);
-    // Ici, pas de recalcul de calcX ou calcY, à moins que tu veuilles le faire dans une autre partie du code.
 }
