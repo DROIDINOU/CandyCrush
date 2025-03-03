@@ -24,12 +24,11 @@ int main()
 
     // Chargement des textures
     Texture2D textures[5];
-    textures[0] = LoadTexture("candyimages/candy-sprite.png");             // Violet
-    textures[1] = LoadTexture("candyimages/poignee_de_bonbons.png");       // Rouge
-    textures[2] = LoadTexture("candyimages/CANDYCANEPOLE.png");            // Bleu
-    textures[3] = LoadTexture("candyimages/580b57fcd9996e24bc43c517.png"); // Vert
-    textures[4] = LoadTexture("candyimages/candy-sprite.png");             // Jaune
-
+    textures[0] = LoadTexture("../candyimages/candy-png-31980.png");          // Violet
+    textures[1] = LoadTexture("../candyimages/poignee_de_bonbons.png");       // Rouge
+    textures[2] = LoadTexture("../candyimages/CANDYCANEPOLE.png");            // Bleu
+    textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"); // Vert
+    textures[4] = LoadTexture("../candyimages/candy-sprite.png");             // Jaune
     for (int i = 0; i < 5; i++)
     {
         if (textures[i].id == 0)
