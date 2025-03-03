@@ -24,11 +24,12 @@ int main()
 
     // Chargement des textures
     Texture2D textures[5];
-    textures[0] = LoadTexture("../candyimages/candy-png-31980.png");          // Violet
-    textures[1] = LoadTexture("../candyimages/poignee_de_bonbons.png");       // Rouge
-    textures[2] = LoadTexture("../candyimages/CANDYCANEPOLE.png");            // Bleu
-    textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"); // Vert
-    textures[4] = LoadTexture("../candyimages/candy-sprite.png");             // Jaune
+    textures[0] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png");                                                                             // Violet
+    textures[1] = LoadTexture("../candyimages/poignee_de_bonbons.png");                                                                                           // Rouge
+    textures[2] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"); // Bleu
+    textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png");                                                                                     // Vert
+    textures[4] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png");
+
     for (int i = 0; i < 5; i++)
     {
         if (textures[i].id == 0)
