@@ -8,16 +8,19 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+#include <unistd.h>
 // ouvrir via M2 BLEU
 // cd /C/Users/32471/MySDL2
 
 // $ gcc main.c matrice.c constante.c queue.c affichage.c -o mon_programme -lraylib
+// mode fentre ajouter : -mwindows
 // ./mon_programme.exe
 // Ajoute RayGUI plus tard
-
+extern void FreeConsole(void);
 int main()
 {
+    FreeConsole(); // Cache la console sous Windows
+
     srand(time(NULL)); // Initialisation du RNG
     InitWindow(1000, 1000, "Candy Crush Clone");
     SetTargetFPS(60); // Limiter à 60 FPS
@@ -77,6 +80,11 @@ int main()
             {
                 printf("Traitement de SUPPRESSIONH\n");
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                afficher_grille(&maGrille, textures, &q);
+                EndDrawing();
+                usleep(200 * 1000);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
