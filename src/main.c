@@ -19,7 +19,7 @@
 extern void FreeConsole(void);
 int main()
 {
-    FreeConsole(); // Cache la console sous Windows
+    // FreeConsole(); // Cache la console sous Windows
 
     srand(time(NULL)); // Initialisation du RNG
     InitWindow(1000, 1000, "Candy Crush Clone");
@@ -76,15 +76,12 @@ int main()
             {
                 printf("Traitement de SUPPRESSIONV\n");
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                usleep(500 * 1000);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 printf("Traitement de SUPPRESSIONH\n");
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                BeginDrawing();
-                ClearBackground(RAYWHITE);
-                afficher_grille(&maGrille, textures, &q);
-                EndDrawing();
                 usleep(500 * 1000);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
@@ -114,16 +111,19 @@ int main()
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
+            // Vous pouvez conserver ou supprimer ici l'appel à l'affichage selon vos besoins.
             else if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
                 printf("Action : AFFICHAGE\n");
-                BeginDrawing();
-                ClearBackground(RAYWHITE);
-                afficher_grille(&maGrille, textures, &q);
-                EndDrawing();
-                // Relancer une action de CALCUL après l'affichage
+                // On peut ne pas dupliquer l'affichage ici puisqu'il sera effectué en fin de boucle.
             }
         }
+
+        // AFFICHAGE A CHAQUE FRAME
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        afficher_grille(&maGrille, textures, &q);
+        EndDrawing();
 
         // Vérification de fin du niveau (ex: plus de gélatine ?)
         bool gelatinePresente = false;

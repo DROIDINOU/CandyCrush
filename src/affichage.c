@@ -88,8 +88,9 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
         }
     }
 
-    if (strcmp(grille->lastAction, "SUPPRESSIONH") != 0)
+    if (strcmp(grille->lastAction, "AFFICHAGE") == 0)
     {
+        printf("AFFICHAGE\n");
         Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
         enfiler(q, actionAffichage);
     }
