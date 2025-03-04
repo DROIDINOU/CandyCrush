@@ -65,6 +65,7 @@ int main()
         {
             Actions action = defiler(&q);
             maGrille.suppressionsRestantes = 0;
+            strcpy(maGrille.lastAction, action.actionName); // On mémorise l'action traitée
 
             if (strcmp(action.actionName, "CALCUL") == 0)
             {
@@ -84,7 +85,7 @@ int main()
                 ClearBackground(RAYWHITE);
                 afficher_grille(&maGrille, textures, &q);
                 EndDrawing();
-                usleep(200 * 1000);
+                usleep(500 * 1000);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {

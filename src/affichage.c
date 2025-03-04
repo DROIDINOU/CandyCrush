@@ -7,6 +7,7 @@
 #include "constante.h"
 #include "affichage.h"
 #include "raylib.h"
+#include <string.h>
 
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
@@ -87,6 +88,9 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
         }
     }
 
-    Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
-    enfiler(q, actionAffichage);
+    if (strcmp(grille->lastAction, "SUPPRESSIONH") != 0)
+    {
+        Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
+        enfiler(q, actionAffichage);
+    }
 }
