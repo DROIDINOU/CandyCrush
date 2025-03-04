@@ -16,7 +16,7 @@
 // mode fentre ajouter : -mwindows
 // ./mon_programme.exe
 // Ajoute RayGUI plus tard
-extern void FreeConsole(void);
+// extern void FreeConsole(void);
 int main()
 {
     // FreeConsole(); // Cache la console sous Windows
@@ -57,6 +57,10 @@ int main()
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
     enfiler(&q, initAction);
     Actions action;
+
+    bool attenteClics = false;
+    int clicCompteur = 0;
+    int coordonneesClic[4] = {-1, -1, -1, -1};
     // Boucle principale Raylib
     while (!WindowShouldClose() && niveau < 1)
     {
@@ -98,12 +102,9 @@ int main()
             }
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-                printf("Traitement de LECTURE\n");
-                int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
+                printf("Traitement de LECTURE via clics de souris\n");
+                attenteClics = true;
+                clicCompteur = 0; // Réinitialise le compteur pour les deux clics
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
@@ -116,6 +117,51 @@ int main()
             {
                 printf("Action : AFFICHAGE\n");
                 // On peut ne pas dupliquer l'affichage ici puisqu'il sera effectué en fin de boucle.
+            }
+        }
+
+        // Si on est en mode "LECTURE" par clic, on vérifie les clics de souris
+        if (attenteClics)
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                // Récupération de la position de la souris
+                Vector2 posSouris = GetMousePosition();
+
+                // Reproduire le calcul des positions tel que dans afficher_grille
+                int tailleCase = 50;
+                int largeurFenetre = 1000;
+                int hauteurFenetre = 1000;
+                int grilleLargeur = maGrille.colonnes * tailleCase;
+                int grilleHauteur = maGrille.lignes * tailleCase;
+                int offsetX = (largeurFenetre - grilleLargeur) / 2;
+                int offsetY = (hauteurFenetre - grilleHauteur) / 2;
+
+                // Position relative dans la grille
+                int xRel = posSouris.x - offsetX;
+                int yRel = posSouris.y - offsetY;
+
+                // Vérifier que le clic se situe bien dans la zone de la grille
+                if (xRel >= 0 && xRel < grilleLargeur && yRel >= 0 && yRel < grilleHauteur)
+                {
+                    int colonne = xRel / tailleCase;
+                    int ligne = yRel / tailleCase;
+                    coordonneesClic[clicCompteur * 2] = ligne;
+                    coordonneesClic[clicCompteur * 2 + 1] = colonne;
+                    clicCompteur++;
+                    printf("Clic %d: ligne=%d, colonne=%d\n", clicCompteur, ligne, colonne);
+                    // Une fois les deux clics effectués, appeler la fonction de lecture
+                    if (clicCompteur == 2)
+                    {
+                        LirePionsAChanger(&maGrille, coordonneesClic[0], coordonneesClic[1],
+                                          coordonneesClic[2], coordonneesClic[3], &q);
+                        attenteClics = false;
+                    }
+                }
+                else
+                {
+                    printf("Clic hors de la grille, ignoré\n");
+                }
             }
         }
 
