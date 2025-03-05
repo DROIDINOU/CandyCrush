@@ -69,6 +69,7 @@ int main()
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 maGrille.estVerifiee = 0;
+                printf("Deplacement de (%d,%d) vers (%d,%d)\n", action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
 
@@ -76,6 +77,7 @@ int main()
             {
 
                 int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+                printf("ligne %d\n", ligne);
                 int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
                 int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);

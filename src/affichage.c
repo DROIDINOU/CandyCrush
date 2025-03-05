@@ -18,6 +18,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
                        int coordonneeYDeuxiemePion, Queue *q)
 {
     // ajouter action ici dans la queue;
+    printf("Deplacement de (%d,%d) vers (%d,%d)\n", coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
     Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
     enfiler(q, action);
 }

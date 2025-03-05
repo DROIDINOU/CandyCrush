@@ -118,6 +118,70 @@ arrêter le programme*/
 // prevoir une verification des victoires deja presentes
 
 /*_____________________________________________________________________________________________________________________________*/
+bool VerificationHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
+{
+
+    char pion = grille->tableau[*x][*y].pion;
+    if (pion != ' ') // si pas déjà supprimé
+    {
+        // Vérification verticale
+        int compteur = 1;
+        int xDebut = *x, xFin = *x;
+
+        // vers le bas
+        int i = *x + 1;
+        while (i < TAILLE && grille->tableau[i][*y].pion == pion)
+        {
+            compteur++;
+            xFin = i;
+            i++;
+        }
+        // vers le haut
+        i = *x - 1;
+        while (i >= 0 && grille->tableau[i][*y].pion == pion)
+        {
+            compteur++;
+            xDebut = i;
+            i--;
+        }
+
+        if (compteur >= 3)
+        {
+            Actions supV = {"SUPPRESSIONV", {xDebut, *y}, {xFin, *y}, false};
+            enfiler(q, supV);
+            return true; // On s'arrête (une seule action)
+        }
+
+        // Vérification horizontale
+        compteur = 1;
+        int yDebut = *y, yFin = *y;
+
+        // vers la droite
+        int j = *y + 1;
+        while (j < TAILLE && grille->tableau[*x][j].pion == pion)
+        {
+            compteur++;
+            yFin = j;
+            j++;
+        }
+        // vers la gauche
+        j = *y - 1;
+        while (j >= 0 && grille->tableau[*x][j].pion == pion)
+        {
+            compteur++;
+            yDebut = j;
+            j--;
+        }
+
+        if (compteur >= 3)
+        {
+            Actions supH = {"SUPPRESSIONH", {*x, yDebut}, {*x, yFin}, false};
+            enfiler(q, supH);
+            return true;
+        }
+    }
+    return false;
+}
 
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
@@ -157,65 +221,10 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     }
 
-    char pion = grille->tableau[x][y].pion;
-    if (pion != ' ') // si pas déjà supprimé
+    if (VerificationHorizontale(&x, &y, grille, q))
     {
-        // Vérification verticale
-        int compteur = 1;
-        int xDebut = x, xFin = x;
-
-        // vers le bas
-        int i = x + 1;
-        while (i < TAILLE && grille->tableau[i][y].pion == pion)
-        {
-            compteur++;
-            xFin = i;
-            i++;
-        }
-        // vers le haut
-        i = x - 1;
-        while (i >= 0 && grille->tableau[i][y].pion == pion)
-        {
-            compteur++;
-            xDebut = i;
-            i--;
-        }
-
-        if (compteur >= 3)
-        {
-            Actions supV = {"SUPPRESSIONV", {xDebut, y}, {xFin, y}, false};
-            enfiler(q, supV);
-            return; // On s'arrête (une seule action)
-        }
-
-        // Vérification horizontale
-        compteur = 1;
-        int yDebut = y, yFin = y;
-
-        // vers la droite
-        int j = y + 1;
-        while (j < TAILLE && grille->tableau[x][j].pion == pion)
-        {
-            compteur++;
-            yFin = j;
-            j++;
-        }
-        // vers la gauche
-        j = y - 1;
-        while (j >= 0 && grille->tableau[x][j].pion == pion)
-        {
-            compteur++;
-            yDebut = j;
-            j--;
-        }
-
-        if (compteur >= 3)
-        {
-            Actions supH = {"SUPPRESSIONH", {x, yDebut}, {x, yFin}, false};
-            enfiler(q, supH);
-            return;
-        }
-    }
+        return;
+    };
 
     // ─────────────────────────────────────────────────
     // 3) Aucune suppression => On passe à la cellule suivante
@@ -247,7 +256,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 }
 
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
-Actions Verification(GrilleBonbons *grille, Queue *q)
+void Verification(GrilleBonbons *grille, Queue *q)
 {
     grille->estVerifiee = 1;
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
@@ -265,7 +274,7 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
                 enfiler(q, action);
                 // printf("oooooooooooooooooooo\n");
                 gelatinePresente = true; // On détecte de la gélatine
-                return action;           // On quitte immédiatement la fonction
+                return;
             }
         }
     }
@@ -274,12 +283,8 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
     if (!gelatinePresente)
     {
         printf("FIN NIVEAU\n");
-        Actions action = {"FINNIVEAU", {0, 0}, {0, 0}, false};
-        enfiler(q, action);
-        return action;
     }
-    Actions action = {"FIN", {0, 0}, {0, 0}, false};
-    return action;
+    return;
 }
 
 // T AS OUBLIE DE SUPPRIMER LA GELATINE ICI

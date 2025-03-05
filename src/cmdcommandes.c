@@ -4,3 +4,4 @@
 
 // a faire ne pas supprimer gelatines a initialisation et
 // les faire descendre ???? ou les gerer au niveau de la structure de niveau
+// calcul doit etre lance a partir de initialiser grille
