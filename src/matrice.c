@@ -152,6 +152,16 @@ arrêter le programme*/
 // prevoir une verification des victoires deja presentes
 
 /*_____________________________________________________________________________________________________________________________*/
+
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTION DE CALCUL
+
+  -> Parametres : x et y - grille - queue
+  -> Verifie si un alignement est present
+  -> Si alignement present, ajoute une ACTION SUPPRESSIONV ou SUPPRESSIONH a la queue
+___________________________________________________________________________________________________________________
+ */
+
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 {
 
@@ -220,9 +230,21 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 /***************************************************************************************************************************
                                  **** FONCTION CENTRALE DE CALCUL DES SUPPRESSIONS ET DES CASCADES
 
--> parametres : queue - grille - coordonnees x et y des pions
--> Récupére la cellule en cours (x,y sont a 0 si calcul declenche a l initialisation si non on recupere les coordonnees des pions echanges)
--> Si la grille est déjà vérifiée, on envoie une action VERIFICATION
+-> parametres : queue - grille - coordonnees des pions
+-> Récupere la cellule en cours (x,y sont a 0 si calcul declenche a l initialisation si non on recupere les coordonnees des pions echanges)
+-> Si la grille est déjà vérifiée, on envoie une ACTION VERIFICATION
+-> Si element de la grille affiche est a 1 on envoie une ACTION AFFICHAGE et on remet directement affiche a 0
+   -> Affichage est mis a 1 a chaque fois qu'une suppression est effectuee
+   -> Affichage lance une ACTION CALCUL avec coordonnees a 0;
+-> Si on trouve un alignement on retourne true -> une ACTION SUPPRESSIONH OU SUPPRESSIONV est ajoutée à la queue
+   -> SuppressionV et suppressionH ajoute une ACTION CALCUL à la queue en recommencant a 0
+-> Si pas d'alignement on incremente les coordonnees x et y et on ajoute une ACTION CALCUL à la queue
+-> Si on a atteint la fin de la grille on envoie une action AFFICHAGE
+   -> on remet les coordonnees a 0
+   -> on remet estverifiee a 1
+   -> Affichage lance une ACTION CALCUL
+
+
  ****************************************************************************************************************************/
 
 void Calcul(Queue *q, GrilleBonbons *grille,
@@ -240,19 +262,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     };
 
-    // if (x >= TAILLE)
-    //{
-    // printf("Terminé : pas d'alignement trouvé dans toute la grille.\n");
-    //  On peut enchaîner AFFICHAGE ou LECTURE ou rien, selon ta logique :
-    // Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-    // enfiler(q, aff);
-    // return;
-    //}
-
-    // ─────────────────────────────────────────────────
-    // 2) Même logique que ton code actuel pour détecter
-    //    un alignement vertical/horizontal sur la case (x,y).
-    // ─────────────────────────────────────────────────
     if (grille->affiche)
     {
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
