@@ -20,9 +20,9 @@
 -> initialise les elements de la grille???? mettre les initialisation des elements ici ????
 
  ****************************************************************************************************************************/
-
-void initialiser_grille(GrilleBonbons *grille)
+void initialiserBonbons(GrilleBonbons *grille)
 {
+
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
@@ -32,6 +32,10 @@ void initialiser_grille(GrilleBonbons *grille)
             grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
         }
     }
+}
+void initialiser_grille(GrilleBonbons *grille)
+{
+    initialiserBonbons(grille);
 
     int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
