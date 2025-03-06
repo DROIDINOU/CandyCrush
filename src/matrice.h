@@ -12,7 +12,8 @@
  ****************************************************************************************************************************/
 
 void initialiserGrille(GrilleBonbons *grille);
-void initialiserGrilleGelatine(GrilleBonbons *grille);
+void initialiserGelatines(GrilleBonbons *grille);
+void initialiserBonbons(GrilleBonbons *grille);
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
 bool VerificationHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);

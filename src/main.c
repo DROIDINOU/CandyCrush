@@ -23,9 +23,6 @@ int main()
     int niveau = 0;    // A améliorer
 
     GrilleBonbons maGrille;
-    maGrille.lignes = TAILLE;
-    maGrille.colonnes = TAILLE;
-
     Queue q;
     initialiser_queue(&q);
 
