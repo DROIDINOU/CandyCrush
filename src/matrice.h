@@ -11,7 +11,7 @@
                                                   INIT GRILLE
  ****************************************************************************************************************************/
 
-void initialiser_grille(GrilleBonbons *grille);
+void initialiserGrille(GrilleBonbons *grille);
 void initialiserGrilleGelatine(GrilleBonbons *grille);
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);

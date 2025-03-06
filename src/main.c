@@ -84,7 +84,7 @@ int main()
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
-                initialiser_grille(&maGrille);
+                initialiserGrille(&maGrille);
                 // deplacer calcul dans initialisation
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
                 printf("initialisation");

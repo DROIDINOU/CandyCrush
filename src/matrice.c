@@ -13,13 +13,16 @@
 // supprimer struct en double
 // FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
 
-/***************************************************************************************************************************
--> parametres : grille
--> place les bonbons aléatoirement dans la grille
--> place aleatoirement les gelatines dans la grille
--> initialise les elements de la grille???? mettre les initialisation des elements ici ????
+/*__________________________________________________________________________
+  **** Fonctions : initialiserBonbons - initialiserGelatine
+  **   Sous fonctions de initialiserGrille
+  -> Parametres : grille
+  -> initialiserBonbons : place les bonbons aleatoirement dans la grille
+  -> initialiserGelatine : place aleatoirement les gelatines dans la grille
+_____________________________________________________________________________
+ */
 
- ****************************************************************************************************************************/
+// Place les bonbons aleatoireent dans la grille
 void initialiserBonbons(GrilleBonbons *grille)
 {
 
@@ -33,7 +36,7 @@ void initialiserBonbons(GrilleBonbons *grille)
         }
     }
 }
-
+//
 void initialiserGelatine(GrilleBonbons *grille)
 {
     int nombreGelatine = rand() % 5 + 6; // Nombre de gelatines aléatoire entre 1 et 5
@@ -57,7 +60,16 @@ void initialiserGelatine(GrilleBonbons *grille)
         }
     }
 }
-void initialiser_grille(GrilleBonbons *grille)
+
+/***************************************************************************************************************************
+-> parametres : grille
+-> place les bonbons aléatoirement dans la grille
+-> place aleatoirement les gelatines dans la grille
+-> initialise les elements de la grille???? mettre les initialisation des elements ici ????
+
+ ****************************************************************************************************************************/
+
+void initialiserGrille(GrilleBonbons *grille)
 {
     initialiserBonbons(grille);
     initialiserGelatine(grille);
