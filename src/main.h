@@ -13,6 +13,8 @@
 #include "queue.h"     // Pour Queue et fonctions associées
 #include "constante.h" // Pour les constantes définies dans constante.c
 
+int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
+
 typedef struct
 {
     int coupAJouer;

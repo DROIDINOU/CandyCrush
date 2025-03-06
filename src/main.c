@@ -8,6 +8,27 @@
 #include <time.h>
 #include <string.h>
 
+// a ameliorer et a deplacer dans main ou creer fichier
+int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
+{
+    int reponse;
+    do
+    {
+        printf("%s", message[index][0]);     // Affiche le message
+        int result = scanf(" %d", &reponse); // Lit un seul caractère
+        while (getchar() != '\n')
+            ;
+
+        // Vérifie que la réponse est valide
+        if (result == -1)
+        {
+            // printf("Reponse invalide. Essayez encore.\n");
+        }
+    } while (reponse < 1 || reponse > 21); // Si la réponse n'est pas valide, on redemande
+
+    return reponse - 1;
+}
+
 int main()
 {
 

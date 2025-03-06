@@ -14,15 +14,14 @@
 void initialiserGrille(GrilleBonbons *grille);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
-int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
-bool VerificationHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
+bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);
 void Verification(GrilleBonbons *grille, Queue *q);
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
-void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
-                 int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
-                 int coordonneeYDeuxiemePion);
+void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
+                 int yPion1, int xPion2,
+                 int yPion2);
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
 suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une

@@ -13,14 +13,21 @@
 // supprimer struct en double
 // FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
 
-/*__________________________________________________________________________
-  **** Fonctions : initialiserBonbons - initialiserGelatines
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTIONS D INITIALISER GRILLE
+
+  *** Fonctions : initialiserBonbons - initialiserGelatines
   **   Sous fonctions de initialiserGrille
   -> Parametres : grille
   -> initialiserBonbons : place les bonbons aleatoirement dans la grille
   -> initialiserGelatines : place aleatoirement les gelatines dans la grille
-_____________________________________________________________________________
+___________________________________________________________________________________________________________________
  */
+
+/* ====================================================================================================
+Initialise les bonbons dans la grille
+Remplissage aléatoire des cases avec des couleurs
+========================================================================================================*/
 
 void initialiserBonbons(GrilleBonbons *grille)
 {
@@ -67,6 +74,8 @@ void initialiserGelatines(GrilleBonbons *grille)
 }
 
 /***************************************************************************************************************************
+                                                **** FONCTION CENTRALE INITIALISATION GRILLE
+
 -> parametres : grille
 -> initialise les élements de la structure grille
 -> place les bonbons aléatoirement dans la grille (appel de la fonction initialiserBonbons)
@@ -88,42 +97,35 @@ void initialiserGrille(GrilleBonbons *grille)
     initialiserGelatines(grille);
 }
 
-// a ameliorer et a deplacer dans main ou creer fichier
-int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
+/*_______________________________________________________________________________________________________________
+                                     **** FONCTION DEPLACEMENT DES BONBONS
+   -> Parametres : queue - grille - coordonnees x et y des pions
+   -> Reinitialise element de la grille estVerifiee a 0 (il faut reverifier la grille apres le deplacement
+   -> Reinitialise element de la grille estInitialisee a 1 (la grille a ete initialisee)
+   -> Reinitialise element de la grille calcX et calcY a 0
+   -> Echange des pions entre les deux coordonnees
+_______________________________________________________________________________________________________________*/
+void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
+                 int yPion1, int xPion2,
+                 int yPion2)
+
 {
-    int reponse;
-    do
-    {
-        printf("%s", message[index][0]);     // Affiche le message
-        int result = scanf(" %d", &reponse); // Lit un seul caractère
-        while (getchar() != '\n')
-            ;
-
-        // Vérifie que la réponse est valide
-        if (result == -1)
-        {
-            // printf("Reponse invalide. Essayez encore.\n");
-        }
-    } while (reponse < 1 || reponse > 21); // Si la réponse n'est pas valide, on redemande
-
-    return reponse - 1;
-}
-
-void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
-                 int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
-                 int coordonneeYDeuxiemePion)
-{
-    char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
-    grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion = grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion;
-    grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
+    // Reinitialisation des elements de la grille
+    grille->estVerifiee = 0;    // On doit re-vérifier la grille après le déplacement
+    grille->estInitialisee = 1; // La grille a été initialisée
     grille->calcX = 0;
     grille->calcY = 0;
-    grille->estVerifiee = 0;
-    grille->estInitialisee = 1;
-    Actions action = {"CALCUL", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+
+    // Echange des pions
+    char temp = grille->tableau[xPion1][yPion1].pion;                            // echange des pions via variable temporaire qui stocke le pion 1
+    grille->tableau[xPion1][yPion1].pion = grille->tableau[xPion2][yPion2].pion; // pion 1 devient pion 2
+    grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
+
+    Actions action = {"CALCUL", {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
     enfiler(q, action);
 }
 
+// eventuellement supprimer
 bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 {
     for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEUR)
@@ -150,7 +152,7 @@ arrêter le programme*/
 // prevoir une verification des victoires deja presentes
 
 /*_____________________________________________________________________________________________________________________________*/
-bool VerificationHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
+bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 {
 
     char pion = grille->tableau[*x][*y].pion;
@@ -252,7 +254,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     }
 
-    if (VerificationHorizontale(&x, &y, grille, q))
+    if (VerifierAlignements(&x, &y, grille, q))
     {
         return;
     };
