@@ -33,10 +33,9 @@ void initialiserBonbons(GrilleBonbons *grille)
         }
     }
 }
-void initialiser_grille(GrilleBonbons *grille)
-{
-    initialiserBonbons(grille);
 
+void initialiserGelatine(GrilleBonbons *grille)
+{
     int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
@@ -57,6 +56,11 @@ void initialiser_grille(GrilleBonbons *grille)
             nombreGelatine--;
         }
     }
+}
+void initialiser_grille(GrilleBonbons *grille)
+{
+    initialiserBonbons(grille);
+    initialiserGelatine(grille);
 
     grille->calcX = 0; // mettre ca ici ???
     grille->calcY = 0;
