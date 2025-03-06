@@ -74,7 +74,7 @@ void initialiserGelatines(GrilleBonbons *grille)
 }
 
 /***************************************************************************************************************************
-                                                **** FONCTION CENTRALE INITIALISATION GRILLE
+                                 **** FONCTION CENTRALE INITIALISATION GRILLE
 
 -> parametres : grille
 -> initialise les élements de la structure grille
@@ -217,10 +217,18 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
     return false;
 }
 
+/***************************************************************************************************************************
+                                 **** FONCTION CENTRALE DE CALCUL DES SUPPRESSIONS ET DES CASCADES
+
+-> parametres : queue - grille - coordonnees x et y des pions
+-> Récupére la cellule en cours (x,y sont a 0 si calcul declenche a l initialisation si non on recupere les coordonnees des pions echanges)
+-> Si la grille est déjà vérifiée, on envoie une action VERIFICATION
+ ****************************************************************************************************************************/
+
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
 {
-    printf("ENTRE DANS CALCULE");
+    printf("ENTRE DANS CALCUL\n");
     // 1) Récupérer la cellule en cours
     int x = grille->calcX;
     int y = grille->calcY;
@@ -232,15 +240,14 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     };
 
-    // Si on est déjà hors limites, c'est que tout est vérifié
-    if (x >= TAILLE)
-    {
-        printf("Terminé : pas d'alignement trouvé dans toute la grille.\n");
-        // On peut enchaîner AFFICHAGE ou LECTURE ou rien, selon ta logique :
-        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-        enfiler(q, aff);
-        return;
-    }
+    // if (x >= TAILLE)
+    //{
+    // printf("Terminé : pas d'alignement trouvé dans toute la grille.\n");
+    //  On peut enchaîner AFFICHAGE ou LECTURE ou rien, selon ta logique :
+    // Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+    // enfiler(q, aff);
+    // return;
+    //}
 
     // ─────────────────────────────────────────────────
     // 2) Même logique que ton code actuel pour détecter
