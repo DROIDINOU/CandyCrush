@@ -1,9 +1,7 @@
-// constants.h
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 #include <stdbool.h>
 
-// Déclaration d'une constante avec extern
 #define TAILLE 10
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100

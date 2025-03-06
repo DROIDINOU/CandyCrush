@@ -320,7 +320,6 @@ void Verification(GrilleBonbons *grille, Queue *q)
     return;
 }
 
-// T AS OUBLIE DE SUPPRIMER LA GELATINE ICI
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
@@ -332,7 +331,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int i = *x1; i <= *x2; i++)
     {
         grille->tableau[i][*y1].pion = ' '; // Suppression en mettant un espace vide
-        // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
 
         if (grille->estInitialisee)
         {
