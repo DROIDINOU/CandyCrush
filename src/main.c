@@ -37,7 +37,6 @@ int main()
     while (niveau < 3)
     {
         printf("Niveau %d\n", niveau + 1);
-        maGrille.estVerifiee = 0;
         Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, initialisationAction);
         Actions action;
@@ -69,7 +68,6 @@ int main()
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
-                maGrille.estVerifiee = 0;
                 printf("Deplacement de (%d,%d) vers (%d,%d)\n", action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
@@ -87,6 +85,7 @@ int main()
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 initialiser_grille(&maGrille);
+                // deplacer calcul dans initialisation
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
                 printf("initialisation");
             }

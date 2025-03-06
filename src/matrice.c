@@ -36,7 +36,7 @@ void initialiserBonbons(GrilleBonbons *grille)
 
 void initialiserGelatine(GrilleBonbons *grille)
 {
-    int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % 5 + 6; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -61,7 +61,8 @@ void initialiser_grille(GrilleBonbons *grille)
 {
     initialiserBonbons(grille);
     initialiserGelatine(grille);
-
+    grille->estInitialisee = 0;
+    grille->estVerifiee = 0;
     grille->calcX = 0; // mettre ca ici ???
     grille->calcY = 0;
 }
@@ -96,6 +97,8 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
     grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
     grille->calcX = 0;
     grille->calcY = 0;
+    grille->estVerifiee = 0;
+    grille->estInitialisee = 1;
     Actions action = {"CALCUL", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
     enfiler(q, action);
 }
@@ -213,7 +216,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         // On peut enchaîner AFFICHAGE ou LECTURE ou rien, selon ta logique :
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
         enfiler(q, aff);
-        grille->estVerifiee = true;
         return;
     }
 
@@ -252,7 +254,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         grille->calcX = 0;
         grille->calcY = 0;
         enfiler(q, aff);
-        grille->estVerifiee = true;
+        grille->estVerifiee = 1;
         return;
     }
 
@@ -309,7 +311,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         grille->tableau[i][*y1].pion = ' '; // Suppression en mettant un espace vide
         // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
 
-        if (grille->estVerifiee)
+        if (grille->estInitialisee)
         {
             grille->tableau[i][*y1].gelatine = false;
         } // Suppression de la gélatine
@@ -332,15 +334,21 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             if (j >= 0)
             {
                 grille->tableau[i][*y1].pion = grille->tableau[j][*y1].pion;
-                grille->tableau[i][*y1].gelatine = grille->tableau[j][*y1].gelatine; // Copie aussi l'état de la gélatine
-                grille->tableau[j][*y1].pion = ' ';                                  // Efface la case d'origine
+                if (grille->estInitialisee)
+                {
+                    grille->tableau[i][*y1].gelatine = grille->tableau[j][*y1].gelatine;
+                } // Copie aussi l'état de la gélatine
+                grille->tableau[j][*y1].pion = ' '; // Efface la case d'origine
             }
             else
             {
                 // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
                 int index = rand() % 5;
                 grille->tableau[i][*y1].pion = couleurs[index];
-                grille->tableau[i][*y1].gelatine = false; // Par défaut, pas de gélatine
+                if (grille->estInitialisee)
+                {
+                    grille->tableau[i][*y1].gelatine = false;
+                }
             }
         }
     }
@@ -371,7 +379,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         { // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';
             // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
-            if (grille->estVerifiee)
+            if (grille->estInitialisee)
             {                                           // Remplacement par un espace vide
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine
             }
@@ -384,12 +392,19 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         for (int i = *x1; i > 0; i--)
         { // Faire descendre les bonbons au-dessus
             grille->tableau[i][j].pion = grille->tableau[i - 1][j].pion;
-            grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine; // Descendre la gélatine aussi
+            if (grille->estInitialisee)
+            {
+
+                grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine; // Descendre la gélatine aussi
+            }
         }
         // Générer un nouveau bonbon en haut
         int index = rand() % 5;
         grille->tableau[0][j].pion = couleurs[index];
-        grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine
+        if (grille->estInitialisee)
+        {
+            grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine
+        }
     }
     int yDebut = *y1, yFin = *y1;
 
