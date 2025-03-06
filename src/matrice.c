@@ -186,13 +186,13 @@ bool VerificationHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
 {
-    printf("ENTRE DANS CALCULLLLLL");
+    printf("ENTRE DANS CALCULE");
     // 1) Récupérer la cellule en cours
     int x = grille->calcX;
     int y = grille->calcY;
     if (grille->estVerifiee == 1)
     {
-        printf("ne dis pas qu on est ici lol");
+        printf("Verification déjà faite\n");
         Actions verification = {"VERIFICATION", {0, 0}, {0, 0}, false};
         enfiler(q, verification);
         return;

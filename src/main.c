@@ -34,8 +34,9 @@ int main()
                                                             BOUCLE DE JEU
     ___________________________________________________________________________________________________________________________   */
     // Initialiser et afficher la grille
-    while (niveau < 1)
+    while (niveau < 3)
     {
+        printf("Niveau %d\n", niveau + 1);
         maGrille.estVerifiee = 0;
         Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, initialisationAction);
