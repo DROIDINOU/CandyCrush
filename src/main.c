@@ -29,6 +29,21 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
     return reponse - 1;
 }
 
+void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
+{
+    *x1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    printf("x1 = %d\n", *x1);
+
+    *y1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    printf("y1 = %d\n", *y1);
+
+    *x2 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    printf("x2 = %d\n", *x2);
+
+    *y2 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    printf("y2 = %d\n", *y2);
+}
+
 int main()
 {
 
@@ -54,10 +69,11 @@ int main()
     // Initialiser et afficher la grille
     while (niveau < 3)
     {
-        printf("Niveau %d\n", niveau + 1);
+        printf("Vous venez d'entrer dans le Niveau %d\n", niveau + 1);
         Actions initialisationAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, initialisationAction);
         Actions action;
+
         while (q.taille > 0)
         {
 
@@ -86,18 +102,14 @@ int main()
             }
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
-                printf("Deplacement de (%d,%d) vers (%d,%d)\n", action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
 
-                int ligne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                printf("ligne %d\n", ligne);
-                int colonne = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                int ligne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
-                int colonne1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+                int ligne, colonne, ligne1, colonne1;
+                LireQuatreCoordonnees(&ligne, &colonne, &ligne1, &colonne1);
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)

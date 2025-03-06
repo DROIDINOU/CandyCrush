@@ -14,7 +14,7 @@
 #include "constante.h" // Pour les constantes définies dans constante.c
 
 int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
-
+void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2);
 typedef struct
 {
     int coupAJouer;
