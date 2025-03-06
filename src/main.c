@@ -103,9 +103,8 @@ int main()
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 initialiserGrille(&maGrille);
-                // deplacer calcul dans initialisation
-                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-                printf("initialisation");
+                Actions action = {"CALCUL", {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
+                enfiler(&q, action);
             }
         }
 
