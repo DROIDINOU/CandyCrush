@@ -64,7 +64,7 @@ int main()
 
     /*____________________________________________________________________________________________________________________________
 
-                                                            BOUCLE DE JEU
+                                                 BOUCLE DE JEU
     ___________________________________________________________________________________________________________________________   */
     // Initialiser et afficher la grille
     while (niveau < 3)
@@ -79,7 +79,6 @@ int main()
 
             // Récupérer l'action en haut de la queue
             action = defiler(&q);
-            maGrille.suppressionsRestantes = 0;
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
                 afficher_grille(&maGrille, &q);

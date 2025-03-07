@@ -23,7 +23,6 @@ typedef struct
     int estVerifiee;
     int estInitialisee;  // Indique si la grille a déjà été vérifiée
     int calculsRestants; // Nombre d'actions CALCUL en attente
-    int suppressionsRestantes;
     int affiche;
 
 } GrilleBonbons;
