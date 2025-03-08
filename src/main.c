@@ -51,7 +51,11 @@ int main()
     ____________________________________________________________________________________________________________________________
 
                                                          INITIALISATION
-    ____________________________________________________________________________________________________________________________
+        -> Initialisation nombres aleatoires
+        -> Declaration et Initialisation de la grille
+        -> Declaration et Initialisation de la queue
+        -> Declaration et Initialisation du niveau de jeu
+    ___________________________________________________________________________________________________________________________
     */
 
     srand(time(NULL)); // Generateur de nombres aleatoires
