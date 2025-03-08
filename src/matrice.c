@@ -51,7 +51,8 @@ Tant que gelatines inferieures au nombre fixe => placement des gelatines avec co
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
-    int nombreGelatine = rand() % 5 + 6; // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % 3 + 1; // Nombre de gelatines aléatoire entre 1 et 5
+    printf("nombre de coups a jouer %d\n", niveaux[0].coupsNiveau[0].coupAJouer);
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)

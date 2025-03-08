@@ -5,6 +5,7 @@
 #define TAILLE 10
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
+#define FINALNIVEAU 3
 
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
 typedef struct
@@ -26,5 +27,28 @@ typedef struct
     int affiche;
 
 } GrilleBonbons;
+
+typedef struct
+{
+    int coupAJouer;
+    int coupsJoues; // Le nombre de coups joués par le joueur
+} Coups;
+
+typedef struct
+{
+    char typeObstacle[20];
+    int randomGelatine;
+
+} Obstacles;
+
+typedef struct
+{
+    Coups coupsNiveau[FINALNIVEAU];
+    Obstacles obstacleNiveau[FINALNIVEAU]; // bool verificationFaite;  // a rajouter pour se passer du boolean en params dans verificationinit et calcul
+    int compteurNiveau;
+
+} Niveaux;
+
+extern Niveaux niveaux[FINALNIVEAU];
 
 #endif // CONSTANTS_H
