@@ -15,6 +15,8 @@ typedef struct
     bool gelatine;
 } Case;
 
+extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
+
 typedef struct
 {
     int lignes;

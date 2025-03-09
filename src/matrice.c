@@ -306,45 +306,53 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     return;
 }
 
+/*________________________________________________________________________________________________________________
+                                 **** FONCTION DE VERIFICATION
+
+    -> Parametres : grille - queue
+    -> Si le nombre de coups joués est égal au nombre de coups à jouer et qu'il reste de la gélatine
+      On affiche un message de fin de partie
+    -> Sinon On parcourt la grille et on vérifie si de la gélatine est toujours présente
+    -> Si gelatine presente, ajoute une ACTION LECTURE a la queue
+    -> Si pas de gelatine, affiche FIN NIVEAU
+
+
+___________________________________________________________________________________________________________________*/
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q)
 {
     grille->estVerifiee = 1;
     // a changer ceci ne sert plus a rien !!
-    bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
 
     imprimer_queue(q);
 
-    if (niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues == niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer)
-    {
-        niveaux[0].compteurNiveau = FINALNIVEAU;
-        printf("fin de partie ca marche enfin..................\n");
-        return;
-    }
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
         {
             if (grille->tableau[i][j].gelatine)
             {
+                if (niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues == niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer)
+                {
+                    niveaux[0].compteurNiveau = FINALNIVEAU;
+                    printf(MESSAGEETATJEU[0]);
+                    return;
+                }
                 printf("Bonbon gélatine toujours présent\n");
 
                 Actions action = {"LECTURE", {0, 0}, {0, 0}, false};
                 enfiler(q, action);
                 // printf("oooooooooooooooooooo\n");
-                gelatinePresente = true; // On détecte de la gélatine
+                grille->gelatinePresente = true; // On détecte de la gélatine
                 return;
             }
         }
     }
+    grille->gelatinePresente = false;
 
     // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
-    if (!gelatinePresente)
-    {
-        grille->gelatinePresente = false;
+    printf(MESSAGEETATJEU[0]);
 
-        printf("FIN NIVEAU\n");
-    }
     return;
 }
 

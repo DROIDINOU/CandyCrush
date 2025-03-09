@@ -2,18 +2,17 @@
 
 /*________________________________________________________________________________________________________________
                                  **** CONSTANTES
+
      -> MESSAGEETREPONSESATTENDUES : Tableau de messages et de réponses attendues
-        * utilite : stocker les messages et les reponses attendues
 
      -> MESSAGEETATJEU : Tableau des messages de l'etat du jeu
-        * utilite : stocker les messages de l'etat du jeu
 
      -> Structure des Niveaux
         * Elements : coupsNiveau - obstacleNiveau - compteurNiveau
                -> coupsNiveau : nombre de coups à jouer (int) - coups joués (int)
                -> obstacleNiveau : type d'obstacle (char) - nombre de gelatines (int)
                -> compteurNiveau : niveau actuel (int)
-        * utilite : stocker les informations sur les niveaux
+
 _____________________________________________________________________________________________
  */
 
@@ -24,10 +23,10 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
     {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"}};
 
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
-    "Vous avez épuisé tous vos coups. Fin de la partie.",
-    "Vous avez gagné. Félicitations!",
-    " Votre score est de :",
-    "Vous avez perdu. Essayez encore."};
+    "Vous avez epuise tous vos coups. Fin de la partie.\n",
+    "Felicitations! Vous accedez u niveau suivant!\n",
+    " Votre score est de :\n",
+    "Vous avez perdu. Essayez encore.\n"};
 
 Niveaux niveaux[FINALNIVEAU] = {
     {{3, 0}, {"Gelatine", 2}, 0},
