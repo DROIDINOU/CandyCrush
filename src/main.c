@@ -153,7 +153,7 @@ int main()
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-
+                // changer ca
                 int ligne, colonne, ligne1, colonne1;
                 LireQuatreCoordonnees(&ligne, &colonne, &ligne1, &colonne1);
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
@@ -171,7 +171,7 @@ int main()
         niveaux[0].compteurNiveau += 1;
     }
 
-    printf("FIN DU JEU\n");
+    printf(MESSAGEETATJEU[4]);
 
     return 0;
 }

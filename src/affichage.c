@@ -8,6 +8,8 @@
 #include "constante.h"
 
 /*____________________________________________________________________________________________________________________________
+
+
 -> Params : grille - coordonnées pions (2) - queue
 -> Lire coordonnées pions choisis par utilisateur
 -> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE

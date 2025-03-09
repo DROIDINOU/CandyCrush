@@ -52,7 +52,7 @@ Tant que gelatines inferieures au nombre fixe => placement des gelatines avec co
 void initialiserGelatines(GrilleBonbons *grille)
 {
 
-    int nombreGelatine = rand() % 2 + 1; // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % niveaux[niveaux[0].compteurNiveau].obstacleNiveau.randomGelatine + niveaux[niveaux[0].compteurNiveau].obstacleNiveau.randomGelatine; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -322,7 +322,6 @@ ________________________________________________________________________________
 void Verification(GrilleBonbons *grille, Queue *q)
 {
     grille->estVerifiee = 1;
-    // a changer ceci ne sert plus a rien !!
 
     imprimer_queue(q);
 
@@ -342,8 +341,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
 
                 Actions action = {"LECTURE", {0, 0}, {0, 0}, false};
                 enfiler(q, action);
-                // printf("oooooooooooooooooooo\n");
-                grille->gelatinePresente = true; // On détecte de la gélatine
+                // supprimer plus pas utile
                 return;
             }
         }

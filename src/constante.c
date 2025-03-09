@@ -23,12 +23,13 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
     {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"}};
 
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
-    "Vous avez epuise tous vos coups. Fin de la partie.\n",
+    "Vous avez epuise tous vos coups.\n",
     "Felicitations! Vous accedez u niveau suivant!\n",
     " Votre score est de :\n",
-    "Vous avez perdu. Essayez encore.\n"};
+    "Vous avez perdu. Essayez encore.\n",
+    "Fin du jeu\n"};
 
 Niveaux niveaux[FINALNIVEAU] = {
+    {{5, 0}, {"Gelatine", 1}, 0},
     {{3, 0}, {"Gelatine", 2}, 0},
-    {{1, 0}, {"Blocage", 4}, 1},
-    {{2, 0}, {"Explosion", 8}, 2}};
+    {{2, 0}, {"Gelatine", 4}, 0}};
