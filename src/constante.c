@@ -4,9 +4,12 @@
                                  **** CONSTANTES
      -> Tableau de messages et de réponses attendues
      -> Parametres : NOMBREMESSAGES - MAXLONGUEUR
-     -> Niveaux
+     -> Structure des Niveaux
      -> Elements : coupsNiveau - obstacleNiveau - compteurNiveau
-___________________________________________________________________________________________________________________
+               -> coupsNiveau : nombre de coups à jouer (int) - coups joués (int)
+               -> obstacleNiveau : type d'obstacle (char) - nombre de gelatines (int)
+               -> compteurNiveau : niveau actuel (int)
+_____________________________________________________________________________________________
  */
 
 const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {

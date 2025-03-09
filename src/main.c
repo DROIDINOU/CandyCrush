@@ -146,6 +146,9 @@ int main()
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
+                niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
+                printf("coups joues = %d\n", niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues);
+                printf("coups a jouer = %d\n", niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer);
             }
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
@@ -164,9 +167,8 @@ int main()
         }
 
         // Passer au niveau suivant
-        printf("Avant: compteurNiveau = %d\n", niveaux[0].compteurNiveau);
+
         niveaux[0].compteurNiveau += 1;
-        printf("Après: compteurNiveau = %d\n", niveaux[0].compteurNiveau);
     }
 
     printf("FIN DU JEU\n");

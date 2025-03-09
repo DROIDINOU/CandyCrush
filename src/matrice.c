@@ -93,6 +93,7 @@ void initialiserGrille(GrilleBonbons *grille)
     grille->estVerifiee = 0;
     grille->calcX = 0; // mettre ca ici ???
     grille->calcY = 0; // mettre ca ici ???
+    grille->gelatinePresente = true;
 
     initialiserBonbons(grille);
     initialiserGelatines(grille);
@@ -312,6 +313,13 @@ void Verification(GrilleBonbons *grille, Queue *q)
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
 
     imprimer_queue(q);
+
+    if (niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues == niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer)
+    {
+        niveaux[0].compteurNiveau = FINALNIVEAU;
+        printf("fin de partie ca marche enfin..................\n");
+        return;
+    }
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -332,6 +340,8 @@ void Verification(GrilleBonbons *grille, Queue *q)
     // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
     if (!gelatinePresente)
     {
+        grille->gelatinePresente = false;
+
         printf("FIN NIVEAU\n");
     }
     return;
