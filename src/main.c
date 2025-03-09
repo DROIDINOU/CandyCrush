@@ -112,9 +112,9 @@ int main()
     -> Afficher FIN DU JEU
     ___________________________________________________________________________________________________________________________   */
 
-    while (niveaux[3].compteurNiveau < FINALNIVEAU)
+    while (niveaux[0].compteurNiveau < FINALNIVEAU)
     {
-        printf("Vous venez d'entrer dans le Niveau %d\n", niveaux[3].compteurNiveau + 1);
+        printf("Vous venez d'entrer dans le Niveau %d\n", niveaux[0].compteurNiveau + 1);
         Actions action = {"INITIALISATION", {0, 0}, {0, 0}, true};
         enfiler(&q, action);
 
@@ -164,7 +164,9 @@ int main()
         }
 
         // Passer au niveau suivant
-        niveaux[3].compteurNiveau++;
+        printf("Avant: compteurNiveau = %d\n", niveaux[0].compteurNiveau);
+        niveaux[0].compteurNiveau += 1;
+        printf("Après: compteurNiveau = %d\n", niveaux[0].compteurNiveau);
     }
 
     printf("FIN DU JEU\n");

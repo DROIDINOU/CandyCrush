@@ -38,17 +38,14 @@ typedef struct
 {
     char typeObstacle[20];
     int randomGelatine;
-
 } Obstacles;
 
 typedef struct
 {
-    Coups coupsNiveau[FINALNIVEAU];
-    Obstacles obstacleNiveau[FINALNIVEAU]; // bool verificationFaite;  // a rajouter pour se passer du boolean en params dans verificationinit et calcul
-    int compteurNiveau;
-
+    Coups coupsNiveau;        //  Juste UN seul coup par niveau
+    Obstacles obstacleNiveau; //  Juste UN seul obstacle par niveau
+    int compteurNiveau;       //  Niveau actuel
 } Niveaux;
 
 extern Niveaux niveaux[FINALNIVEAU];
-
 #endif // CONSTANTS_H
