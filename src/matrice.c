@@ -310,6 +310,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 void Verification(GrilleBonbons *grille, Queue *q)
 {
     grille->estVerifiee = 1;
+    // a changer ceci ne sert plus a rien !!
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
 
     imprimer_queue(q);
