@@ -1,9 +1,9 @@
 #include "queue.h"
-#include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+#include "constante.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h> // Inclure pour utiliser strcpy et strcmp
+#include <string.h>
 
 void initialiser_queue(Queue *q)
 {
