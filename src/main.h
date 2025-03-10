@@ -4,15 +4,13 @@
 #define NIVEAU1 0
 #define NIVEAU2 1
 #define NIVEAU3 2
-#define NOMBREMESSAGES 4
-#define MAXLONGUEUR 100
 // Inclure les autres fichiers d'en-tête nécessaires
 #include "affichage.h" // Pour afficher_grille
 #include "matrice.h"   // Pour initialiser_grille et GrilleBonbons
 #include "queue.h"     // Pour Queue et fonctions associées
 #include "constante.h" // Pour les constantes définies dans constante.c
 
-int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index);
+int ObtenirReponseAuMessage(int index);
 void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2);
 
 /* CECI EST PEUT ETRE MIEUX typedef struct {

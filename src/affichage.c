@@ -12,7 +12,7 @@
 
 -> Params : grille - coordonnées pions (2) - queue
 -> Lire coordonnées pions choisis par utilisateur
--> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE
+-> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE avec les coordonnées des pions
 ______________________________________________________________________________________________________________________________
 */
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,

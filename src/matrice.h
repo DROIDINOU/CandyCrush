@@ -4,8 +4,6 @@
 #include "queue.h"
 #include <stdbool.h>
 #include "constante.h"
-#define NOMBREMESSAGES 4
-#define MAXLONGUEUR 100
 
 /***************************************************************************************************************************
                                                   INIT GRILLE

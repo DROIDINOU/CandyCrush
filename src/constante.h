@@ -1,10 +1,11 @@
+#include <stdbool.h>
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#include <stdbool.h>
-
 #define TAILLE 10
-#define NOMBREMESSAGES 4
+#define NOMBREMESSAGES 2
 #define MAXLONGUEUR 100
+#define LONGUEURMESSAGEETREPONSE 40
+
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 5
 
@@ -16,6 +17,12 @@ typedef struct
 } Case;
 
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
+
+typedef struct
+{
+    char message[LONGUEURMESSAGEETREPONSE];
+    int reponseChiffre;
+} MessagesEtReponses;
 
 typedef struct
 {
@@ -46,10 +53,11 @@ typedef struct
 
 typedef struct
 {
-    Coups coupsNiveau;        //  Juste UN seul coup par niveau
-    Obstacles obstacleNiveau; //  Juste UN seul obstacle par niveau
-    int compteurNiveau;       //  Niveau actuel
+    Coups coupsNiveau;
+    Obstacles obstacleNiveau;
+    int compteurNiveau;
 } Niveaux;
 
+extern MessagesEtReponses MessagesReponses[NOMBREMESSAGES];
 extern Niveaux niveaux[FINALNIVEAU];
-#endif // CONSTANTS_H
+#endif

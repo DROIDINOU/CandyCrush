@@ -1,29 +1,33 @@
 #include "queue.h"
-#include "constante.h"  // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+#include "constante.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h> // Inclure pour utiliser strcpy et strcmp
+#include <string.h>
 
-
-void initialiser_queue(Queue *q) {
+void initialiser_queue(Queue *q)
+{
     printf("Initialisation de la queue\n");
     q->debut = 0;
     q->fin = -1;
     q->taille = 0;
 }
 
-bool est_vide(Queue *q) {
+bool est_vide(Queue *q)
+{
     printf("taille de la queue :");
     return q->taille == 0;
 }
 
-bool est_pleine(Queue *q) {
+bool est_pleine(Queue *q)
+{
     return q->taille == LONGUEUR;
 }
 
-void enfiler(Queue *q, Actions action) {
-    if (est_pleine(q)) {
+void enfiler(Queue *q, Actions action)
+{
+    if (est_pleine(q))
+    {
         fprintf(stderr, "Erreur : la queue est pleine\n");
         exit(EXIT_FAILURE);
     }
@@ -32,8 +36,10 @@ void enfiler(Queue *q, Actions action) {
     q->taille++;
 }
 
-Actions defiler(Queue *q) {
-    if (q->taille == 0) {
+Actions defiler(Queue *q)
+{
+    if (q->taille == 0)
+    {
         Actions emptyAction;
         strcpy(emptyAction.actionName, "QUEUE_VIDE");
         emptyAction.pion1.x = 0;
@@ -48,15 +54,18 @@ Actions defiler(Queue *q) {
     return action;
 }
 
-void imprimer_queue(Queue *q) {
-    if (est_vide(q)) {
+void imprimer_queue(Queue *q)
+{
+    if (est_vide(q))
+    {
         printf("La queue est vide.\n");
         return;
     }
 
-    //printf("Contenu de la queue :\n");
+    // printf("Contenu de la queue :\n");
     int index = q->debut;
-    for (int i = 0; i < q->taille; i++) {
+    for (int i = 0; i < q->taille; i++)
+    {
         Actions action = q->elements[index];
         printf("Action: %s, Pion1: (%d, %d), Pion2: (%d, %d)\n",
                action.actionName,
@@ -66,10 +75,3 @@ void imprimer_queue(Queue *q) {
         index = (index + 1) % LONGUEUR;
     }
 }
-
-/*
-int main() {
-   Queue q;
-   return 0;
-}
-*/

@@ -22,13 +22,13 @@ ________________________________________________________________________________
 */
 
 // a ameliorer et a deplacer dans main ou creer fichier
-int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
+int ObtenirReponseAuMessage(int index)
 {
     int reponse;
     do
     {
-        printf("%s", message[index][0]);     // Affiche le message
-        int result = scanf(" %d", &reponse); // Lit un seul caractère
+        printf("%s %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
+        int result = scanf(" %d", &reponse);                                                        // Lit un seul caractère
         while (getchar() != '\n')
             ;
 
@@ -37,23 +37,23 @@ int ObtenirReponseAuMessage(const char message[][3][MAXLONGUEUR], int index)
         {
             // printf("Reponse invalide. Essayez encore.\n");
         }
-    } while (reponse < 1 || reponse > 21); // Si la réponse n'est pas valide, on redemande
+    } while (reponse < 1 || reponse > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
 
-    return reponse - 1;
+    return reponse - 1; // retourne index programmeur
 }
 
 void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 {
-    *x1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    *x1 = ObtenirReponseAuMessage(0);
     printf("x1 = %d\n", *x1);
 
-    *y1 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    *y1 = ObtenirReponseAuMessage(1);
     printf("y1 = %d\n", *y1);
 
-    *x2 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    *x2 = ObtenirReponseAuMessage(0);
     printf("x2 = %d\n", *x2);
 
-    *y2 = ObtenirReponseAuMessage(MESSAGEETREPONSESATTENDUES, 3);
+    *y2 = ObtenirReponseAuMessage(1);
     printf("y2 = %d\n", *y2);
 }
 
@@ -83,6 +83,7 @@ int main()
     GrilleBonbons maGrille; // Declaration de la structure grille de bonbons
     Queue q;                // Declaration de la queue q
     initialiser_queue(&q);  // Initialisation de la queue q
+    int ligne, colonne, ligne1, colonne1;
 
     /*____________________________________________________________________________________________________________________________
 
@@ -147,16 +148,14 @@ int main()
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
-                printf("coups joues = %d\n", niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues);
-                printf("coups a jouer = %d\n", niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer);
             }
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
                 // changer ca
-                int ligne, colonne, ligne1, colonne1;
                 LireQuatreCoordonnees(&ligne, &colonne, &ligne1, &colonne1);
                 LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
+                // LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {

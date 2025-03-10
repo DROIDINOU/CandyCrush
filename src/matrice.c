@@ -258,7 +258,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     int y = grille->calcY;
     if (grille->estVerifiee == 1)
     {
-        printf("Verification déjà faite\n");
+        printf("Verification deje faite\n");
         Actions verification = {"VERIFICATION", {0, 0}, {0, 0}, false};
         enfiler(q, verification);
         return;
@@ -290,7 +290,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Si on a atteint la fin, on peut enchaîner AFFICHAGE
     if (grille->calcX >= TAILLE)
     {
-        printf("Fin du parcours : pas d'alignement trouvé.\n");
+        printf("Fin du parcours : pas d alignement trouve.\n");
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
         grille->calcX = 0;
         grille->calcY = 0;
@@ -337,7 +337,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
                     printf(MESSAGEETATJEU[0]);
                     return;
                 }
-                printf("Bonbon gélatine toujours présent\n");
+                printf("Bonbon gelatine toujours present\n");
 
                 Actions action = {"LECTURE", {0, 0}, {0, 0}, false};
                 enfiler(q, action);
@@ -407,7 +407,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
         }
     }
-    printf("\n Après suppression et chute des bonbons :\n");
+    printf("\n Apres suppression et chute des bonbons :\n");
     // afficher_grille(grille);
 
     // Vérification pour éviter la suppression horizontale en double

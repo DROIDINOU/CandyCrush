@@ -15,12 +15,7 @@
 
 _____________________________________________________________________________________________
  */
-
-const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
-    {"\nVoulez-vous continuer?", "O", "N"},
-    {"\nMode affichage simple ou complet?", "S", "C"},
-    {"Veuillez entrer la colonne (a, b, c, d, e, f, g, h) : ", "abcdefgh"},
-    {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"}};
+// changer ca en tableau de structure
 
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Vous avez epuise tous vos coups.\n",
@@ -28,6 +23,10 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     " Votre score est de :\n",
     "Vous avez perdu. Essayez encore.\n",
     "Fin du jeu\n"};
+
+MessagesEtReponses MessagesReponses[NOMBREMESSAGES] = {
+    {"Veuillez entrer la colonne 1 a", TAILLE},
+    {"Veuillez entrer la ligne 1 a", TAILLE}};
 
 Niveaux niveaux[FINALNIVEAU] = {
     {{5, 0}, {"Gelatine", 1}, 0},
