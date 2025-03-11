@@ -9,21 +9,22 @@
                                  **** IMPLEMENTATION DES FONCTIONS DE LA QUEUE
 
   *** Fonctions : InitialiserQueue - EstVide - EstPleine - Enfiler - Defiler - ImprimerQueue
-   ** Parametres : q - action (action seulement pour enfiler)
+   ** Parametres : sructure Queue - structure Actions
 -> InitialiserQueue : Initialisation de la queue
 -> EstVide : Verifie si la queue est vide
 -> EstPleine : Verifie si la queue est pleine
 > Enfiler :
-       - Si la queue est pleine, affiche un message d'erreur et arrete le programme
+       - Si la queue est pleine, affiche un message d'erreur
        - sinon ajoute l'action a la fin de la queue
 -> Defiler :
        - Si la queue est vide, retourne une action vide
-       - sinon retourne l'action
+       - sinon retourne l'action en tete de la queue (debut)
 -> ImprimerQueue : Affiche le contenu de la queue
 
 ___________________________________________________________________________________________________________________
  */
 
+// Initialisation des elements de la queue (debut, fin et taille)
 void InitialiserQueue(Queue *q)
 {
     printf("Initialisation de la queue\n");
@@ -32,11 +33,13 @@ void InitialiserQueue(Queue *q)
     q->taille = 0;
 }
 
+// Verifie si la queue est vide (taille = 0)
 bool EstVide(Queue *q)
 {
     return q->taille == 0;
 }
 
+// Verifie si la queue est pleine (taille = LONGUEURQ)
 bool EstPleine(Queue *q)
 {
     return q->taille == LONGUEURQ;
@@ -46,12 +49,11 @@ void Enfiler(Queue *q, Actions *action)
 {
     if (EstPleine(q))
     {
-        fprintf(stderr, "Erreur : la queue est pleine\n");
-        exit(EXIT_FAILURE);
+        printf("Erreur : la queue est pleine\n");
     }
-    q->fin = (q->fin + 1) % LONGUEURQ;
-    q->elements[q->fin] = *action;
-    q->taille++;
+    q->fin = (q->fin + 1) % LONGUEURQ; // Incrementer la fin de la queue et revenir au debut si on est a la fin
+    q->elements[q->fin] = *action;     // Ajouter l'action
+    q->taille++;                       // Incrementer la taille de la queue
 }
 
 Actions Defiler(Queue *q)
@@ -67,11 +69,12 @@ Actions Defiler(Queue *q)
         return emptyAction;
     }
     Actions action = q->elements[q->debut];
-    q->debut = (q->debut + 1) % LONGUEURQ;
-    q->taille--;
+    q->debut = (q->debut + 1) % LONGUEURQ; // Incrementer le debut de la queue et revenir au debut si on est a la fin
+    q->taille--;                           // Decrementer la taille de la queue
     return action;
 }
 
+// fonction de debug a supprimer par apres
 void ImprimerQueue(Queue *q)
 {
     if (EstVide(q))
