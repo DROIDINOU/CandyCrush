@@ -5,6 +5,15 @@
 #include <stdbool.h>
 #include <string.h>
 
+/*________________________________________________________________________________________________________________
+                                 **** IMPLEMENTATION DES FONCTIONS DE LA QUEUE
+
+  *** Fonctions : initialiser_queue - est_vide - est_pleine - enfiler - defiler - imprimer_queue
+  -> Parametres : q - action
+
+___________________________________________________________________________________________________________________
+ */
+
 void initialiser_queue(Queue *q)
 {
     printf("Initialisation de la queue\n");
@@ -21,7 +30,7 @@ bool est_vide(Queue *q)
 
 bool est_pleine(Queue *q)
 {
-    return q->taille == LONGUEUR;
+    return q->taille == LONGUEURQ;
 }
 
 void enfiler(Queue *q, Actions action)
@@ -31,7 +40,7 @@ void enfiler(Queue *q, Actions action)
         fprintf(stderr, "Erreur : la queue est pleine\n");
         exit(EXIT_FAILURE);
     }
-    q->fin = (q->fin + 1) % LONGUEUR;
+    q->fin = (q->fin + 1) % LONGUEURQ;
     q->elements[q->fin] = action;
     q->taille++;
 }
@@ -49,7 +58,7 @@ Actions defiler(Queue *q)
         return emptyAction;
     }
     Actions action = q->elements[q->debut];
-    q->debut = (q->debut + 1) % LONGUEUR;
+    q->debut = (q->debut + 1) % LONGUEURQ;
     q->taille--;
     return action;
 }
@@ -72,6 +81,6 @@ void imprimer_queue(Queue *q)
                action.pion1.x, action.pion1.y,
                action.pion2.x, action.pion2.y);
 
-        index = (index + 1) % LONGUEUR;
+        index = (index + 1) % LONGUEURQ;
     }
 }
