@@ -1,3 +1,4 @@
+/*
 #include "raylib.h"
 #include "matrice.h"
 #include "main.h"
@@ -202,9 +203,9 @@ int main()
     printf("FIN DU JEU\n");
 
     return 0;
-}
+}*/
 
-/* MESSAGE D ENTREE FONCTIONNE MAIS PLUS LE RESTE #include "raylib.h"
+#include "raylib.h"
 #include "matrice.h"
 #include "main.h"
 #include "affichage.h"
@@ -241,17 +242,17 @@ int main()
         if (IsKeyPressed(KEY_SPACE))
         { // Quand ESPACE est pressé, démarre le jeu
             jeuDemarre = true;
+            // Réinitialisation après l'écran de démarrage
         }
 
         EndDrawing();
     }
 
-    // === CHARGEMENT DES RESSOURCES ===
     Texture2D textures[5];
-    textures[0] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png");
-    textures[1] = LoadTexture("../candyimages/poignee_de_bonbons.png");
-    textures[2] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png");
-    textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png");
+    textures[0] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png");                                                                             // Violet
+    textures[1] = LoadTexture("../candyimages/poignee_de_bonbons.png");                                                                                           // Rouge
+    textures[2] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"); // Bleu
+    textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png");                                                                                     // Vert
     textures[4] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png");
 
     for (int i = 0; i < 5; i++)
@@ -262,8 +263,10 @@ int main()
         }
     }
 
-    // === Initialisation du Jeu ===
+    // Un seul niveau pour l'exemple
     int niveau = 0;
+
+    // Initialisation de la grille et de la queue
     GrilleBonbons maGrille;
     maGrille.lignes = TAILLE;
     maGrille.colonnes = TAILLE;
@@ -272,21 +275,23 @@ int main()
     initialiser_queue(&q);
     maGrille.estVerifiee = 0;
 
+    // Ajout d'une action d'initialisation
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
     enfiler(&q, initAction);
+    Actions action;
 
     bool attenteClics = false;
     int clicCompteur = 0;
     int coordonneesClic[4] = {-1, -1, -1, -1};
-
-    // === BOUCLE PRINCIPALE DU JEU ===
+    // Boucle principale Raylib
     while (!WindowShouldClose() && niveau < 1)
     {
+        // Traitement d'une action par frame (si la file n'est pas vide)
         if (q.taille > 0)
         {
             Actions action = defiler(&q);
             maGrille.suppressionsRestantes = 0;
-            strcpy(maGrille.lastAction, action.actionName);
+            strcpy(maGrille.lastAction, action.actionName); // On mémorise l'action traitée
 
             if (strcmp(action.actionName, "CALCUL") == 0)
             {
@@ -297,11 +302,13 @@ int main()
             {
                 printf("Traitement de SUPPRESSIONV\n");
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                usleep(500 * 1000);
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 printf("Traitement de SUPPRESSIONH\n");
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                usleep(500 * 1000);
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
@@ -315,21 +322,78 @@ int main()
                 maGrille.estVerifiee = 0;
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
+            else if (strcmp(action.actionName, "LECTURE") == 0)
+            {
+                printf("Traitement de LECTURE via clics de souris\n");
+                attenteClics = true;
+                clicCompteur = 0; // Réinitialise le compteur pour les deux clics
+            }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
                 printf("Initialisation\n");
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
+            // Vous pouvez conserver ou supprimer ici l'appel à l'affichage selon vos besoins.
+            else if (strcmp(action.actionName, "AFFICHAGE") == 0)
+            {
+                printf("Action : AFFICHAGE\n");
+                // On peut ne pas dupliquer l'affichage ici puisqu'il sera effectué en fin de boucle.
+            }
         }
 
-        // === AFFICHAGE DU JEU ===
+        // Si on est en mode "LECTURE" par clic, on vérifie les clics de souris
+        if (attenteClics)
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                // Récupération de la position de la souris
+                Vector2 posSouris = GetMousePosition();
+
+                // Reproduire le calcul des positions tel que dans afficher_grille
+                int tailleCase = 50;
+                int largeurFenetre = 1000;
+                int hauteurFenetre = 1000;
+                int grilleLargeur = maGrille.colonnes * tailleCase;
+                int grilleHauteur = maGrille.lignes * tailleCase;
+                int offsetX = (largeurFenetre - grilleLargeur) / 2;
+                int offsetY = (hauteurFenetre - grilleHauteur) / 2;
+
+                // Position relative dans la grille
+                int xRel = posSouris.x - offsetX;
+                int yRel = posSouris.y - offsetY;
+
+                // Vérifier que le clic se situe bien dans la zone de la grille
+                if (xRel >= 0 && xRel < grilleLargeur && yRel >= 0 && yRel < grilleHauteur)
+                {
+                    int colonne = xRel / tailleCase;
+                    int ligne = yRel / tailleCase;
+                    coordonneesClic[clicCompteur * 2] = ligne;
+                    coordonneesClic[clicCompteur * 2 + 1] = colonne;
+                    clicCompteur++;
+                    printf("Clic %d: ligne=%d, colonne=%d\n", clicCompteur, ligne, colonne);
+                    // Une fois les deux clics effectués, appeler la fonction de lecture
+                    if (clicCompteur == 2)
+                    {
+                        LirePionsAChanger(&maGrille, coordonneesClic[0], coordonneesClic[1],
+                                          coordonneesClic[2], coordonneesClic[3], &q);
+                        attenteClics = false;
+                    }
+                }
+                else
+                {
+                    printf("Clic hors de la grille, ignoré\n");
+                }
+            }
+        }
+
+        // AFFICHAGE A CHAQUE FRAME
         BeginDrawing();
         ClearBackground(RAYWHITE);
         afficher_grille(&maGrille, textures, &q);
         EndDrawing();
 
-        // Vérification de fin du niveau
+        // Vérification de fin du niveau (ex: plus de gélatine ?)
         bool gelatinePresente = false;
         for (int i = 0; i < maGrille.lignes; i++)
         {
@@ -351,7 +415,7 @@ int main()
         }
     }
 
-    // === LIBÉRATION DES RESSOURCES ===
+    // Fermeture du jeu
     for (int i = 0; i < 5; i++)
     {
         UnloadTexture(textures[i]);
@@ -360,4 +424,4 @@ int main()
     printf("FIN DU JEU\n");
 
     return 0;
-}*/
+}
