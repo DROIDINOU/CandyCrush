@@ -8,13 +8,23 @@
 /*________________________________________________________________________________________________________________
                                  **** IMPLEMENTATION DES FONCTIONS DE LA QUEUE
 
-  *** Fonctions : initialiser_queue - est_vide - est_pleine - enfiler - defiler - imprimer_queue
-  -> Parametres : q - action
+  *** Fonctions : InitialiserQueue - EstVide - EstPleine - Enfiler - Defiler - ImprimerQueue
+   ** Parametres : q - action (action seulement pour enfiler)
+-> InitialiserQueue : Initialisation de la queue
+-> EstVide : Verifie si la queue est vide
+-> EstPleine : Verifie si la queue est pleine
+> Enfiler :
+       - Si la queue est pleine, affiche un message d'erreur et arrete le programme
+       - sinon ajoute l'action a la fin de la queue
+-> Defiler :
+       - Si la queue est vide, retourne une action vide
+       - sinon retourne l'action
+-> ImprimerQueue : Affiche le contenu de la queue
 
 ___________________________________________________________________________________________________________________
  */
 
-void initialiser_queue(Queue *q)
+void InitialiserQueue(Queue *q)
 {
     printf("Initialisation de la queue\n");
     q->debut = 0;
@@ -22,30 +32,29 @@ void initialiser_queue(Queue *q)
     q->taille = 0;
 }
 
-bool est_vide(Queue *q)
+bool EstVide(Queue *q)
 {
-    printf("taille de la queue :");
     return q->taille == 0;
 }
 
-bool est_pleine(Queue *q)
+bool EstPleine(Queue *q)
 {
     return q->taille == LONGUEURQ;
 }
 
-void enfiler(Queue *q, Actions action)
+void Enfiler(Queue *q, Actions *action)
 {
-    if (est_pleine(q))
+    if (EstPleine(q))
     {
         fprintf(stderr, "Erreur : la queue est pleine\n");
         exit(EXIT_FAILURE);
     }
     q->fin = (q->fin + 1) % LONGUEURQ;
-    q->elements[q->fin] = action;
+    q->elements[q->fin] = *action;
     q->taille++;
 }
 
-Actions defiler(Queue *q)
+Actions Defiler(Queue *q)
 {
     if (q->taille == 0)
     {
@@ -63,9 +72,9 @@ Actions defiler(Queue *q)
     return action;
 }
 
-void imprimer_queue(Queue *q)
+void ImprimerQueue(Queue *q)
 {
-    if (est_vide(q))
+    if (EstVide(q))
     {
         printf("La queue est vide.\n");
         return;

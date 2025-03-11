@@ -82,7 +82,7 @@ int main()
 
     GrilleBonbons maGrille; // Declaration de la structure grille de bonbons
     Queue q;                // Declaration de la queue q
-    initialiser_queue(&q);  // Initialisation de la queue q
+    InitialiserQueue(&q);   // Initialisation de la queue q
     int ligne, colonne, ligne1, colonne1;
 
     /*____________________________________________________________________________________________________________________________
@@ -117,13 +117,13 @@ int main()
     {
         printf("Vous venez d'entrer dans le Niveau %d\n", niveaux[0].compteurNiveau + 1);
         Actions action = {"INITIALISATION", {0, 0}, {0, 0}, true};
-        enfiler(&q, action);
+        Enfiler(&q, &action);
 
         while (q.taille > 0)
         {
 
             // Récupérer l'action en haut de la queue
-            action = defiler(&q);
+            action = Defiler(&q);
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
                 afficher_grille(&maGrille, &q);
@@ -161,7 +161,7 @@ int main()
             {
                 initialiserGrille(&maGrille);
                 Actions action = {"CALCUL", {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
-                enfiler(&q, action);
+                Enfiler(&q, &action);
             }
         }
 

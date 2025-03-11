@@ -19,7 +19,7 @@ ________________________________________________________________________________
 
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Vous avez epuise tous vos coups.\n",
-    "Felicitations! Vous accedez u niveau suivant!\n",
+    "Felicitations! Vous accedez au niveau suivant!\n",
     " Votre score est de :\n",
     "Vous avez perdu. Essayez encore.\n",
     "Fin du jeu\n"};

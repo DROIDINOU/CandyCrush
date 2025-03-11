@@ -9,7 +9,6 @@
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 5
 
-extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
 typedef struct
 {
     char pion;

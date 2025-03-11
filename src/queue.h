@@ -32,10 +32,10 @@ typedef struct
     int taille;                  // Taille actuelle de la queue
 } Queue;
 
-void initialiser_queue(Queue *q);
-bool est_vide(Queue *q);
-bool est_pleine(Queue *q);
-void enfiler(Queue *q, Actions action);
-Actions defiler(Queue *q);
-void imprimer_queue(Queue *q);
+void InitialiserQueue(Queue *q);
+bool EstVide(Queue *q);
+bool EstPleine(Queue *q);
+void Enfiler(Queue *q, Actions *action);
+Actions Defiler(Queue *q);
+void ImprimerQueue(Queue *q);
 #endif // QUEUE_H
