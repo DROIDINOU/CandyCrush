@@ -27,8 +27,8 @@ int ObtenirReponseAuMessage(int index)
     int reponse;
     do
     {
-        printf("%s %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
-        int result = scanf(" %d", &reponse);                                                        // Lit un seul caractère
+        printf("%s: %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
+        int result = scanf(" %d", &reponse);                                                         // Lit un seul caractère
         while (getchar() != '\n')
             ;
 
