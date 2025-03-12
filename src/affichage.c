@@ -72,19 +72,13 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 }
 
 /*____________________________________________________________________________________________________________________________
+                                       **** FONCTION D'AFFICHAGE
 
 
--> Params : grille - coordonnées pions (2) - queue
--> Lire coordonnées pions choisis par utilisateur
--> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE avec les coordonnées des pions
-______________________________________________________________________________________________________________________________
-*/
-
-/*____________________________________________________________________________________________________________________________
 -> Params : grille - queue
 -> Afficher la grille des bonbons
 -> Afficher la grille des gelatines
--> **** PLACER ACTION CALCUL DANS LA QUEUE
+-> Place une action calcul dans la queue
 ______________________________________________________________________________________________________________________________
 */
 
