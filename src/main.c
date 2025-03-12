@@ -8,21 +8,6 @@
 #include <time.h>
 #include <string.h>
 
-/*
- ____________________________________________________________________________________________________________________________
-
-                        **** FONCTIONS DE LECTURE DES ENTREES UTILISATEUR
-
-    -> Fonctions : ObtenirReponseAuMessage - LireQuatreCoordonnees
-    -> Parametres ObtenirReponseAuMessage  : message - index
-    -> Parametres LireQuatreCoordonnees : x1 - y1 - x2 - y2
-    -> ObtenirReponseAuMessage : Affiche le message et lit la reponse de l'utilisateur
-    -> LireQuatreCoordonnees : Lit les coordonnees des pions a changer
-___________________________________________________________________________________________________________________________
-*/
-
-// a ameliorer et a deplacer dans main ou creer fichier
-
 int main()
 {
 
@@ -71,7 +56,7 @@ int main()
                               -> Si l'action est DEPLACEMENT
                                       -> Deplacer les pions
                               -> Si l'action est LECTURE
-                                      - Lire les coordonnees des pions a changer (fonctions lecture entrees utilisateur)
+                                      - Lire les coordonnees des pions a changer
                               -> Si l'action est INITIALISATION
                                         -> Initialiser la grille
                                         -> Ajouter une action CALCUL avec les coordonnees de la premiere case

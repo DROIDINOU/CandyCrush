@@ -7,6 +7,24 @@
 #include "matrice.h"
 #include "constante.h"
 
+/*
+ ____________________________________________________________________________________________________________________________
+
+                        **** FONCTIONS DE LECTURE DES ENTREES UTILISATEUR
+
+    -> Fonctions : ObtenirReponseAuMessage - LireQuatreCoordonnees - LirePionsAChanger
+    -> Parametres ObtenirReponseAuMessage  : int index
+    -> Parametres LireQuatreCoordonnees : int *x1 - INT *y1 - int *x2 - INT *y2
+    -> Parametres LirePionsAChanger : GrilleBonbons *grille - int *coordonneeXPremierPion -
+                                     int *coordonneeYPremierPion - int *coordonneeXDeuxiemePion -
+                                     int *coordonneeYDeuxiemePion - Queue *q
+    -> ObtenirReponseAuMessage : Affiche le message et lit la reponse de l'utilisateur
+    -> LireQuatreCoordonnees : Lit les coordonnees des pions a changer
+    -> LirePionsAChanger : Lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
+                           avec les coordonnees des bonbons
+___________________________________________________________________________________________________________________________
+*/
+
 int ObtenirReponseAuMessage(int index)
 {
     int reponse;
