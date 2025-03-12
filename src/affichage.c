@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -6,6 +7,7 @@
 #include <locale.h>
 #include "matrice.h"
 #include "constante.h"
+// RESTE A FAIRE VERIFIER TOUS LES INCLUDE RESTE EST OK
 
 /*
  ____________________________________________________________________________________________________________________________
@@ -14,7 +16,7 @@
 
     -> Fonctions : ObtenirReponseAuMessage - LireQuatreCoordonnees - LirePionsAChanger
     -> Parametres ObtenirReponseAuMessage  : int index
-    -> Parametres LireQuatreCoordonnees : int *x1 - INT *y1 - int *x2 - INT *y2
+    -> Parametres LireQuatreCoordonnees : int *x1 - int *y1 - int *x2 - int *y2
     -> Parametres LirePionsAChanger : GrilleBonbons *grille - int *coordonneeXPremierPion -
                                      int *coordonneeYPremierPion - int *coordonneeXDeuxiemePion -
                                      int *coordonneeYDeuxiemePion - Queue *q
@@ -25,12 +27,14 @@
 ___________________________________________________________________________________________________________________________
 */
 
+// Affiche un message et lit la réponse de l'utilisateur
+// index est l'index du message dans le tableau MessagesReponses
 int ObtenirReponseAuMessage(int index)
 {
     int reponse;
     do
     {
-        printf("%s: %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
+        printf("%s: %d  ", MESSAGESREPONSES[index].message, MESSAGESREPONSES[index].reponseChiffre); // Affiche le message
         int result = scanf(" %d", &reponse);                                                         // Lit un seul caractère
         while (getchar() != '\n')
             ;
@@ -45,6 +49,7 @@ int ObtenirReponseAuMessage(int index)
     return reponse - 1; // retourne index programmeur
 }
 
+// lit les coordonnees entrees par l utilisateur pour le swap de pions
 void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 {
     *x1 = ObtenirReponseAuMessage(0);
@@ -60,6 +65,8 @@ void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
     printf("y2 = %d\n", *y2);
 }
 
+// lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
+// avec les coordonnees des bonbons
 void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
                        int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
                        int *coordonneeYDeuxiemePion, Queue *q)
@@ -81,6 +88,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 ______________________________________________________________________________________________________________________________
 */
 
+// affiche la grille des bonbons et la grille de la gelatine
 void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
     // affiche la grille des bonbons

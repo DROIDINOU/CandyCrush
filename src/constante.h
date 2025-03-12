@@ -21,7 +21,7 @@ typedef struct
 {
     char message[LONGUEURMESSAGEETREPONSE];
     int reponseChiffre;
-} MessagesEtReponses;
+} MessagesReponses;
 
 typedef struct
 {
@@ -57,6 +57,6 @@ typedef struct
     int compteurNiveau;
 } Niveaux;
 
-extern MessagesEtReponses MessagesReponses[NOMBREMESSAGES];
-extern Niveaux niveaux[FINALNIVEAU];
+extern MessagesReponses MESSAGESREPONSES[NOMBREMESSAGES];
+extern Niveaux NIVEAUX[FINALNIVEAU];
 #endif

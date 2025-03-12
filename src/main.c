@@ -26,22 +26,23 @@ int main()
         -> Initialisation nombres aleatoires
         -> Declaration de la structure grille de bonbons
         -> Declaration et Initialisation de la queue q
+        -> Declaration des variables ligne, colonne, ligne1, colonne1 (variables servant lors de l echange des
+           coordonnees des bonbons)
     ___________________________________________________________________________________________________________________________
     */
 
-    srand(time(NULL)); // Generateur de nombres aleatoires
-
-    GrilleBonbons maGrille; // Declaration de la structure grille de bonbons
-    Queue q;                // Declaration de la queue q
-    InitialiserQueue(&q);   // Initialisation de la queue q
-    int ligne, colonne, ligne1, colonne1;
+    srand(time(NULL));                    // Generateur de nombres aleatoires
+    GrilleBonbons maGrille;               // Declaration de la structure grille de bonbons
+    Queue q;                              // Declaration de la queue q
+    InitialiserQueue(&q);                 // Initialisation de la queue q
+    int ligne, colonne, ligne1, colonne1; // Declaration des variables ligne, colonne, ligne1, colonne1
 
     /*____________________________________________________________________________________________________________________________
 
                                                  BOUCLE DE JEU
     -> Tant que le nombre de niveaux est inferieur au niveau final
-    -> Enfiler l'ACTION d'initialisation
-    -> Tant que la queue n'est pas vide
+      -> Enfiler l'ACTION d'initialisation
+        -> Tant que la queue n'est pas vide
                        -> Recuperer l'action en haut de la queue
                               -> Si l'action est AFFICHAGE
                                  - Afficher la grille
@@ -60,13 +61,13 @@ int main()
                               -> Si l'action est INITIALISATION
                                         -> Initialiser la grille
                                         -> Ajouter une action CALCUL avec les coordonnees de la premiere case
-    -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
+      -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
     -> Afficher FIN DU JEU
     ___________________________________________________________________________________________________________________________   */
 
-    while (niveaux[0].compteurNiveau < FINALNIVEAU)
+    while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        printf("Vous venez d'entrer dans le Niveau %d\n", niveaux[0].compteurNiveau + 1);
+        printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
         Actions action = {"INITIALISATION", {0, 0}, {0, 0}, true};
         Enfiler(&q, &action);
 
@@ -98,7 +99,7 @@ int main()
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-                niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
+                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
             }
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
@@ -115,7 +116,7 @@ int main()
 
         // Passer au niveau suivant
 
-        niveaux[0].compteurNiveau += 1;
+        NIVEAUX[0].compteurNiveau += 1;
     }
 
     printf(MESSAGEETATJEU[4]);
