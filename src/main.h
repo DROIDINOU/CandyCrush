@@ -10,9 +10,6 @@
 #include "queue.h"     // Pour Queue et fonctions associées
 #include "constante.h" // Pour les constantes définies dans constante.c
 
-int ObtenirReponseAuMessage(int index);
-void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2);
-
 /* CECI EST PEUT ETRE MIEUX typedef struct {
     int coupAJouer;   // Nombre total de coups possibles
     int coupsJoues;   // Nombre de coups effectués

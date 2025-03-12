@@ -7,6 +7,52 @@
 #include "matrice.h"
 #include "constante.h"
 
+int ObtenirReponseAuMessage(int index)
+{
+    int reponse;
+    do
+    {
+        printf("%s: %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
+        int result = scanf(" %d", &reponse);                                                         // Lit un seul caractère
+        while (getchar() != '\n')
+            ;
+
+        // Vérifie que la réponse est valide
+        if (result == -1)
+        {
+            // printf("Reponse invalide. Essayez encore.\n");
+        }
+    } while (reponse < 1 || reponse > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
+
+    return reponse - 1; // retourne index programmeur
+}
+
+void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
+{
+    *x1 = ObtenirReponseAuMessage(0);
+    printf("x1 = %d\n", *x1);
+
+    *y1 = ObtenirReponseAuMessage(1);
+    printf("y1 = %d\n", *y1);
+
+    *x2 = ObtenirReponseAuMessage(0);
+    printf("x2 = %d\n", *x2);
+
+    *y2 = ObtenirReponseAuMessage(1);
+    printf("y2 = %d\n", *y2);
+}
+
+void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
+                       int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
+                       int *coordonneeYDeuxiemePion, Queue *q)
+{
+    LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
+
+    // ajouter action ici dans la queue;
+    Actions action = {"DEPLACEMENT", {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
+    Enfiler(q, &action);
+}
+
 /*____________________________________________________________________________________________________________________________
 
 
@@ -15,15 +61,6 @@
 -> *** PLACER ACTION DEPLACEMENT DANS LA QUEUE avec les coordonnées des pions
 ______________________________________________________________________________________________________________________________
 */
-void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
-                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
-                       int coordonneeYDeuxiemePion, Queue *q)
-{
-    // ajouter action ici dans la queue;
-    printf("Deplacement de (%d,%d) vers (%d,%d)\n", coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
-    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
-    Enfiler(q, &action);
-}
 
 /*____________________________________________________________________________________________________________________________
 -> Params : grille - queue

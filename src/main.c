@@ -22,40 +22,6 @@ ________________________________________________________________________________
 */
 
 // a ameliorer et a deplacer dans main ou creer fichier
-int ObtenirReponseAuMessage(int index)
-{
-    int reponse;
-    do
-    {
-        printf("%s: %d  ", MessagesReponses[index].message, MessagesReponses[index].reponseChiffre); // Affiche le message
-        int result = scanf(" %d", &reponse);                                                         // Lit un seul caractère
-        while (getchar() != '\n')
-            ;
-
-        // Vérifie que la réponse est valide
-        if (result == -1)
-        {
-            // printf("Reponse invalide. Essayez encore.\n");
-        }
-    } while (reponse < 1 || reponse > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
-
-    return reponse - 1; // retourne index programmeur
-}
-
-void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
-{
-    *x1 = ObtenirReponseAuMessage(0);
-    printf("x1 = %d\n", *x1);
-
-    *y1 = ObtenirReponseAuMessage(1);
-    printf("y1 = %d\n", *y1);
-
-    *x2 = ObtenirReponseAuMessage(0);
-    printf("x2 = %d\n", *x2);
-
-    *y2 = ObtenirReponseAuMessage(1);
-    printf("y2 = %d\n", *y2);
-}
 
 int main()
 {
@@ -152,10 +118,7 @@ int main()
 
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-                // changer ca
-                LireQuatreCoordonnees(&ligne, &colonne, &ligne1, &colonne1);
-                LirePionsAChanger(&maGrille, ligne, colonne, ligne1, colonne1, &q);
-                // LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
+                LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
