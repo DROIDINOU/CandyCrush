@@ -74,7 +74,6 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 /*____________________________________________________________________________________________________________________________
                                        **** FONCTION D'AFFICHAGE
 
-
 -> Params : grille - queue
 -> Afficher la grille des bonbons
 -> Afficher la grille des gelatines
@@ -84,6 +83,7 @@ ________________________________________________________________________________
 
 void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
+    // affiche la grille des bonbons
     printf("Grille des Pions:\n");
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
@@ -94,6 +94,7 @@ void afficher_grille(GrilleBonbons *grille, Queue *q)
         printf("\n");
     }
 
+    // affiche la grille des gelatines
     printf("Grille de la Gelatine:\n");
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
