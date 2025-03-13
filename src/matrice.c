@@ -6,12 +6,8 @@
 #include "affichage.h"
 #include <string.h>
 
-// UNE ACTION A LA FOIS
-// A FAIRE INITIALISER DOIT VERIFIER TOUT DANS CALCUL
-// FAIRE FONCTION VERIFICATION
-// BONUS FAIRE FONCTION CASCADE
-// supprimer struct en double
-// FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
+// A FAIRE GERER LES CAS OU L UTILISATEUR ECHANGE DES MAUVAIS PIONS
+// LE CODE GERE LES ECHANGES DE PIONS OU QU ILS SOIENT !!!
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
@@ -24,15 +20,12 @@
 ___________________________________________________________________________________________________________________
  */
 
-/* ====================================================================================================
-Initialise les bonbons dans la grille
-Remplissage aléatoire des cases avec des couleurs
-========================================================================================================*/
-
+// Initialise les bonbons dans la grille
+// Remplissage aléatoire des cases avec des couleurs
 void initialiserBonbons(GrilleBonbons *grille)
 {
 
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
+    char couleurs[] = {'J', 'V', 'B', 'R', 'M'}; // on pourrait deplacer ca dans grille struct
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -43,16 +36,14 @@ void initialiserBonbons(GrilleBonbons *grille)
     }
 }
 
-/* ====================================================================================================
-Fixe un nombre aléatoire de gélatines dans la grille
-Initialise les gelatines a faux
-Tant que gelatines inferieures au nombre fixe => placement des gelatines avec coordonnees aleatoires
-========================================================================================================*/
+// Fixe un nombre aléatoire de gélatines dans la grille
+// Initialise les gelatines a faux
+// Tant que gelatines inferieures au nombre fixe => placement des gelatines avec coordonnees aleatoires
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
 
-    int nombreGelatine = rand() % niveaux[niveaux[0].compteurNiveau].obstacleNiveau.randomGelatine + niveaux[niveaux[0].compteurNiveau].obstacleNiveau.randomGelatine; // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomGelatine + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomGelatine; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -91,12 +82,13 @@ void initialiserGrille(GrilleBonbons *grille)
     grille->colonnes = TAILLE;
     grille->estInitialisee = 0;
     grille->estVerifiee = 0;
-    grille->calcX = 0; // mettre ca ici ???
-    grille->calcY = 0; // mettre ca ici ???
+    grille->calcX = 0;
+    grille->calcY = 0;
     grille->gelatinePresente = true;
+    grille->deplacement = 0;
 
-    initialiserBonbons(grille);
-    initialiserGelatines(grille);
+    initialiserBonbons(grille);   // initialise la grille de bonbons
+    initialiserGelatines(grille); // initialise la grille de gelatines
 }
 
 /*_______________________________________________________________________________________________________________
@@ -107,6 +99,8 @@ void initialiserGrille(GrilleBonbons *grille)
    -> Reinitialise element de la grille calcX et calcY a 0
    -> Echange des pions entre les deux coordonnees
 _______________________________________________________________________________________________________________*/
+
+// VA FALLOIR PRENDRE EN COMPTE LE CAS DES ERREURS DE DEPLACEMENT
 void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
                  int yPion1, int xPion2,
                  int yPion2)
@@ -115,8 +109,10 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     // Reinitialisation des elements de la grille
     grille->estVerifiee = 0;    // On doit re-vérifier la grille après le déplacement
     grille->estInitialisee = 1; // La grille a été initialisée
-    grille->calcX = 0;
-    grille->calcY = 0;
+    grille->deplacement = 1;    // on est en déplacement
+    grille->calcX = 0;          // même si possiblement redondant on remet calcX a 0 par securite
+    grille->calcY = 0;          // même si possiblement redondant on remet calcX a 0 par securite
+    grille->affiche = 1;        // apres le deplacement on doit afficher
 
     // Echange des pions
     char temp = grille->tableau[xPion1][yPion1].pion;                            // echange des pions via variable temporaire qui stocke le pion 1
@@ -141,19 +137,6 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
     }
     return false; // Action non trouvée
 }
-
-/*______________________________________________________________________________________________________________________________
-
-Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
-suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
-action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
-action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
-arrêter le programme*/
-
-// faut retourner pion sup et inf !!
-// prevoir une verification des victoires deja presentes
-
-/*_____________________________________________________________________________________________________________________________*/
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTION DE CALCUL
@@ -256,19 +239,31 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // 1) Récupérer la cellule en cours
     int x = grille->calcX;
     int y = grille->calcY;
+
+    if (grille->affiche && !grille->deplacement)
+    {
+        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        Enfiler(q, &aff);
+        grille->affiche = 0;
+        return;
+    }
+
     if (grille->estVerifiee == 1)
     {
         printf("Verification deje faite\n");
+        grille->estVerifiee = 0;
         Actions verification = {"VERIFICATION", {0, 0}, {0, 0}, false};
         Enfiler(q, &verification);
         return;
     };
 
-    if (grille->affiche)
+    if (grille->deplacement)
     {
-        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
-        Enfiler(q, &aff);
-        grille->affiche = 0;
+        if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
+        {
+            grille->affiche = 0;
+            grille->estVerifiee = 1;
+        }
         return;
     }
 
@@ -331,9 +326,9 @@ void Verification(GrilleBonbons *grille, Queue *q)
         {
             if (grille->tableau[i][j].gelatine)
             {
-                if (niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupsJoues == niveaux[niveaux[0].compteurNiveau].coupsNiveau.coupAJouer)
+                if (NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues == NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer)
                 {
-                    niveaux[0].compteurNiveau = FINALNIVEAU;
+                    NIVEAUX[0].compteurNiveau = FINALNIVEAU;
                     printf(MESSAGEETATJEU[0]);
                     return;
                 }
@@ -414,10 +409,12 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     int yDebut = *y1, yFin = *y1;
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
     grille->calcX = 0;
     grille->calcY = 0;
     grille->affiche = 1;
+    grille->deplacement = 0;
+
     Enfiler(q, &action);
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }
@@ -464,10 +461,11 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     int yDebut = *y1, yFin = *y1;
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"CALCUL", {*x1, *y1}, {*x2, *y2}, false};
+    Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
     grille->calcX = 0;
     grille->calcY = 0;
     grille->affiche = 1;
+    grille->deplacement = 0;
     Enfiler(q, &action);
     // afficher_grille(grille);
 
