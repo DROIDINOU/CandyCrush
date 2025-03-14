@@ -139,11 +139,12 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 }
 
 /*________________________________________________________________________________________________________________
-                                 **** SOUS FONCTION DE CALCUL
+                                 **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
 
-  -> Parametres : x et y - grille - queue
-  -> Verifie si un alignement est present
-  -> Si alignement present, ajoute une ACTION SUPPRESSIONV ou SUPPRESSIONH a la queue
+  -> Parametres : pointeurs int x et y - pointeur structure grille - pointeur structure queue
+  -> Verifie si un alignement vertical ou horizontal est present
+  -> Si alignement present, ajoute une ACTION SUPPRESSIONV ou SUPPRESSIONH a la queue et retourne true
+     sinon retourne false
 ___________________________________________________________________________________________________________________
  */
 
@@ -174,6 +175,7 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             i--;
         }
 
+        // si victoire verticale detectee
         if (compteur >= 3)
         {
             Actions supV = {"SUPPRESSIONV", {xDebut, *y}, {xFin, *y}, false};
@@ -202,20 +204,21 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             j--;
         }
 
+        // si victoire horizontale detectee
         if (compteur >= 3)
         {
             Actions supH = {"SUPPRESSIONH", {*x, yDebut}, {*x, yFin}, false};
             Enfiler(q, &supH);
-            return true;
+            return true; // On s'arrête (une seule action)
         }
     }
-    return false;
+    return false; // pas de victoire detectee
 }
 
 /***************************************************************************************************************************
                                  **** FONCTION CENTRALE DE CALCUL DES SUPPRESSIONS ET DES CASCADES
 
--> parametres : queue - grille - coordonnees des pions
+-> parametres : pointeur structure queue - pointeur structure grille - pointeur int coordonnees des pions
 -> Récupere la cellule en cours (x,y sont a 0 si calcul declenche a l initialisation si non on recupere les coordonnees des pions echanges)
 -> Si la grille est déjà vérifiée, on envoie une ACTION VERIFICATION
 -> Si element de la grille affiche est a 1 on envoie une ACTION AFFICHAGE et on remet directement affiche a 0
