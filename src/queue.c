@@ -8,17 +8,17 @@
 /*________________________________________________________________________________________________________________
                                  **** IMPLEMENTATION DES FONCTIONS DE LA QUEUE
 
-  *** Fonctions : InitialiserQueue - EstVide - EstPleine - Enfiler - Defiler - ImprimerQueue
-   ** Parametres : sructure Queue - structure Actions
+   *** Fonctions : InitialiserQueue - EstVide - EstPleine - Enfiler - Defiler - ImprimerQueue
+   **  Parametres : sructure Queue - structure Actions
 -> InitialiserQueue : Initialisation de la queue
 -> EstVide : Verifie si la queue est vide
 -> EstPleine : Verifie si la queue est pleine
-> Enfiler :
+-> Enfiler :
        - Si la queue est pleine, affiche un message d'erreur
        - sinon ajoute l'action a la fin de la queue
 -> Defiler :
        - Si la queue est vide, retourne une action vide
-       - sinon retourne l'action en tete de la queue (debut)
+       - sinon retourne l'action au debut de la queue
 -> ImprimerQueue : Affiche le contenu de la queue
 
 ___________________________________________________________________________________________________________________

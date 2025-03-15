@@ -5,8 +5,8 @@
 // Définition des messages d'état du jeu.
 // Type : tableau de characteres
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
-    "Vous avez épuisé tous vos coups.\n",
-    "Félicitations! Vous accédez au niveau suivant!\n",
+    "Vous avez epuise tous vos coups.\n",
+    "Felicitations! Vous accedez au niveau suivant!\n",
     "Votre score est de :\n",
     "Vous avez perdu. Essayez encore.\n",
     "Fin du jeu\n"};
@@ -15,8 +15,8 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
 // Type : tableau de MessagesReponses (structure définie dans constante.h).
 //        -élément de MessagesReponses:
 //            - message (tableau de characteres): message d'affichage pour l'utilisateur.
-//            - reponseChiffre(int): valeur attendue pour l'entrée utilisateur.
-MessagesReponses MESSAGESREPONSES[NOMBREMESSAGES] = {
+//            - nombreLigneOuColonne(int): valeur attendue pour l'entrée utilisateur.
+MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
     {"Veuillez entrer la colonne 1 a ", TAILLE},
     {"Veuillez entrer la ligne 1 a ", TAILLE}};
 

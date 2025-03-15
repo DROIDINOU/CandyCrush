@@ -34,8 +34,8 @@ int ObtenirReponseAuMessage(int index)
     int reponse;
     do
     {
-        printf("%s: %d  ", MESSAGESREPONSES[index].message, MESSAGESREPONSES[index].reponseChiffre); // Affiche le message
-        int result = scanf(" %d", &reponse);                                                         // Lit un seul caractère
+        printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne); // Affiche le message
+        int result = scanf(" %d", &reponse);                                                                           // Lit un seul caractère
         while (getchar() != '\n')
             ;
 
@@ -73,7 +73,6 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 {
     LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
 
-    // ajouter action ici dans la queue;
     Actions action = {"DEPLACEMENT", {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
     Enfiler(q, &action);
 }
@@ -84,7 +83,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 -> Params : grille - queue
 -> Afficher la grille des bonbons
 -> Afficher la grille des gelatines
--> Place une action calcul dans la queue
+-> Place une action calcul dans la queue (les coordonnees sont à 0)
 ______________________________________________________________________________________________________________________________
 */
 

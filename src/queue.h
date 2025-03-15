@@ -1,11 +1,11 @@
 
-#ifndef QUEUE_H
+#ifndef QUEUE_H // POSER LA QUESTION AU PROFESSEUR CONCERNANT LES GUARDS
 #define QUEUE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
-#define LONGUEURQ 300  // Taille de la queue
+#include "constante.h"
+#define LONGUEURQ 10 // Taille de la queue (théoriquement je pourrait descendre jusque deux ENCORE A TESTER!!)
 
 // Déclaration de la structure Coordonnees
 typedef struct
@@ -24,6 +24,7 @@ typedef struct
 
 } Actions;
 
+// Déclaration de la structure Queue
 typedef struct
 {
     Actions elements[LONGUEURQ]; // Tableau de structures Actions
@@ -37,5 +38,5 @@ bool EstVide(Queue *q);
 bool EstPleine(Queue *q);
 void Enfiler(Queue *q, Actions *action);
 Actions Defiler(Queue *q);
-void ImprimerQueue(Queue *q);
-#endif // QUEUE_H
+void ImprimerQueue(Queue *q); // fonction de debugging a supprimer par après
+#endif                        // QUEUE_H
