@@ -240,12 +240,27 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     int x = grille->calcX;
     int y = grille->calcY;
 
-    if (grille->affiche && !grille->deplacement)
+    if (grille->affiche)
     {
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
         Enfiler(q, &aff);
         grille->affiche = 0;
         return;
+    }
+
+    if (grille->deplacement)
+    {
+        if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
+        {
+
+            printf("iciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+            grille->affiche = 1;
+            grille->estVerifiee = 1;
+            Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
+            Enfiler(q, &action);
+
+            return;
+        }
     }
 
     if (grille->estVerifiee == 1)
@@ -256,16 +271,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         Enfiler(q, &verification);
         return;
     };
-
-    if (grille->deplacement)
-    {
-        if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
-        {
-            grille->affiche = 0;
-            grille->estVerifiee = 1;
-        }
-        return;
-    }
 
     if (VerifierAlignements(&x, &y, grille, q))
     {
@@ -316,7 +321,6 @@ ________________________________________________________________________________
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q)
 {
-    grille->estVerifiee = 1;
 
     ImprimerQueue(q);
 
@@ -341,6 +345,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
             }
         }
     }
+    printf("icccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccci?");
     grille->gelatinePresente = false;
 
     // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
