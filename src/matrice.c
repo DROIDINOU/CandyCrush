@@ -42,7 +42,7 @@ void initialiserBonbons(GrilleBonbons *grille)
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
-
+    // a ameliorer trop compliqué
     int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
@@ -84,7 +84,6 @@ void initialiserGrille(GrilleBonbons *grille)
     grille->estVerifiee = 0;
     grille->calcX = 0;
     grille->calcY = 0;
-    grille->gelatinePresente = true;
     grille->deplacement = 0;
 
     initialiserBonbons(grille);   // initialise la grille de bonbons
@@ -111,7 +110,7 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     grille->estInitialisee = 1; // La grille a été initialisée
     grille->deplacement = 1;    // on est en déplacement
     grille->calcX = 0;          // même si possiblement redondant on remet calcX a 0 par securite
-    grille->calcY = 0;          // même si possiblement redondant on remet calcX a 0 par securite
+    grille->calcY = 0;          // même si possiblement redondant on remet calcY a 0 par securite
     grille->affiche = 1;        // apres le deplacement on doit afficher
 
     // Echange des pions
@@ -234,7 +233,7 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
    - FLUX DE TRAITEMENT -
 
   -> Paramètres : Pointeur structure Queue -pointeur structure GrilleBonbons
-                  - pointeurs vers les coordonnées des pions échangés (`x1`, `y1`, `x2`, `y2`)
+                  - pointeurs vers les coordonnées des pions échangés (x1, y1, x2, y2)
 
   -> Traitement :
       1) Si `affiche` est activé et qu'on n'est pas en déplacement, une action `AFFICHAGE` est ajoutée à la file.
@@ -247,42 +246,31 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
       6) Une fois la grille entièrement parcourue :
           - Une action `AFFICHAGE` est ajoutée à la file.
           - Les coordonnées de calcul sont réinitialisées.
-          - La grille est marquée comme vérifiée (`estVerifiee = 1`).
+          - La grille est marquée comme vérifiée (estVerifiee = 1).
  ***************************************************************************************************************************/
-/*________________________________________________________________________________________________________________
-                                 **** FONCTION DE VERIFICATION
-
-    -> Parametres : grille - queue
-    -> Si le nombre de coups joués est égal au nombre de coups à jouer et qu'il reste de la gélatine
-      On affiche un message de fin de partie
-    -> Sinon On parcourt la grille et on vérifie si de la gélatine est toujours présente
-    -> Si gelatine presente, ajoute une ACTION LECTURE a la queue
-    -> Si pas de gelatine, affiche FIN NIVEAU
-
-
-_________________________________________________________________________________________________________________
-
-
- ****************************************************************************************************************************/
 
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
 {
     printf("ENTRE DANS CALCUL\n");
-    // Récupére la cellule en cours INITIALISEEE A 0 DANS INITIALISATION GRILLE ET DANS DEPLACEMENT
-    int x = grille->calcX;
-    int y = grille->calcY;
+    // Récupère la cellule en cours
+    int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
+    int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements
 
     // Action affichage si on est pas en deplacement
     if (grille->affiche && !grille->deplacement)
     {
         printf("AFFICHAGE HORS DEPLACEMENT\n");
-        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
+        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false}; // on utilise pas les coordonnees de l action
         Enfiler(q, &aff);
         grille->affiche = 0;
         return;
     }
 
+    // Si deplacement on verifie si il y a des alignements. Si pas d alignement la grille est verifiee
+    // on met estverifiee a 1, affiche a 1 et on reinitialise deplacement a 0 -> ACTION AFFICHAGE
+    // AFFICHAGE relance CALCUL qui lance VERIFICATION
+    // Si alignements, VerifierAlignements declenche une ACTION DE SUPPRESSION qui relance calcul a partir de 0
     if (grille->deplacement)
     {
         printf("DEPLACEMENT \n");
@@ -302,6 +290,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     }
 
+    // Si la grille est verifiee on lance l action VERIFICATION
     if (grille->estVerifiee == 1)
     {
         printf("LA GRILLE EST VERIFIEE\n");
@@ -311,6 +300,8 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     };
 
+    // SI LORS DE LA VERIFICATION DES VARIABLES INTERNE DE CALCUL ON TROUVE UN ALIGNEMENT UNE ACTION DE
+    //  SUPPRESSION EST LANCEE ET CETTE ACTION RELANCE UNE ACTION DE CALCUL AVEC LA VARIABLE INTERNE REMISE A 0
     if (VerifierAlignements(&x, &y, grille, q))
     {
         printf("ON A TROUVE UN ALIGNEMENT HORS DEPLACEMENT OU APRES UN DEPLACEMENT CONCLUANT \n");
@@ -348,6 +339,22 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     return;
 }
 
+/*________________________________________________________________________________________________________________
+                                 **** FONCTION DE VERIFICATION
+
+    -> Parametres : grille - queue
+    -> Si le nombre de coups joués est égal au nombre de coups à jouer et qu'il reste de la gélatine
+      On affiche un message de fin de partie
+    -> Sinon On parcourt la grille et on vérifie si de la gélatine est toujours présente
+    -> Si gelatine presente, ajoute une ACTION LECTURE a la queue
+    -> Si pas de gelatine, affiche FIN NIVEAU
+
+
+_________________________________________________________________________________________________________________
+
+
+ ****************************************************************************************************************************/
+
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q)
 {
@@ -374,11 +381,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
             }
         }
     }
-    printf("icccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccci?");
-    grille->gelatinePresente = false;
 
-    // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
-    grille->gelatinePresente = false; // pense pas que j utilise ca verifier
     // on passe au niveu suivant ou partie gagnee
     printf(MESSAGEETATJEU[1]);
 
@@ -466,7 +469,6 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         for (int i = *x1; i <= *x2; i++)
         { // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';
-            // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
             if (grille->estInitialisee)
             {                                           // Remplacement par un espace vide
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine

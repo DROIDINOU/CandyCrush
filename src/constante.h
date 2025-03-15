@@ -72,7 +72,6 @@ typedef struct
     int calculsRestants; // Nombre d'actions CALCUL en attente
     int affiche;
     int deplacement;
-    bool gelatinePresente;
 
 } GrilleBonbons;
 
