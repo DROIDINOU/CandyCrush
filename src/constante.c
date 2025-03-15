@@ -2,6 +2,10 @@
 
 // ****************************             CONSTANTES GLOBALES                     **************************** //
 
+// Definition des couleurs des bonbons (on va en rajouter)
+// Type : tableau de char representant les differentes couleurs (plus tard ce sera des images de bonbons)
+const char COULEURS[MAXCOULEUR] = {'J', 'V', 'B', 'R', 'M'};
+
 // Définition des messages d'état du jeu.
 // Type : tableau de characteres
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
@@ -31,7 +35,7 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 //                  - randomObstacles (int) : quantité d'obstacles à éliminer.
 //             - compteurNiveau (int) : numéro du niveau actuel.
 Niveaux NIVEAUX[FINALNIVEAU] = {
-    {{5, 0}, {"Gelatine", 1}, 0}, // Niveau 1
-    {{3, 0}, {"Gelatine", 2}, 1}, // Niveau 2
-    {{2, 0}, {"Gelatine", 4}, 2}  // Niveau 3
+    {{5, 0}, {"Gelatine", 1}, 0},  // Niveau 1
+    {{3, 0}, {"Gelatine", 2}, -1}, // Niveau 2
+    {{2, 0}, {"Gelatine", 4}, -1}  // Niveau 3
 };

@@ -25,12 +25,11 @@ ________________________________________________________________________________
 void initialiserBonbons(GrilleBonbons *grille)
 {
 
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'}; // on pourrait deplacer ca dans grille struct
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[ligne][colonne].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
+            grille->tableau[ligne][colonne].pion = COULEURS[rand() % 5]; // Remplissage avec des couleurs
             grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
         }
     }
@@ -390,7 +389,6 @@ void Verification(GrilleBonbons *grille, Queue *q)
 
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 
     // afficher_grille(grille);
@@ -432,7 +430,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             {
                 // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
                 int index = rand() % 5;
-                grille->tableau[i][*y1].pion = couleurs[index];
+                grille->tableau[i][*y1].pion = COULEURS[index];
                 if (grille->estInitialisee)
                 {
                     grille->tableau[i][*y1].gelatine = false;
@@ -458,7 +456,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
     for (int j = *y1; j <= *y2; j++)
@@ -487,7 +484,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         }
         // Générer un nouveau bonbon en haut
         int index = rand() % 5;
-        grille->tableau[0][j].pion = couleurs[index];
+        grille->tableau[0][j].pion = COULEURS[index];
         if (grille->estInitialisee)
         {
             grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine

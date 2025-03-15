@@ -8,11 +8,13 @@
 
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 5 // Nombre de messages concernant l'état du jeu
+#define MAXCOULEUR 5
 
 /*________________________________________________________________________________________________________________
                     **** STRUCTURES GLOBALES:  MESSAGES D'ETAT DU JEU - MESSAGE DE SAISIE UTILISATEUR - NIVEAUX
 ___________________________________________________________________________________________________________________
  */
+extern const char COULEURS[MAXCOULEUR];
 // MESSAGE D'ETAT DU JEU
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
 
