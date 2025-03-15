@@ -7,21 +7,52 @@
 #define LONGUEURMESSAGEETREPONSE 40
 
 #define FINALNIVEAU 3
-#define NOMBREMESSAGESJEU 5
+#define NOMBREMESSAGESJEU 5 // Nombre de messages concernant l'état du jeu
 
-typedef struct
-{
-    char pion;
-    bool gelatine;
-} Case;
-
-extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
+/*________________________________________________________________________________________________________________
+                    **** STRUCTURES GLOBALES:  MESSAGES D'ETAT DU JEU - MESSAGE DE SAISIE UTILISATEUR - NIVEAUX
+___________________________________________________________________________________________________________________
+ */
 
 typedef struct
 {
     char message[LONGUEURMESSAGEETREPONSE];
     int reponseChiffre;
 } MessagesReponses;
+
+typedef struct
+{
+    int coupAJouer;
+    int coupsJoues; // Le nombre de coups joués par le joueur
+} Coups;
+
+typedef struct
+{
+    char typeObstacle[20];
+    int randomObstacle;
+} Obstacles;
+
+typedef struct
+{
+    Coups coupsNiveau;
+    Obstacles obstacleNiveau;
+    int compteurNiveau;
+} Niveaux;
+
+extern MessagesReponses MESSAGESREPONSES[NOMBREMESSAGES];
+extern Niveaux NIVEAUX[FINALNIVEAU];
+extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
+
+/*________________________________________________________________________________________________________________
+                    **** STRUCTURES DE LA GRILLE DE BONBONS ET DES CASES DE LA GRILLE DE BONBONS
+___________________________________________________________________________________________________________________
+ */
+
+typedef struct
+{
+    char pion;
+    bool gelatine;
+} Case;
 
 typedef struct
 {
@@ -39,25 +70,4 @@ typedef struct
 
 } GrilleBonbons;
 
-typedef struct
-{
-    int coupAJouer;
-    int coupsJoues; // Le nombre de coups joués par le joueur
-} Coups;
-
-typedef struct
-{
-    char typeObstacle[20];
-    int randomGelatine;
-} Obstacles;
-
-typedef struct
-{
-    Coups coupsNiveau;
-    Obstacles obstacleNiveau;
-    int compteurNiveau;
-} Niveaux;
-
-extern MessagesReponses MESSAGESREPONSES[NOMBREMESSAGES];
-extern Niveaux NIVEAUX[FINALNIVEAU];
 #endif

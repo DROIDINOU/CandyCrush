@@ -43,7 +43,7 @@ void initialiserBonbons(GrilleBonbons *grille)
 void initialiserGelatines(GrilleBonbons *grille)
 {
 
-    int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomGelatine + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomGelatine; // Nombre de gelatines aléatoire entre 1 et 5
+    int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -274,8 +274,9 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     int y = grille->calcY;
 
     // Action affichage si on est pas en deplacement
-    if (grille->affiche)
+    if (grille->affiche && !grille->deplacement)
     {
+        printf("AFFICHAGE HORS DEPLACEMENT\n");
         Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}, false};
         Enfiler(q, &aff);
         grille->affiche = 0;
@@ -284,22 +285,26 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 
     if (grille->deplacement)
     {
+        printf("DEPLACEMENT \n");
         if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
         {
 
-            printf("iciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+            printf("On a rien trouvé dans déplacement \n");
             grille->affiche = 1;
             grille->estVerifiee = 1;
-            Actions action = {"VERIFICATION", {0, 0}, {0, 0}, false};
+            grille->deplacement = 0;
+            Actions action = {"AFFICHAGE", {0, 0}, {0, 0}, false};
             Enfiler(q, &action);
 
             return;
         }
+        printf("ici on a trouvé un alignement dans déplacement\n");
+        return;
     }
 
     if (grille->estVerifiee == 1)
     {
-        printf("Verification deje faite\n");
+        printf("LA GRILLE EST VERIFIEE\n");
         grille->estVerifiee = 0;
         Actions verification = {"VERIFICATION", {0, 0}, {0, 0}, false};
         Enfiler(q, &verification);
@@ -308,6 +313,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 
     if (VerifierAlignements(&x, &y, grille, q))
     {
+        printf("ON A TROUVE UN ALIGNEMENT HORS DEPLACEMENT OU APRES UN DEPLACEMENT CONCLUANT \n");
         return;
     };
 
@@ -333,8 +339,8 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     }
     // debug
-    printf("DEBUG - calcX: %d, calcY: %d, deplacement: %d, estVerifiee: %d, affiche: %d\n",
-           grille->calcX, grille->calcY, grille->deplacement, grille->estVerifiee, grille->affiche);
+    // printf("DEBUG - calcX: %d, calcY: %d, deplacement: %d, estVerifiee: %d, affiche: %d\n",
+    // grille->calcX, grille->calcY, grille->deplacement, grille->estVerifiee, grille->affiche);
     // Sinon, on continue avec la prochaine cellule
     Actions nextCalc = {"CALCUL", {0, 0}, {0, 0}, false};
     Enfiler(q, &nextCalc);

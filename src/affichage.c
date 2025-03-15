@@ -91,6 +91,7 @@ ________________________________________________________________________________
 // affiche la grille des bonbons et la grille de la gelatine
 void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
+    printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
     // affiche la grille des bonbons
     printf("Grille des Pions:\n");
     for (int ligne = 0; ligne < grille->lignes; ligne++)
