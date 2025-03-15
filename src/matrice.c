@@ -391,7 +391,6 @@ void Verification(GrilleBonbons *grille, Queue *q)
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
-    printf("avant");
     printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 
     // afficher_grille(grille);
@@ -441,7 +440,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
         }
     }
-    printf("\n Apres suppression et chute des bonbons :\n");
     // afficher_grille(grille);
 
     // Vérification pour éviter la suppression horizontale en double
@@ -461,7 +459,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
-    printf("entre dans suppression H");
     printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
     for (int j = *y1; j <= *y2; j++)
@@ -505,7 +502,5 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     grille->affiche = 1;
     grille->deplacement = 0;
     Enfiler(q, &action);
-    // afficher_grille(grille);
-
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }

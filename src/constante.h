@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#define TAILLE 10
+#define TAILLE 10 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
 #define NOMBREMESSAGES 2
 #define MAXLONGUEUR 100
 #define LONGUEURMESSAGEETREPONSE 40
