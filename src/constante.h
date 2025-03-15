@@ -14,6 +14,7 @@
                     **** STRUCTURES GLOBALES:  MESSAGES D'ETAT DU JEU - MESSAGE DE SAISIE UTILISATEUR - NIVEAUX
 ___________________________________________________________________________________________________________________
  */
+// PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
 extern const char COULEURS[MAXCOULEUR];
 // MESSAGE D'ETAT DU JEU
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
