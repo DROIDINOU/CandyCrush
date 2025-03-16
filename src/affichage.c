@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -40,7 +39,7 @@ int ObtenirReponseAuMessage(int index)
             ;
 
         // Vérifie que la réponse est valide
-        if (result == -1)
+        if (result != 1)
         {
             printf("Entrée invalide. Veuillez entrer un entier.\n");
             choixUtilisateur = -1; // Force la boucle à se répéter
@@ -120,6 +119,9 @@ void afficher_grille(GrilleBonbons *grille, Queue *q)
         }
         printf("\n");
     }
+    grille->affiche = 0;
     Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}};
     Enfiler(q, &actionAffichage);
+
+    // mettre grille-> affiche a 0 ici et pas dans deplacement?
 }

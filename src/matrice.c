@@ -277,7 +277,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         {
 
             printf("On a rien trouvé dans déplacement \n");
-            grille->affiche = 1;
             grille->estVerifiee = 1;
             grille->deplacement = 0;
             Actions action = {"AFFICHAGE", {0, 0}, {0, 0}, false};
