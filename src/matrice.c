@@ -28,9 +28,9 @@ void initialiserBonbons(GrilleBonbons *grille)
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            grille->tableau[ligne][colonne].pion = COULEURS[rand() % 5]; // Remplissage avec des couleurs
-            grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
+        { // Remplissage avec des couleurs aleatoires (le  nombre des couleurs/bonbons varient en fonction du niveau)
+            grille->tableau[ligne][colonne].pion = COULEURS[rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo];
+            grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
     }
 }
@@ -121,7 +121,7 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     Enfiler(q, &action);
 }
 
-// eventuellement supprimer
+// debug supprimer par après
 bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 {
     for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEURQ)
@@ -429,7 +429,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             else
             {
                 // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
-                int index = rand() % 5;
+                int index = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo;
                 grille->tableau[i][*y1].pion = COULEURS[index];
                 if (grille->estInitialisee)
                 {

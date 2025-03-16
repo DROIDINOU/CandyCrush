@@ -8,7 +8,7 @@
 
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 5 // Nombre de messages concernant l'état du jeu
-#define MAXCOULEUR 5
+#define MAXCOULEUR 9
 
 /*________________________________________________________________________________________________________________
                     **** STRUCTURES GLOBALES:  MESSAGES D'ETAT DU JEU - MESSAGE DE SAISIE UTILISATEUR - NIVEAUX
@@ -47,6 +47,7 @@ typedef struct
     Coups coupsNiveau;
     Obstacles obstacleNiveau;
     int compteurNiveau; // Niveau actuel
+    int randomColorModulo;
 } Niveaux;
 
 // YABLEAU DE STUCTURES NIVEAU AVEC COMME LONGUEUR LE NOMBRE DE NIVEAUX
