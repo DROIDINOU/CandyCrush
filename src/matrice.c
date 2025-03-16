@@ -308,7 +308,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     };
 
     // ─────────────────────────────────────────────────
-    // 3) Aucune suppression => On passe à la cellule suivante
+    // Aucune suppression => On passe à la cellule suivante
     // ─────────────────────────────────────────────────
     grille->calcY++;
     if (grille->calcY >= TAILLE)
@@ -461,10 +461,10 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int j = *y1; j <= *y2; j++)
     { // On parcourt la ligne horizontale
         for (int i = *x1; i <= *x2; i++)
-        { // Supprimer les bonbons alignés horizontalement
-            grille->tableau[i][j].pion = ' ';
+        {                                     // Supprimer les bonbons alignés horizontalement
+            grille->tableau[i][j].pion = ' '; // Remplacement par un espace vide
             if (grille->estInitialisee)
-            {                                           // Remplacement par un espace vide
+            {
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine
             }
         }

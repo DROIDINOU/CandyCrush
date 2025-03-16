@@ -31,22 +31,23 @@ ________________________________________________________________________________
 // index est l'index du message dans le tableau MessagesReponses
 int ObtenirReponseAuMessage(int index)
 {
-    int reponse;
+    int choixUtilisateur;
     do
     {
         printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne); // Affiche le message
-        int result = scanf(" %d", &reponse);                                                                           // Lit un seul caractère
+        int result = scanf(" %d", &choixUtilisateur);                                                                  // Lit un seul caractère
         while (getchar() != '\n')
             ;
 
         // Vérifie que la réponse est valide
         if (result == -1)
         {
-            // printf("Reponse invalide. Essayez encore.\n");
+            printf("Entrée invalide. Veuillez entrer un entier.\n");
+            choixUtilisateur = -1; // Force la boucle à se répéter
         }
-    } while (reponse < 1 || reponse > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
+    } while (choixUtilisateur < 1 || choixUtilisateur > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
 
-    return reponse - 1; // retourne index programmeur
+    return choixUtilisateur - 1; // retourne index programmeur
 }
 
 // lit les coordonnees entrees par l utilisateur pour le swap de pions
