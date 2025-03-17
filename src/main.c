@@ -89,6 +89,8 @@ int main()
     // Boucle principale Raylib
     while (!WindowShouldClose() && niveau < 1)
     {
+        UpdateMusicStream(music);
+
         // Traitement d'une action par frame (si la file n'est pas vide)
         if (q.taille > 0)
         {
