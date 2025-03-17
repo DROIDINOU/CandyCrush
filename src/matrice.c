@@ -342,16 +342,11 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 
     -> Parametres : grille - queue
     -> Si le nombre de coups joués est égal au nombre de coups à jouer et qu'il reste de la gélatine
-      On affiche un message de fin de partie
+      On affiche un message de fin de partie. Niveau est au niveau Max
     -> Sinon On parcourt la grille et on vérifie si de la gélatine est toujours présente
     -> Si gelatine presente, ajoute une ACTION LECTURE a la queue
-    -> Si pas de gelatine, affiche FIN NIVEAU
-
-
-_________________________________________________________________________________________________________________
-
-
- ****************************************************************************************************************************/
+    -> Si pas de gelatine, affiche FIN NIVEAU (A ce stade la queue est vide et on sort de la boucle de main)
+____________________________________________________________________________________________________________________*/
 
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q)
@@ -380,17 +375,31 @@ void Verification(GrilleBonbons *grille, Queue *q)
         }
     }
 
-    // on passe au niveu suivant ou partie gagnee
+    // on passe au niveu suivant
     printf(MESSAGEETATJEU[1]);
 
     return;
 }
 
+/*________________________________________________________________________________________________________________
+                                 **** FONCTION DE SUPRESSIONS VERTICALES ET HORIZONTALES
+
+    -> Parametres : Pointeur vers struct grille - pointeurs vers coordonnes des extremites de la ligen a supprimer
+    -> Supprimer les lignes de victoires et remplace par un espace vide
+    -> Si grille initialisee on supprime les gelatines éventuelles (en phase d'initialisation on les conserve)
+    -> faire tomber les bonbons en cascade
+       - si il y a des bonbons disponible faire tomber les bonbons
+       - si pas de bonbons disponibles générer aléatoirement de nouveaux bonbons
+
+    -> Vu qu'il y a des suppressions on recalcule a partir du début de la grille
+       (tous les élement de la grille sont remis a 0 sauf affichage qui est a 1)
+
+    _____________________________________________________________________________________*/
+
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 
-    // afficher_grille(grille);
     //  1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
     for (int i = *x1; i <= *x2; i++)
     {
@@ -437,10 +446,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
         }
     }
-    // afficher_grille(grille);
 
     // Vérification pour éviter la suppression horizontale en double
-    int yDebut = *y1, yFin = *y1;
 
     // Ajouter une action de recalcul dans la queue
     Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
@@ -489,7 +496,6 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine
         }
     }
-    int yDebut = *y1, yFin = *y1;
 
     // Ajouter une action de recalcul dans la queue
     Actions action = {"CALCUL", {0, 0}, {0, 0}, false};

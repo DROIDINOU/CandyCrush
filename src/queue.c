@@ -18,7 +18,7 @@
        - sinon ajoute l'action a la fin de la queue
 -> Defiler :
        - Si la queue est vide, retourne une action vide
-       - sinon retourne l'action au debut de la queue
+       - sinon retourne l'action du debut de la queue
 -> ImprimerQueue : Affiche le contenu de la queue
 
 ___________________________________________________________________________________________________________________

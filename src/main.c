@@ -16,12 +16,10 @@ int main()
 
                                         **** INITIALISATION
 
-         -> Structures de données : Niveaux - Grille - Queue
+        -> Structures de données : Niveaux - Grille - Queue
            - Niveaux : structure globale definie dans constante.h contenant les informations sur les niveaux
            - Grille : structure definie dans constante.h contenant les informations sur la grille
            - Queue : structure definie dans queue.h contenant les informations sur la queue
-
-           // Attention travailler sur les structures globales et non locales
 
         -> Initialisation nombres aleatoires
         -> Declaration de la structure grille de bonbons
@@ -40,28 +38,28 @@ int main()
     /*____________________________________________________________________________________________________________________________
 
                                                  BOUCLE DE JEU
-    -> Tant que le nombre de niveaux est inferieur au niveau final
-      -> Enfiler l'ACTION d'initialisation
+    -> Tant que niveaux est inferieur au niveau final
+        -> Enfiler l'ACTION d'initialisation
         -> Tant que la queue n'est pas vide
-                       -> Recuperer l'action en haut de la queue
+                       -> Recuperer l'action en debut de la queue
                               -> Si l'action est AFFICHAGE
                                  - Afficher la grille
                               -> Si l'action est CALCUL
-                                 - Calculer si trois pions se suivent en Vertical ou en Horizontal
+                                 - Calculer si trois pions ou plus se suivent en Vertical ou en Horizontal
                               -> Si l action est SUPPESSIONV
-                                      - Supprimer les pions verticaux
+                                - Supprimer les suites de pions verticaux
                               -> Si l action est SUPPESSIONH
-                                      - Supprimer les pions horizontaux
+                                - Supprimer les suites de pions horizontaux
                               -> Si l'action est VERIFICATION
-                                    -> verifier si il reste des gelatines
+                                - verifier si il reste des gelatines
                               -> Si l'action est DEPLACEMENT
-                                      -> Deplacer les pions
+                                - Deplacer les pions
                               -> Si l'action est LECTURE
-                                      - Lire les coordonnees des pions a changer
+                                - Lire les coordonnees des pions a changer
                               -> Si l'action est INITIALISATION
-                                        -> Initialiser la grille
-                                        -> Ajouter une action CALCUL avec les coordonnees de la premiere case
-      -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
+                                    - Initialiser la grille
+                                    - Ajouter une action CALCUL avec les coordonnees de la premiere case
+        -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
     -> Afficher FIN DU JEU
     ___________________________________________________________________________________________________________________________   */
 
@@ -115,7 +113,7 @@ int main()
         }
 
         // Passer au niveau suivant
-
+        // Pour le moment je met niveau 3 quand coups epuises changer ca pour plus de clareté
         NIVEAUX[0].compteurNiveau += 1;
     }
 
