@@ -36,7 +36,7 @@ typedef struct
 void InitialiserQueue(Queue *q);
 bool EstVide(Queue *q);
 bool EstPleine(Queue *q);
-void Enfiler(Queue *q, Actions *action);
+Actions Enfiler(Queue *q, Actions *action);
 Actions Defiler(Queue *q);
 void ImprimerQueue(Queue *q); // fonction de debugging a supprimer par après
 #endif                        // QUEUE_H
