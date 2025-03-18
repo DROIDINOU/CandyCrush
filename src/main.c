@@ -106,9 +106,7 @@ int main()
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
-                initialiserGrille(&maGrille);
-                Actions action = {"CALCUL", {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
-                Enfiler(&q, &action);
+                initialiserGrille(&maGrille, &q);
             }
         }
 

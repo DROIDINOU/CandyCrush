@@ -9,7 +9,7 @@
                                                   INIT GRILLE
  ****************************************************************************************************************************/
 
-void initialiserGrille(GrilleBonbons *grille);
+void initialiserGrille(GrilleBonbons *grille, Queue *q);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);

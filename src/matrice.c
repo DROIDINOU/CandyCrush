@@ -74,7 +74,7 @@ void initialiserGelatines(GrilleBonbons *grille)
 
  ****************************************************************************************************************************/
 
-void initialiserGrille(GrilleBonbons *grille)
+void initialiserGrille(GrilleBonbons *grille, Queue *q)
 {
     // Initialisation des éléments de la structure grille
     grille->lignes = TAILLE;
@@ -85,8 +85,10 @@ void initialiserGrille(GrilleBonbons *grille)
     grille->calcY = 0;
     grille->deplacement = 0;
 
-    initialiserBonbons(grille);   // initialise la grille de bonbons
-    initialiserGelatines(grille); // initialise la grille de gelatines
+    initialiserBonbons(grille);                  // initialise la grille de bonbons
+    initialiserGelatines(grille);                // initialise la grille de gelatines
+    Actions action = {"CALCUL", {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
+    Enfiler(q, &action);
 }
 
 /*_______________________________________________________________________________________________________________
@@ -446,8 +448,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
         }
     }
-
-    // Vérification pour éviter la suppression horizontale en double
 
     // Ajouter une action de recalcul dans la queue
     Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
