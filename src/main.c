@@ -97,6 +97,7 @@ int main()
             else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
+                // faux pas mettre ca dans main va falloir passer niveau ds main
                 NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
             }
 
