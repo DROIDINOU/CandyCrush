@@ -10,6 +10,7 @@
 #include <string.h>
 
 // === Compilation ===
+// cd /c/Users/32471/MySDL2
 // gcc main.c matrice.c constante.c queue.c affichage.c -o mon_programme -lraylib
 // ./mon_programme.exe
 
@@ -21,6 +22,8 @@ int main()
 
     Sound sound = LoadSound("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
     Music music = LoadMusicStream("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
+    Music attenteMusic = LoadMusicStream("../assets/147_spritesagitando3-44479.mp3"); // Musique d’attente
+    SetMusicVolume(music, 0.3f);                                                      // Musique de fond à 30% de volume
     PlayMusicStream(music);
 
     SetTargetFPS(60);
@@ -72,7 +75,7 @@ int main()
     // Timer d'attente
     bool etatAttente = false;
     double tempsDebutAttente = 0.0;
-    double dureeAttente = 0.5; // 0.5 secondes
+    double dureeAttente = 0.6; // 0.5 secondes
 
     while (!WindowShouldClose() && niveau < 1)
     {
@@ -81,11 +84,23 @@ int main()
         // Si on est en attente d'une pause (remplaçant usleep)
         if (etatAttente)
         {
+            UpdateMusicStream(attenteMusic); // Met à jour la musique d'attente
+
+            if (!IsMusicStreamPlaying(attenteMusic))
+            {
+                SetMusicVolume(attenteMusic, 1.0f); // Musique attente à fond
+                SetMusicVolume(music, 0.1f);        // Fond très doux
+                PlayMusicStream(attenteMusic);      // Lance la musique d’attente si pas déjà jouée
+            }
+
             if ((GetTime() - tempsDebutAttente) >= dureeAttente)
             {
-                etatAttente = false; // fin de l'attente, traitement peut reprendre
+                etatAttente = false;
+                StopMusicStream(attenteMusic); // Arrête la musique d’attente
+                SetMusicVolume(music, 0.3f);   // Restaure volume fond
             }
         }
+
         else if (q.taille > 0)
         {
             Actions action = defiler(&q);
@@ -201,7 +216,7 @@ int main()
 
     for (int i = 0; i < 5; i++)
         UnloadTexture(textures[i]);
-
+    StopMusicStream(attenteMusic);
     StopMusicStream(music);
     CloseAudioDevice();
     CloseWindow();
