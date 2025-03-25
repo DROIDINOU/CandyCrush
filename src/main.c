@@ -52,10 +52,21 @@ int main()
     textures[3] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png");
     textures[4] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png");
 
+    Texture2D explosionTexture = LoadTexture("../candyimages/circle_01.png"); // <-- Ajoute ton sprite effet ici
+
     for (int i = 0; i < 5; i++)
     {
         if (textures[i].id == 0)
             printf("Erreur de chargement de la texture %d\n", i);
+    }
+
+    if (explosionTexture.id == 0)
+    {
+        printf(" Erreur de chargement : explosionTexture n'a pas pu être chargée !\n");
+    }
+    else
+    {
+        printf(" explosionTexture chargée avec succès !\n");
     }
 
     int niveau = 0;
@@ -107,6 +118,8 @@ int main()
             Actions action = defiler(&q);
             maGrille.suppressionsRestantes = 0;
             strcpy(maGrille.lastAction, action.actionName);
+            maGrille.pion1Affiche = action.pion1;
+            maGrille.pion2Affiche = action.pion2;
 
             if (strcmp(action.actionName, "CALCUL") == 0)
             {
@@ -192,7 +205,7 @@ int main()
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        afficher_grille(&maGrille, textures, &q);
+        afficher_grille(&maGrille, textures, &q, explosionTexture);
         EndDrawing();
 
         bool gelatinePresente = false;
@@ -217,6 +230,7 @@ int main()
 
     for (int i = 0; i < 5; i++)
         UnloadTexture(textures[i]);
+    UnloadTexture(explosionTexture);
     StopMusicStream(attenteMusic);
     StopMusicStream(music);
     CloseAudioDevice();

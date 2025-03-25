@@ -9,6 +9,22 @@
 #define MAXLONGUEUR 100
 
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
+
+typedef struct
+{
+    int x;
+    int y;
+} Coordonnees;
+
+typedef struct
+{
+    char actionName[20];
+    Coordonnees pion1;
+    Coordonnees pion2;
+    bool initialisation; // Indicateur pour l'initialisation
+
+} Actions;
+
 typedef struct
 {
     char pion;
@@ -27,6 +43,8 @@ typedef struct
     int suppressionsRestantes;
     int affiche;
     char lastAction[20]; // Ajout pour mémoriser la dernière action
+    Coordonnees pion1Affiche;
+    Coordonnees pion2Affiche;
 
 } GrilleBonbons;
 

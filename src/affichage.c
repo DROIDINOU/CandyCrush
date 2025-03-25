@@ -9,18 +9,14 @@
 #include "raylib.h"
 #include <string.h>
 
-void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
-                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
-                       int coordonneeYDeuxiemePion, Queue *q)
+void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coordX2, int coordY2, Queue *q)
 {
-    // ajouter action ici dans la queue;
-    Actions action = {"DEPLACEMENT", {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
+    Actions action = {"DEPLACEMENT", {coordX1, coordY1}, {coordX2, coordY2}, false};
     enfiler(q, action);
 }
 
-void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture)
 {
-
     int tailleCase = 50;
     int largeurFenetre = 1000;
     int hauteurFenetre = 1000;
@@ -30,8 +26,6 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
     int offsetX = (largeurFenetre - grilleLargeur) / 2;
     int offsetY = (hauteurFenetre - grilleHauteur) / 2;
 
-    // Pas de BeginDrawing() ni EndDrawing() ici !
-
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -39,45 +33,40 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
             int x = offsetX + j * tailleCase;
             int y = offsetY + i * tailleCase;
 
-            Texture2D bonbonActuel = {0};
-
+            Texture2D bonbon = {0};
             switch (grille->tableau[i][j].pion)
             {
             case 'M':
-                bonbonActuel = textures[0];
+                bonbon = textures[0];
                 break;
             case 'R':
-                bonbonActuel = textures[1];
+                bonbon = textures[1];
                 break;
             case 'B':
-                bonbonActuel = textures[2];
+                bonbon = textures[2];
                 break;
             case 'V':
-                bonbonActuel = textures[3];
+                bonbon = textures[3];
                 break;
             case 'J':
-                bonbonActuel = textures[4];
+                bonbon = textures[4];
                 break;
             default:
                 continue;
             }
 
-            if (bonbonActuel.id != 0)
+            if (bonbon.id != 0)
             {
-                Rectangle source = {0, 0, bonbonActuel.width, bonbonActuel.height};
-                Rectangle dest = {x, y, tailleCase, tailleCase};
+                Rectangle src = {0, 0, bonbon.width, bonbon.height};
+                Rectangle dst = {x, y, tailleCase, tailleCase};
                 Vector2 origin = {0, 0};
-
-                DrawTexturePro(bonbonActuel, source, dest, origin, 0.0f, GRAY);
+                DrawTexturePro(bonbon, src, dst, origin, 0.0f, GRAY);
                 DrawRectangleLines(x, y, tailleCase, tailleCase, RED);
-
-                // Message de débogage pour l'affichage du bonbon
-                // printf("Affichage bonbon à la position (%d, %d) avec type %c\n", x, y, grille->tableau[i][j].pion);
             }
             else
             {
                 DrawRectangle(x, y, tailleCase, tailleCase, BLACK);
-                printf("Erreur : type de bonbon invalide à la position (%d, %d)\n", i, j);
+                printf("Erreur : bonbon invalide en (%d, %d)\n", i, j);
             }
 
             if (grille->tableau[i][j].gelatine)
@@ -88,10 +77,49 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q)
         }
     }
 
+    if (strcmp(grille->lastAction, "SUPPRESSIONH") == 0 || strcmp(grille->lastAction, "SUPPRESSIONV") == 0)
+    {
+        printf("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+        int x1 = grille->pion1Affiche.x;
+        int y1 = grille->pion1Affiche.y;
+        int x2 = grille->pion2Affiche.x;
+        int y2 = grille->pion2Affiche.y;
+
+        int xMin = (x1 < x2) ? x1 : x2;
+        int xMax = (x1 > x2) ? x1 : x2;
+        int yMin = (y1 < y2) ? y1 : y2;
+        int yMax = (y1 > y2) ? y1 : y2;
+
+        if (strcmp(grille->lastAction, "SUPPRESSIONH") == 0)
+        {
+            for (int y = yMin; y <= yMax; y++)
+            {
+                int px = offsetX + y * tailleCase;
+                int py = offsetY + x1 * tailleCase;
+                Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
+                Rectangle dst = {px, py, tailleCase, tailleCase}; // ← s’adapte pile à une case
+                Vector2 origin = {0, 0};
+                DrawTexturePro(explosionTexture, src, dst, origin, 0.0f, WHITE);
+            }
+        }
+        else if (strcmp(grille->lastAction, "SUPPRESSIONV") == 0)
+        {
+            for (int x = xMin; x <= xMax; x++)
+            {
+                int px = offsetX + y1 * tailleCase;
+                int py = offsetY + x * tailleCase;
+                Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
+                Rectangle dst = {px, py, tailleCase, tailleCase}; // ← s’adapte pile à une case
+                Vector2 origin = {0, 0};
+                DrawTexturePro(explosionTexture, src, dst, origin, 0.0f, WHITE);
+            }
+        }
+    }
+
     if (strcmp(grille->lastAction, "AFFICHAGE") == 0)
     {
         printf("AFFICHAGE\n");
-        Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}, false};
-        enfiler(q, actionAffichage);
+        Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
+        enfiler(q, action);
     }
 }

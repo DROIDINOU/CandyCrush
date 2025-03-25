@@ -10,21 +10,6 @@
 
 typedef struct
 {
-    int x;
-    int y;
-} Coordonnees;
-
-typedef struct
-{
-    char actionName[20];
-    Coordonnees pion1;
-    Coordonnees pion2;
-    bool initialisation; // Indicateur pour l'initialisation
-
-} Actions;
-
-typedef struct
-{
     Actions elements[LONGUEUR]; // Tableau de structures Actions
     int debut;                  // Indice de début de la queue
     int fin;                    // Indice de fin de la queue

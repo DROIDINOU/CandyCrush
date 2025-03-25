@@ -5,7 +5,7 @@
 #include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
 
 // Déclaration de la fonction afficher_grille
-void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q);
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture);
 void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
                        int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
                        int coordonneeYDeuxiemePion, Queue *q);
