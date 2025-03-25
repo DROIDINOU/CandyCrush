@@ -22,8 +22,9 @@ int main()
 
     Sound sound = LoadSound("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
     Music music = LoadMusicStream("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
-    Music attenteMusic = LoadMusicStream("../assets/147_spritesagitando3-44479.mp3"); // Musique d’attente
-    SetMusicVolume(music, 0.3f);                                                      // Musique de fond à 30% de volume
+    Music attenteMusic = LoadMusicStream("../assets/jellysplash_56f256e05113918.mp3"); // Musique d’attente
+
+    SetMusicVolume(music, 0.2f); // Musique de fond à 30% de volume
     PlayMusicStream(music);
 
     SetTargetFPS(60);
@@ -89,7 +90,7 @@ int main()
             if (!IsMusicStreamPlaying(attenteMusic))
             {
                 SetMusicVolume(attenteMusic, 1.0f); // Musique attente à fond
-                SetMusicVolume(music, 0.1f);        // Fond très doux
+                SetMusicVolume(music, 0.0f);        // Fond très doux
                 PlayMusicStream(attenteMusic);      // Lance la musique d’attente si pas déjà jouée
             }
 
@@ -97,7 +98,7 @@ int main()
             {
                 etatAttente = false;
                 StopMusicStream(attenteMusic); // Arrête la musique d’attente
-                SetMusicVolume(music, 0.3f);   // Restaure volume fond
+                SetMusicVolume(music, 0.2f);   // Restaure volume fond
             }
         }
 
