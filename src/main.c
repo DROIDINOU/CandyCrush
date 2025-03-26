@@ -8,6 +8,9 @@
 #include <time.h>
 #include <string.h>
 
+// A FAIRE DEPLACER NIVEAU ET AMELIORER ATTRIBUTION ALEATOIRE
+// PREVOIR OBSTACLES ET AUTRES
+
 int main()
 {
 
