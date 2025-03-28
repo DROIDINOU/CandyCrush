@@ -35,6 +35,7 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 //                  - typeObstacle (char[MAX_LONGUEUR]) : type d'obstacle.
 //                  - randomObstacles (int) : quantité d'obstacles à éliminer.
 //             - compteurNiveau (int) : numéro du niveau actuel.
+//             - nombre utilisé pour l attribution aléatoire de gelatines et éventuellement de bonbons
 Niveaux NIVEAUX[FINALNIVEAU] = {
     {{5, 0}, {"Gelatine", 1}, 0, 5},  // Niveau 1
     {{3, 0}, {"Gelatine", 2}, -1, 6}, // Niveau 2

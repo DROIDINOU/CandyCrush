@@ -87,6 +87,8 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 ______________________________________________________________________________________________________________________________
 */
 
+// void afficherRegleManche() {} PAS ENCORE PRET POUR CELA FAUT AMELIORER MODULARITER VERIFICATIONSET SUPPRESSIONS
+
 // affiche la grille des bonbons et la grille de la gelatine
 void afficherGrille(GrilleBonbons *grille, Queue *q)
 {
