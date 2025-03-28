@@ -88,13 +88,13 @@ ________________________________________________________________________________
 */
 
 // affiche la grille des bonbons et la grille de la gelatine
-void afficher_grille(GrilleBonbons *grille, Queue *q)
+void afficherGrille(GrilleBonbons *grille, Queue *q)
 {
     printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
     // SI LA GRILLE EST EN PHASE INITIALISATION ET N EST PAS VERIFIEE -> affichage de chargemenbt
     if (!grille->estInitialisee && !grille->estVerifiee)
     {
-        printf("LOADING.....\n");
+        printf(MESSAGEETATJEU[5]);
     }
 
     else

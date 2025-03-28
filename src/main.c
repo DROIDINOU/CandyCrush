@@ -79,7 +79,7 @@ int main()
             action = Defiler(&q);
             if (strcmp(action.actionName, "AFFICHAGE") == 0)
             {
-                afficher_grille(&maGrille, &q);
+                afficherGrille(&maGrille, &q);
             }
             else if (strcmp(action.actionName, "CALCUL") == 0)
             {
