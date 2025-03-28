@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include <windows.h>
+// #include <windows.h> Verifier pourquoi j utilisait cela
 #include <locale.h>
 #include "matrice.h"
 #include "constante.h"
@@ -91,34 +91,44 @@ ________________________________________________________________________________
 void afficher_grille(GrilleBonbons *grille, Queue *q)
 {
     printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
-    // affiche la grille des bonbons
-    printf("Grille des Pions:\n");
-    for (int ligne = 0; ligne < grille->lignes; ligne++)
+    // SI LA GRILLE EST EN PHASE INITIALISATION ET N EST PAS VERIFIEE -> affichage de chargemenbt
+    if (!grille->estInitialisee && !grille->estVerifiee)
     {
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            printf(" %c ", grille->tableau[ligne][colonne].pion); // Affichage des cases avec bonbons
-        }
-        printf("\n");
+        printf("LOADING.....\n");
     }
 
-    // affiche la grille des gelatines
-    printf("Grille de la Gelatine:\n");
-    for (int ligne = 0; ligne < grille->lignes; ligne++)
+    else
     {
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
+        // affiche la grille des bonbons
+        printf("Grille des Pions:\n");
+        for (int ligne = 0; ligne < grille->lignes; ligne++)
         {
-            if (grille->tableau[ligne][colonne].gelatine)
+            for (int colonne = 0; colonne < grille->colonnes; colonne++)
             {
-                printf(" %c ", 'G'); // Affichage des cases avec gélatine
+                printf(" %c ", grille->tableau[ligne][colonne].pion); // Affichage des cases avec bonbons
             }
-            else
-            {
-                printf(" %c ", '.'); // Affichage des cases sans gélatine
-            }
+            printf("\n");
         }
-        printf("\n");
+
+        // affiche la grille des gelatines
+        printf("Grille de la Gelatine:\n");
+        for (int ligne = 0; ligne < grille->lignes; ligne++)
+        {
+            for (int colonne = 0; colonne < grille->colonnes; colonne++)
+            {
+                if (grille->tableau[ligne][colonne].gelatine)
+                {
+                    printf(" %c ", 'G'); // Affichage des cases avec gélatine
+                }
+                else
+                {
+                    printf(" %c ", '.'); // Affichage des cases sans gélatine
+                }
+            }
+            printf("\n");
+        }
     }
+
     grille->affiche = 0;
     Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}};
     Enfiler(q, &actionAffichage);

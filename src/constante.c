@@ -13,7 +13,8 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Felicitations! Vous accedez au niveau suivant!\n",
     "Votre score est de :\n",
     "Vous avez perdu. Essayez encore.\n",
-    "Fin du jeu\n"};
+    "Fin du jeu\n",
+    " Chargement de la grille... \n"};
 
 // Tableau contenant les messages addressés à l'utilisateur et le type de reponse attendue
 // Type : tableau de MessagesReponses (structure définie dans constante.h).
