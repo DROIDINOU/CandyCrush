@@ -20,7 +20,7 @@ typedef struct
     char actionName[20];
     Coordonnees pion1;
     Coordonnees pion2;
-    bool initialisation; // Indique si l'action est une initialisation
+    // bool initialisation; // Indique si l'action est une initialisation
 
 } Actions;
 

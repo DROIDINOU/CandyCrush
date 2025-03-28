@@ -69,7 +69,7 @@ int main()
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
-        Actions action = {"INITIALISATION", {0, 0}, {0, 0}, true};
+        Actions action = {"INITIALISATION", {0, 0}, {0, 0}};
         Enfiler(&q, &action);
 
         while (q.taille > 0)
