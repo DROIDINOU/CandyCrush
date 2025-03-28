@@ -12,7 +12,7 @@
 void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coordX2, int coordY2, Queue *q)
 {
     Actions action = {"DEPLACEMENT", {coordX1, coordY1}, {coordX2, coordY2}, false};
-    enfiler(q, action);
+    Enfiler(q, &action);
 }
 
 void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture)
@@ -120,6 +120,6 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
     {
         printf("AFFICHAGE\n");
         Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
-        enfiler(q, action);
+        Enfiler(q, &action);
     }
 }

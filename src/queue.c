@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-void initialiser_queue(Queue *q)
+void InitialiserQueue(Queue *q)
 {
     printf("Initialisation de la queue\n");
     q->debut = 0;
@@ -13,30 +13,36 @@ void initialiser_queue(Queue *q)
     q->taille = 0;
 }
 
-bool est_vide(Queue *q)
+bool EstVide(Queue *q)
 {
     printf("taille de la queue :");
     return q->taille == 0;
 }
 
-bool est_pleine(Queue *q)
+bool EstPleine(Queue *q)
 {
-    return q->taille == LONGUEUR;
+    return q->taille == LONGUEURQ;
 }
 
-void enfiler(Queue *q, Actions action)
+Actions Enfiler(Queue *q, Actions *action)
 {
-    if (est_pleine(q))
+    if (EstPleine(q))
     {
-        fprintf(stderr, "Erreur : la queue est pleine\n");
-        exit(EXIT_FAILURE);
+        printf("Erreur : la queue est pleine\n");
+        Actions fullAction;
+        strcpy(fullAction.actionName, "QUEUE_VIDE");
+        fullAction.pion1.x = 0;
+        fullAction.pion1.y = 0;
+        fullAction.pion2.x = 0;
+        fullAction.pion2.y = 0;
+        return fullAction;
     }
-    q->fin = (q->fin + 1) % LONGUEUR;
-    q->elements[q->fin] = action;
-    q->taille++;
+    q->fin = (q->fin + 1) % LONGUEURQ; // Incrementer la fin de la queue et revenir au debut si on est a la fin
+    q->elements[q->fin] = *action;     // Ajouter l'action
+    q->taille++;                       // Incrementer la taille de la queue
 }
 
-Actions defiler(Queue *q)
+Actions Defiler(Queue *q)
 {
     if (q->taille == 0)
     {
@@ -49,14 +55,14 @@ Actions defiler(Queue *q)
         return emptyAction;
     }
     Actions action = q->elements[q->debut];
-    q->debut = (q->debut + 1) % LONGUEUR;
+    q->debut = (q->debut + 1) % LONGUEURQ;
     q->taille--;
     return action;
 }
 
-void imprimer_queue(Queue *q)
+void ImprimerQueue(Queue *q)
 {
-    if (est_vide(q))
+    if (EstVide(q))
     {
         printf("La queue est vide.\n");
         return;
@@ -72,7 +78,7 @@ void imprimer_queue(Queue *q)
                action.pion1.x, action.pion1.y,
                action.pion2.x, action.pion2.y);
 
-        index = (index + 1) % LONGUEUR;
+        index = (index + 1) % LONGUEURQ;
     }
 }
 

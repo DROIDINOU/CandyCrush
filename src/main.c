@@ -20,6 +20,7 @@ int main()
     InitWindow(1000, 1000, "Candy Crush Clone");
     InitAudioDevice();
 
+    // attention mauvaise utilisation de loadsound et loadmusic !! music de fond et sonds brefs (memoire ram)
     Sound sound = LoadSound("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
     Music music = LoadMusicStream("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
     Music attenteMusic = LoadMusicStream("../assets/jellysplash_56f256e05113918.mp3"); // Musique d’attente
@@ -76,9 +77,9 @@ int main()
     maGrille.estVerifiee = 0;
 
     Queue q;
-    initialiser_queue(&q);
+    InitialiserQueue(&q);
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
-    enfiler(&q, initAction);
+    Enfiler(&q, &initAction);
 
     bool attenteClics = false;
     int clicCompteur = 0;
@@ -90,6 +91,7 @@ int main()
     double dureeAttente = 0.6; // 0.5 secondes
 
     while (!WindowShouldClose() && niveau < 1)
+    // niveau < 1 a remplacer par  while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         UpdateMusicStream(music);
 
@@ -115,7 +117,7 @@ int main()
 
         else if (q.taille > 0)
         {
-            Actions action = defiler(&q);
+            Actions action = Defiler(&q);
             maGrille.suppressionsRestantes = 0;
             strcpy(maGrille.lastAction, action.actionName);
             maGrille.pion1Affiche = action.pion1;
