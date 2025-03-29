@@ -81,10 +81,3 @@ void ImprimerQueue(Queue *q)
         index = (index + 1) % LONGUEURQ;
     }
 }
-
-/*
-int main() {
-   Queue q;
-   return 0;
-}
-*/

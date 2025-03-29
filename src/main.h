@@ -8,21 +8,20 @@
 #define NOMBREMESSAGES 4
 #define MAXLONGUEUR 100
 // Inclure les autres fichiers d'en-tête nécessaires
-#include "affichage.h"  // Pour afficher_grille
-#include "matrice.h"    // Pour initialiser_grille et GrilleBonbons
-#include "queue.h"      // Pour Queue et fonctions associées
-#include "constante.h"  // Pour les constantes définies dans constante.c
+#include "affichage.h" // Pour afficher_grille
+#include "matrice.h"   // Pour initialiser_grille et GrilleBonbons
+#include "queue.h"     // Pour Queue et fonctions associées
+#include "constante.h" // Pour les constantes définies dans constante.c
 
-typedef struct {
+typedef struct
+{
     int coupAJouer;
-    int coupsJoues;   // Le nombre de coups joués par le joueur
+    int coupsJoues; // Le nombre de coups joués par le joueur
 } Coups;
 
-typedef struct {
+typedef struct
+{
     Coups tableau[MaxLongueurNiveau];
-}  Niveaux;
-
-
-
+} Niveaux;
 
 #endif // MAIN_H

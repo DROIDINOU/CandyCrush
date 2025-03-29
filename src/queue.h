@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
-
-#define LONGUEURQ 300 // Taille de la queue
+#define LONGUEURQ 300  // Taille de la queue
 
 typedef struct
 {
