@@ -168,6 +168,7 @@ int main()
             }
         }
 
+        // attention leger probleme ici il semblerait que si click pendant calcul problemes
         if (attenteClics)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
