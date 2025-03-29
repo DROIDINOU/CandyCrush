@@ -1,6 +1,7 @@
 // constants.h
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
+#define FINALNIVEAU 3
 #include <stdbool.h>
 
 // Déclaration d'une constante avec extern
@@ -47,5 +48,29 @@ typedef struct
     Coordonnees pion2Affiche;
 
 } GrilleBonbons;
+
+// STRUCTURE IMBRIQUEE NIVEAU
+typedef struct
+{
+    int coupAJouer;
+    int coupsJoues; // Le nombre de coups joués par le joueur
+} Coups;
+
+typedef struct
+{
+    char typeObstacle[20]; // EXEMPLE GELATINES MAIS ON VA EN METTRE D 'AUTRES PAR LA SUITE
+    int randomObstacle;    // NOMBRE ALEATOIRE D OBSTACLE (A AMELIORER)
+} Obstacles;
+
+typedef struct
+{
+    Coups coupsNiveau;
+    Obstacles obstacleNiveau;
+    int compteurNiveau; // Niveau actuel
+    int randomColorModulo;
+} Niveaux;
+
+// YABLEAU DE STUCTURES NIVEAU AVEC COMME LONGUEUR LE NOMBRE DE NIVEAUX
+extern Niveaux NIVEAUX[FINALNIVEAU];
 
 #endif // CONSTANTS_H

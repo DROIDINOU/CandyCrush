@@ -13,15 +13,4 @@
 #include "queue.h"     // Pour Queue et fonctions associées
 #include "constante.h" // Pour les constantes définies dans constante.c
 
-typedef struct
-{
-    int coupAJouer;
-    int coupsJoues; // Le nombre de coups joués par le joueur
-} Coups;
-
-typedef struct
-{
-    Coups tableau[MaxLongueurNiveau];
-} Niveaux;
-
 #endif // MAIN_H
