@@ -51,6 +51,18 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
             case 'J':
                 bonbon = textures[4];
                 break;
+            case 'W':
+                bonbon = textures[5];
+                break;
+            case 'G':
+                bonbon = textures[6];
+                break;
+            case 'Y':
+                bonbon = textures[7];
+                break;
+            case 'P':
+                bonbon = textures[8];
+                break;
             default:
                 continue;
             }

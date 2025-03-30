@@ -19,6 +19,7 @@
 int main()
 {
     srand(time(NULL));
+    char buffer[50];
     InitWindow(1000, 1000, "Candy Crush Clone");
     InitAudioDevice();
 
@@ -43,15 +44,17 @@ int main()
         EndDrawing();
     }
 
-    Texture2D textures[5] = {
+    Texture2D textures[9] = {
         LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png"),
         LoadTexture("../candyimages/poignee_de_bonbons.png"),
         LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"),
         LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"),
-        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png")};
+        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
+        LoadTexture("../candyimages/293530-P7Q9H0-62.jpg"),
+        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
+        LoadTexture("../candyimages/299018-P85W91-91.jpg"),
+        LoadTexture("../candyimages/2202_w020_n001_1260_gameicons_p15_1260.jpg")};
     Texture2D explosionTexture = LoadTexture("../candyimages/circle_01.png");
-
-    int niveau = 0;
     GrilleBonbons maGrille = {.lignes = TAILLE, .colonnes = TAILLE, .estVerifiee = 0, .finniveau = 0};
     Queue q;
     InitialiserQueue(&q);
@@ -187,6 +190,7 @@ int main()
 
         if (etatFinNiveau)
         {
+            sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
             // Cadre noir (rectangle de fond du message)
             DrawRectangle(200, 350, 600, 150, BLACK); // Facultatif ici (fond déjà noir, mais pour structure)
 
@@ -194,7 +198,7 @@ int main()
             DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
 
             // Texte centré dans le cadre
-            DrawText("FIN DU NIVEAU !", 320, 390, 40, RAYWHITE);
+            DrawText(buffer, 320, 390, 40, RAYWHITE);
             DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
 
