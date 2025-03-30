@@ -114,6 +114,11 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
                 DrawTexturePro(explosionTexture, src, dst, origin, 0.0f, WHITE);
             }
         }
+        else if (strcmp(grille->lastAction, "FINNIVEAU") == 0)
+        {
+            printf("rentre dans fiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+            DrawText("FIN NIVEAU", 350, 400, 40, DARKBLUE);
+        }
     }
 
     if (strcmp(grille->lastAction, "AFFICHAGE") == 0)

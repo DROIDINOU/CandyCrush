@@ -43,6 +43,7 @@ typedef struct
     int calculsRestants; // Nombre d'actions CALCUL en attente
     int suppressionsRestantes;
     int affiche;
+    int finniveau;
     char lastAction[20]; // Ajout pour mémoriser la dernière action
     Coordonnees pion1Affiche;
     Coordonnees pion2Affiche;
