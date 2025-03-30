@@ -6,6 +6,10 @@ const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR] = {
     {"Veuillez entrer la colonne (a, b, c, d, e, f, g, h) : ", "abcdefgh"},
     {"Veuillez entrer la ligne (1,2,3,4,5,6,7,8) : ", "12345678"}};
 
+// Definition des couleurs des bonbons (on va en rajouter)
+// Type : tableau de char representant les differentes couleurs (plus tard ce sera des images de bonbons)
+const char COULEURS[MAXCOULEUR] = {'J', 'V', 'B', 'R', 'M', 'W', 'G', 'Y', 'P'};
+
 // Définition des niveaux du jeu sous forme d'un tableau de structures.
 // Type : tableau de Niveaux (structure définie dans constante.h).
 //        -élément de Niveau :

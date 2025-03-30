@@ -137,6 +137,7 @@ int main()
             {
                 etatFinNiveau = true;
                 tempsDebutFinNiveau = GetTime();
+                maGrille.estVerifiee = 0;
             }
         }
 

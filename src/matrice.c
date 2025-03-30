@@ -23,12 +23,11 @@
 
 void initialiser_grille(GrilleBonbons *grille)
 {
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
         {
-            grille->tableau[ligne][colonne].pion = couleurs[rand() % 5]; // Remplissage avec des couleurs
+            grille->tableau[ligne][colonne].pion = COULEURS[rand() % 5]; // Remplissage avec des couleurs
             grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
         }
     }
@@ -279,7 +278,6 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
 
         Actions action = {"FINNIVEAU", {0, 0}, {0, 0}, false};
         Enfiler(q, &action);
-
         return action;
     }
     Actions action = {"FIN", {0, 0}, {0, 0}, false};
