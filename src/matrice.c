@@ -21,18 +21,29 @@
 
  ****************************************************************************************************************************/
 
-void initialiser_grille(GrilleBonbons *grille)
+// Initialise les bonbons dans la grille
+// Remplissage aléatoire des cases avec des couleurs
+void initialiserBonbons(GrilleBonbons *grille)
 {
+
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            grille->tableau[ligne][colonne].pion = COULEURS[rand() % 5]; // Remplissage avec des couleurs
-            grille->tableau[ligne][colonne].gelatine = false;            // Par défaut, pas de gelatine
+        { // Remplissage avec des couleurs aleatoires (le  nombre des couleurs/bonbons varient en fonction du niveau)
+            grille->tableau[ligne][colonne].pion = COULEURS[rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo];
+            grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
     }
+}
 
-    int nombreGelatine = rand() % 5 + 1; // Nombre de gelatines aléatoire entre 1 et 5
+// Fixe un nombre aléatoire de gélatines dans la grille
+// Initialise les gelatines a faux
+// Tant que gelatines inferieures au nombre fixe => placement des gelatines avec coordonnees aleatoires
+
+void initialiserGelatines(GrilleBonbons *grille)
+{
+    // a ameliorer trop compliqué
+    int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle; // Nombre de gelatines aléatoire entre 1 et 5
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -41,20 +52,34 @@ void initialiser_grille(GrilleBonbons *grille)
         }
     }
 
-    while (nombreGelatine > 0)
+    while (nombreGelatine > 0) // Tant qu'il reste des gelatines à placer
     {
-        int x = rand() % TAILLE;
-        int y = rand() % TAILLE;
-        if (!grille->tableau[x][y].gelatine)
+        int x = rand() % TAILLE;             // Coordonnées aléatoires
+        int y = rand() % TAILLE;             // Coordonnées aléatoires
+        if (!grille->tableau[x][y].gelatine) // Si pas déjà de gelatine
         {
 
             grille->tableau[x][y].gelatine = true; // Placement de la gelatine
-            nombreGelatine--;
+            nombreGelatine--;                      // decrementer le nombre aleatoire de gelatines restantes
         }
     }
+}
 
-    grille->calcX = 0; // mettre ca ici ???
-    grille->calcY = 0;
+/***************************************************************************************************************************
+                                 **** FONCTION CENTRALE INITIALISATION GRILLE
+
+-> parametres : grille
+-> initialise les élements de la structure grille
+-> place les bonbons aléatoirement dans la grille (appel de la fonction initialiserBonbons)
+-> place aleatoirement les gelatines dans la grille (appel de la fonction initialiserGelatines)
+
+ ****************************************************************************************************************************/
+
+void initialiser_grille(GrilleBonbons *grille)
+{
+    // Initialisation des éléments de la structure grille
+    initialiserBonbons(grille);   // initialise la grille de bonbons
+    initialiserGelatines(grille); // initialise la grille de gelatines
 }
 
 // a ameliorer et a deplacer dans main ou creer fichier
