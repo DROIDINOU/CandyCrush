@@ -51,11 +51,12 @@ int main()
         LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"),
         LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
         LoadTexture("../candyimages/293530-P7Q9H0-62.jpg"),
-        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
+        LoadTexture("../candyimages/pile-sweet-donuts.jpg"),
         LoadTexture("../candyimages/299018-P85W91-91.jpg"),
         LoadTexture("../candyimages/2202_w020_n001_1260_gameicons_p15_1260.jpg")};
     Texture2D explosionTexture = LoadTexture("../candyimages/circle_01.png");
-    GrilleBonbons maGrille = {.lignes = TAILLE, .colonnes = TAILLE, .estVerifiee = 0, .finniveau = 0};
+    GrilleBonbons maGrille;
+
     Queue q;
     InitialiserQueue(&q);
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
@@ -73,7 +74,11 @@ int main()
     double tempsDebutFinNiveau = 0.0;
     double dureeFinNiveau = 2.5;
 
-    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
+    bool etatFinJeu = false;
+    double tempsDebutFinJeu = 0.0;
+    double dureeFinJeu = 2.5;
+
+    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU + 1)
     {
         UpdateMusicStream(music);
 
@@ -96,7 +101,6 @@ int main()
         else if (q.taille > 0)
         {
             Actions action = Defiler(&q);
-            maGrille.suppressionsRestantes = 0;
             strcpy(maGrille.lastAction, action.actionName);
             maGrille.pion1Affiche = action.pion1;
             maGrille.pion2Affiche = action.pion2;
@@ -141,6 +145,11 @@ int main()
                 etatFinNiveau = true;
                 tempsDebutFinNiveau = GetTime();
                 maGrille.estVerifiee = 0;
+            }
+            else if (strcmp(action.actionName, "FIN") == 0)
+            {
+                etatFinJeu = true;
+                tempsDebutFinJeu = GetTime();
             }
         }
 
@@ -194,6 +203,20 @@ int main()
             // Cadre noir (rectangle de fond du message)
             DrawRectangle(200, 350, 600, 150, BLACK); // Facultatif ici (fond déjà noir, mais pour structure)
 
+            // Contour du cadre (bordure visible)
+            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
+
+            // Texte centré dans le cadre
+            DrawText(buffer, 320, 390, 40, RAYWHITE);
+            DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
+        }
+
+        if (etatFinJeu)
+        {
+            sprintf(buffer, "FIN DU NIVEAU FINAL %d FELICITATIONS!", NIVEAUX[0].compteurNiveau);
+            // Cadre noir (rectangle de fond du message)
+            DrawRectangle(200, 350, 600, 150, BLUE); // Facultatif ici (fond déjà noir, mais pour structure)
+            NIVEAUX[0].compteurNiveau;
             // Contour du cadre (bordure visible)
             DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
 

@@ -77,7 +77,17 @@ void initialiserGelatines(GrilleBonbons *grille)
 
 void initialiser_grille(GrilleBonbons *grille)
 {
+
+    /*grille->lignes = TAILLE;
+    grille->colonnes = TAILLE;
+    grille->estInitialisee = 0;
+    grille->estVerifiee = 0;
+    grille->calcX = 0;
+    grille->calcY = 0;
+    grille->deplacement = 0;*/
     // Initialisation des éléments de la structure grille
+    *grille = (GrilleBonbons){.lignes = TAILLE, .colonnes = TAILLE, .estInitialisee = 0, .estVerifiee = 0, .calcX = 0, .calcY = 0, .deplacement = 0};
+
     initialiserBonbons(grille);   // initialise la grille de bonbons
     initialiserGelatines(grille); // initialise la grille de gelatines
 }
@@ -306,6 +316,7 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
         return action;
     }
     Actions action = {"FIN", {0, 0}, {0, 0}, false};
+    Enfiler(q, &action);
     return action;
 }
 
