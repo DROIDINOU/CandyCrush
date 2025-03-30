@@ -90,7 +90,7 @@ int main()
     double tempsDebutAttente = 0.0;
     double dureeAttente = 0.6; // 0.5 secondes
 
-    while (!WindowShouldClose() && niveau < 1)
+    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     // niveau < 1 a remplacer par  while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         UpdateMusicStream(music);
@@ -152,6 +152,8 @@ int main()
             {
                 printf("Traitement de DEPLACEMENT\n");
                 maGrille.estVerifiee = 0;
+                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
+
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
             }
             else if (strcmp(action.actionName, "LECTURE") == 0)
@@ -165,6 +167,18 @@ int main()
                 printf("Initialisation\n");
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+            }
+            else if (strcmp(action.actionName, "FINNIVEAU") == 0)
+            {
+                GrilleBonbons maGrille;
+                maGrille.lignes = TAILLE;
+                maGrille.colonnes = TAILLE;
+                maGrille.estVerifiee = 0;
+                InitialiserQueue(&q);
+                Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
+                Enfiler(&q, &initAction);
+                printf("NIVEAU TERMINE\n");
+                printf("aseffffffffffffffffffffffffffffffffffffffffffffffff\n");
             }
         }
 
@@ -210,25 +224,6 @@ int main()
         ClearBackground(RAYWHITE);
         afficher_grille(&maGrille, textures, &q, explosionTexture);
         EndDrawing();
-
-        bool gelatinePresente = false;
-        for (int i = 0; i < maGrille.lignes && !gelatinePresente; i++)
-        {
-            for (int j = 0; j < maGrille.colonnes; j++)
-            {
-                if (maGrille.tableau[i][j].gelatine)
-                {
-                    gelatinePresente = true;
-                    break;
-                }
-            }
-        }
-
-        if (!gelatinePresente)
-        {
-            niveau++;
-            printf("NIVEAU TERMINE\n");
-        }
     }
 
     for (int i = 0; i < 5; i++)

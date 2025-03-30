@@ -274,8 +274,12 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
     if (!gelatinePresente)
     {
         printf("FIN NIVEAU\n");
+        NIVEAUX[0].compteurNiveau += 1;
+        printf("compteur niveau : %d", NIVEAUX[0].compteurNiveau);
+
         Actions action = {"FINNIVEAU", {0, 0}, {0, 0}, false};
         Enfiler(q, &action);
+
         return action;
     }
     Actions action = {"FIN", {0, 0}, {0, 0}, false};
