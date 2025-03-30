@@ -186,8 +186,15 @@ int main()
 
         if (etatFinNiveau)
         {
-            DrawText("FIN DU NIVEAU !", 300, 400, 40, RED);
-            DrawText("Préparation du niveau suivant...", 250, 460, 30, DARKGRAY);
+            // Cadre noir (rectangle de fond du message)
+            DrawRectangle(200, 350, 600, 150, BLACK); // Facultatif ici (fond déjà noir, mais pour structure)
+
+            // Contour du cadre (bordure visible)
+            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
+
+            // Texte centré dans le cadre
+            DrawText("FIN DU NIVEAU !", 320, 390, 40, RAYWHITE);
+            DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
 
         EndDrawing();
