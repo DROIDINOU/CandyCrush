@@ -50,6 +50,8 @@ typedef struct
     char lastAction[20]; // Ajout pour mémoriser la dernière action
     Coordonnees pion1Affiche;
     Coordonnees pion2Affiche;
+    int deplacement;
+    int estInitialisee;
 
 } GrilleBonbons;
 
