@@ -78,7 +78,7 @@ int main()
     double tempsDebutFinJeu = 0.0;
     double dureeFinJeu = 2.5;
 
-    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU + 1)
+    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         UpdateMusicStream(music);
 
@@ -161,6 +161,11 @@ int main()
             Enfiler(&q, &nouvelleAction);
         }
 
+        if (etatFinJeu && (GetTime() - tempsDebutFinJeu >= dureeFinJeu))
+        {
+            etatFinJeu = false;
+        }
+
         if (attenteClics)
         {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -216,13 +221,11 @@ int main()
             sprintf(buffer, "FIN DU NIVEAU FINAL %d FELICITATIONS!", NIVEAUX[0].compteurNiveau);
             // Cadre noir (rectangle de fond du message)
             DrawRectangle(200, 350, 600, 150, BLUE); // Facultatif ici (fond déjà noir, mais pour structure)
-            NIVEAUX[0].compteurNiveau;
             // Contour du cadre (bordure visible)
             DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
 
             // Texte centré dans le cadre
             DrawText(buffer, 320, 390, 40, RAYWHITE);
-            DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
 
         EndDrawing();

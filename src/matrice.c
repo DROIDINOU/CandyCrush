@@ -305,7 +305,7 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
     }
 
     // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
-    if (!gelatinePresente)
+    if (!gelatinePresente && NIVEAUX[0].compteurNiveau != FINALNIVEAU - 1)
     {
         printf("FIN NIVEAU\n");
         NIVEAUX[0].compteurNiveau += 1;
