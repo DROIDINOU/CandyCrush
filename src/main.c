@@ -204,6 +204,7 @@ int main()
 
         if (etatFinNiveau)
         {
+            // va falloir faire un "niveau user"
             sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
             // Cadre noir (rectangle de fond du message)
             DrawRectangle(200, 350, 600, 150, BLACK); // Facultatif ici (fond déjà noir, mais pour structure)
@@ -218,16 +219,24 @@ int main()
 
         if (etatFinJeu)
         {
-            sprintf(buffer, "FIN DU NIVEAU FINAL %d FELICITATIONS!", NIVEAUX[0].compteurNiveau);
-            // Cadre noir (rectangle de fond du message)
-            DrawRectangle(200, 350, 600, 150, BLUE); // Facultatif ici (fond déjà noir, mais pour structure)
-            // Contour du cadre (bordure visible)
-            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
+            while (!WindowShouldClose())
+            {
+                BeginDrawing();
+                ClearBackground(DARKBLUE); // un fond plus sombre et lisible
+                DrawRectangle(200, 350, 600, 150, BLACK);
+                DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
+                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !", NIVEAUX[0].compteurNiveau);
+                DrawText(buffer, 220, 390, 30, RAYWHITE);
+                DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
+                EndDrawing();
 
-            // Texte centré dans le cadre
-            DrawText(buffer, 320, 390, 40, RAYWHITE);
+                if (IsKeyPressed(KEY_ESCAPE))
+                {
+                    NIVEAUX[0].compteurNiveau += 1;
+                    break;
+                }
+            }
         }
-
         EndDrawing();
     }
 

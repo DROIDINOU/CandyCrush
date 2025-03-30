@@ -22,7 +22,7 @@ const char COULEURS[MAXCOULEUR] = {'J', 'V', 'B', 'R', 'M', 'W', 'G', 'Y', 'P'};
 //             - compteurNiveau (int) : numéro du niveau actuel.
 //             - nombre utilisé pour l attribution aléatoire de gelatines et éventuellement de bonbons
 Niveaux NIVEAUX[FINALNIVEAU] = {
-    {{5, 0}, {"Gelatine", 1}, 0, 2},  // Niveau 1
-    {{3, 0}, {"Gelatine", 2}, -1, 3}, // Niveau 2
-    {{2, 0}, {"Gelatine", 4}, -1, 4}  // Niveau 3
+    {{5, 0}, {"Gelatine", 1}, 0, 4},  // Niveau 1
+    {{3, 0}, {"Gelatine", 2}, -1, 5}, // Niveau 2
+    {{2, 0}, {"Gelatine", 4}, -1, 6}  // Niveau 3
 };
