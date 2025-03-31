@@ -148,17 +148,15 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 ___________________________________________________________________________________________________________________
  */
 
-bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
+bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q)
 {
-
     char pion = grille->tableau[*x][*y].pion;
-    if (pion != ' ') // si pas déjà supprimé
+    if (pion != ' ')
     {
-        // Vérification verticale
         int compteur = 1;
         int xDebut = *x, xFin = *x;
 
-        // vers le bas
+        // Vérification vers le bas
         int i = *x + 1;
         while (i < TAILLE && grille->tableau[i][*y].pion == pion)
         {
@@ -166,7 +164,8 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             xFin = i;
             i++;
         }
-        // vers le haut
+
+        // Vérification vers le haut
         i = *x - 1;
         while (i >= 0 && grille->tableau[i][*y].pion == pion)
         {
@@ -175,19 +174,26 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             i--;
         }
 
-        // si victoire verticale detectee
+        // Si victoire verticale détectée
         if (compteur >= 3)
         {
             Actions supV = {"SUPPRESSIONV", {xDebut, *y}, {xFin, *y}};
             Enfiler(q, &supV);
-            return true; // On s'arrête (une seule action)
+            return true;
         }
+    }
+    return false;
+}
 
-        // Vérification horizontale
-        compteur = 1;
+bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
+{
+    char pion = grille->tableau[*x][*y].pion;
+    if (pion != ' ')
+    {
+        int compteur = 1;
         int yDebut = *y, yFin = *y;
 
-        // vers la droite
+        // Vérification vers la droite
         int j = *y + 1;
         while (j < TAILLE && grille->tableau[*x][j].pion == pion)
         {
@@ -195,7 +201,8 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             yFin = j;
             j++;
         }
-        // vers la gauche
+
+        // Vérification vers la gauche
         j = *y - 1;
         while (j >= 0 && grille->tableau[*x][j].pion == pion)
         {
@@ -204,16 +211,24 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
             j--;
         }
 
-        // si victoire horizontale detectee
+        // Si victoire horizontale détectée
         if (compteur >= 3)
         {
             Actions supH = {"SUPPRESSIONH", {*x, yDebut}, {*x, yFin}};
             Enfiler(q, &supH);
-            return true; // On s'arrête (une seule action)
+            return true;
         }
     }
-    return false; // pas de victoire detectee
+    return false;
 }
+
+bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
+{
+    bool victoireVerticale = VerifierVerticale(x, y, grille, q);
+    bool victoireHorizontale = VerifierHorizontale(x, y, grille, q);
+    return victoireVerticale || victoireHorizontale;
+}
+
 /***************************************************************************************************************************
                          **** FONCTION CENTRALE DE CALCUL DES SUPPRESSIONS ET DES CASCADES
 
