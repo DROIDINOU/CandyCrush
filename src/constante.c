@@ -4,7 +4,8 @@
 
 // Definition des couleurs des bonbons (on va en rajouter)
 // Type : tableau de char representant les differentes couleurs (plus tard ce sera des images de bonbons)
-const char COULEURS[MAXCOULEUR] = {'J', 'V', 'B', 'R', 'M', 'W', 'G', 'Y', 'P'};
+const CouleurBonbons COULEURS[MAXCOULEUR] = {
+    JAUNE, VERT, BLEU, ROUGE, MAUVE, BLANC, GRIS, JAUNE_CLAIR, ROSE};
 
 // Définition des messages d'état du jeu.
 // Type : tableau de characteres

@@ -16,7 +16,20 @@
 ___________________________________________________________________________________________________________________
  */
 // PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
-extern const char COULEURS[MAXCOULEUR];
+typedef enum
+{
+    JAUNE,
+    VERT,
+    BLEU,
+    ROUGE,
+    MAUVE,
+    BLANC,
+    GRIS,
+    JAUNE_CLAIR,
+    ROSE
+} CouleurBonbons;
+
+extern const CouleurBonbons COULEURS[MAXCOULEUR];
 // MESSAGE D'ETAT DU JEU
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
 
@@ -61,7 +74,7 @@ ________________________________________________________________________________
 
 typedef struct
 {
-    char pion;
+    CouleurBonbons pion;
     bool gelatine;
 } Case;
 

@@ -107,7 +107,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q)
         {
             for (int colonne = 0; colonne < grille->colonnes; colonne++)
             {
-                printf(" %c ", grille->tableau[ligne][colonne].pion); // Affichage des cases avec bonbons
+                printf(" %d ", grille->tableau[ligne][colonne].pion); // Affichage des cases avec bonbons
             }
             printf("\n");
         }
