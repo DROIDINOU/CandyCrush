@@ -45,6 +45,10 @@ int main()
         -> Enfiler l'ACTION d'initialisation
         -> Tant que la queue n'est pas vide
                        -> Recuperer l'action en debut de la queue
+                              -> Si action est ERREURQUEUEPLEINE
+                                 - Afficher la queue est pleine
+                              -> Si action est ERREURQUEUEVIDE
+                                 - Afficher la queue est vide
                               -> Si l'action est AFFICHAGE
                                  - Afficher la grille
                               -> Si l'action est CALCUL
@@ -61,7 +65,7 @@ int main()
                                 - Lire les coordonnees des pions a changer
                               -> Si l'action est INITIALISATION
                                     - Initialiser la grille
-                                    - Ajouter une action CALCUL avec les coordonnees de la premiere case
+
         -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
     -> Afficher FIN DU JEU
     ___________________________________________________________________________________________________________________________   */
@@ -112,6 +116,17 @@ int main()
             else if (action.actionName == INITIALISATION)
             {
                 initialiserGrille(&maGrille, &q);
+            }
+
+            // ERREURS DOIVENT ABSOLUMENT PLACEES APRES INITIALISATION
+            else if (action.actionName == ERREURQUEUEPLEINE)
+            {
+                printf("la queue est plaine ... \n");
+            }
+
+            else if (action.actionName == ERREURQUEUEVIDE)
+            {
+                printf("la queue est vide ... \n");
             }
         }
 

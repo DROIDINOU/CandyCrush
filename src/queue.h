@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "constante.h"
+#include "erreur.h"
 #define LONGUEURQ 10 // Taille de la queue (théoriquement je pourrait descendre jusque deux ENCORE A TESTER!!)
 
 // Déclaration de la structure Coordonnees
@@ -14,11 +15,7 @@ typedef struct
     int y;
 } Coordonnees;
 
-typedef enum
-{
-    ERREURQUEUEPLEINE, // 0 : Aucun problème
-    ERREURQUEUEVIDE,   // 1 : Erreur liée à la mémoire
-} CodeErreur;
+// A DEPLACER DANS FICHIER ERREUR H ET C
 
 typedef enum
 {
