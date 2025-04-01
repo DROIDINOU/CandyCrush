@@ -1,5 +1,5 @@
 
-#ifndef QUEUE_H // POSER LA QUESTION AU PROFESSEUR CONCERNANT LES GUARDS
+#ifndef QUEUE_H
 #define QUEUE_H
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,12 +14,31 @@ typedef struct
     int y;
 } Coordonnees;
 
+typedef enum
+{
+    ERREURQUEUEPLEINE, // 0 : Aucun problème
+    ERREURQUEUEVIDE,   // 1 : Erreur liée à la mémoire
+} CodeErreur;
+
+typedef enum
+{
+    INITIALISATION,
+    AFFICHAGE,
+    VERIFICATION,
+    SUPPRESSIONH,
+    SUPPRESSIONV,
+    CALCUL,
+    DEPLACEMENT,
+    LECTURE,
+} ActionType;
+
 // Déclaration de la structure Actions
 typedef struct
 {
     char actionName[20];
     Coordonnees pion1;
     Coordonnees pion2;
+    CodeErreur erreur;
     // bool initialisation; // Indique si l'action est une initialisation
 
 } Actions;

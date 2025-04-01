@@ -94,7 +94,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q)
 {
     printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
     // SI LA GRILLE EST EN PHASE INITIALISATION ET N EST PAS VERIFIEE -> affichage de chargemenbt
-    if (!grille->estInitialisee && !grille->estVerifiee)
+    if (!grille->estVerifiee)
     {
         printf(MESSAGEETATJEU[5]);
     }
