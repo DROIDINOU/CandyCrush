@@ -9,4 +9,5 @@ typedef enum
     ERREURDEPLACEMENT, // 2 : Erreur liée au déplacement des pions par l'utilisateur
 } CodeErreur;
 
+void GererErreurFatale(CodeErreur codeErreur);
 #endif

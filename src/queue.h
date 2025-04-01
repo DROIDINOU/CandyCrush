@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include "constante.h"
 #include "erreur.h"
-#define LONGUEURQ 10 // Taille de la queue (théoriquement je pourrait descendre jusque deux ENCORE A TESTER!!)
+#define LONGUEURQ 1 // Taille de la queue (théoriquement je pourrait descendre jusque deux ENCORE A TESTER!!)
 
 // Déclaration de la structure Coordonnees
 typedef struct

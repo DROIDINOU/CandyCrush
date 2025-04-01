@@ -309,7 +309,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     if (grille->estVerifiee == 1)
     {
         printf("LA GRILLE EST VERIFIEE\n");
-        grille->estVerifiee = 0;
+        // grille->estVerifiee = 0;
         Actions verification = {VERIFICATION, {0, 0}, {0, 0}};
         Enfiler(q, &verification);
         return;

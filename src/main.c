@@ -2,6 +2,7 @@
 #include "main.h"
 #include "affichage.h"
 #include "queue.h"
+#include "erreur.h"
 #include "constante.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -121,12 +122,12 @@ int main()
             // ERREURS DOIVENT ABSOLUMENT PLACEES APRES INITIALISATION
             else if (action.actionName == ERREURQUEUEPLEINE)
             {
-                printf("la queue est plaine ... \n");
+                GererErreurFatale(ERREURQUEUEPLEINE);
             }
 
             else if (action.actionName == ERREURQUEUEVIDE)
             {
-                printf("la queue est vide ... \n");
+                GererErreurFatale(ERREURQUEUEVIDE);
             }
         }
 
