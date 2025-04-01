@@ -30,7 +30,7 @@ Actions Enfiler(Queue *q, Actions *action)
     {
         printf("Erreur : la queue est pleine\n");
         Actions fullAction;
-        strcpy(fullAction.actionName, "QUEUE_VIDE");
+        strcpy(fullAction.actionName, "QUEUEPLEINE");
         fullAction.pion1.x = 0;
         fullAction.pion1.y = 0;
         fullAction.pion2.x = 0;
@@ -47,7 +47,7 @@ Actions Defiler(Queue *q)
     if (q->taille == 0)
     {
         Actions emptyAction;
-        strcpy(emptyAction.actionName, "QUEUE_VIDE");
+        strcpy(emptyAction.actionName, "QUEUEVIDE");
         emptyAction.pion1.x = 0;
         emptyAction.pion1.y = 0;
         emptyAction.pion2.x = 0;
