@@ -85,9 +85,9 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q)
     grille->calcY = 0;
     grille->deplacement = 0;
 
-    initialiserBonbons(grille);                  // initialise la grille de bonbons
-    initialiserGelatines(grille);                // initialise la grille de gelatines
-    Actions action = {"CALCUL", {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
+    initialiserBonbons(grille);                // initialise la grille de bonbons
+    initialiserGelatines(grille);              // initialise la grille de gelatines
+    Actions action = {CALCUL, {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
     Enfiler(q, &action);
 }
 
@@ -119,11 +119,11 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     grille->tableau[xPion1][yPion1].pion = grille->tableau[xPion2][yPion2].pion; // pion 1 devient pion 2
     grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
 
-    Actions action = {"CALCUL", {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
+    Actions action = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
     Enfiler(q, &action);
 }
 
-// debug supprimer par après
+/*
 bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
 {
     for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEURQ)
@@ -136,7 +136,7 @@ bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
         }
     }
     return false; // Action non trouvée
-}
+}*/
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
@@ -177,7 +177,7 @@ bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q)
         // Si victoire verticale détectée
         if (compteur >= 3)
         {
-            Actions supV = {"SUPPRESSIONV", {xDebut, *y}, {xFin, *y}};
+            Actions supV = {SUPPRESSIONV, {xDebut, *y}, {xFin, *y}};
             Enfiler(q, &supV);
             return true;
         }
@@ -214,7 +214,7 @@ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
         // Si victoire horizontale détectée
         if (compteur >= 3)
         {
-            Actions supH = {"SUPPRESSIONH", {*x, yDebut}, {*x, yFin}};
+            Actions supH = {SUPPRESSIONH, {*x, yDebut}, {*x, yFin}};
             Enfiler(q, &supH);
             return true;
         }
@@ -277,7 +277,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     if (grille->affiche && !grille->deplacement)
     {
         printf("AFFICHAGE HORS DEPLACEMENT\n");
-        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
+        Actions aff = {AFFICHAGE, {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
         Enfiler(q, &aff);
         grille->affiche = 0;
         return;
@@ -296,7 +296,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
             printf("On a rien trouvé dans déplacement \n");
             grille->estVerifiee = 1;
             grille->deplacement = 0;
-            Actions action = {"AFFICHAGE", {0, 0}, {0, 0}};
+            Actions action = {AFFICHAGE, {0, 0}, {0, 0}};
             Enfiler(q, &action);
 
             return;
@@ -310,7 +310,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     {
         printf("LA GRILLE EST VERIFIEE\n");
         grille->estVerifiee = 0;
-        Actions verification = {"VERIFICATION", {0, 0}, {0, 0}};
+        Actions verification = {VERIFICATION, {0, 0}, {0, 0}};
         Enfiler(q, &verification);
         return;
     };
@@ -337,7 +337,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     if (grille->calcX >= TAILLE)
     {
         printf("Fin du parcours : pas d alignement trouve.\n");
-        Actions aff = {"AFFICHAGE", {0, 0}, {0, 0}};
+        Actions aff = {AFFICHAGE, {0, 0}, {0, 0}};
         grille->calcX = 0;
         grille->calcY = 0;
         Enfiler(q, &aff);
@@ -348,7 +348,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // printf("DEBUG - calcX: %d, calcY: %d, deplacement: %d, estVerifiee: %d, affiche: %d\n",
     // grille->calcX, grille->calcY, grille->deplacement, grille->estVerifiee, grille->affiche);
     // Sinon, on continue avec la prochaine cellule
-    Actions nextCalc = {"CALCUL", {0, 0}, {0, 0}};
+    Actions nextCalc = {CALCUL, {0, 0}, {0, 0}};
     Enfiler(q, &nextCalc);
 
     return;
@@ -385,7 +385,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
                 }
                 // si non on place une action de LECTURE pour continuer la manche
                 printf("Bonbon gelatine toujours present\n");
-                Actions action = {"LECTURE", {0, 0}, {0, 0}};
+                Actions action = {LECTURE, {0, 0}, {0, 0}};
                 Enfiler(q, &action);
                 return;
             }
@@ -465,7 +465,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"CALCUL", {0, 0}, {0, 0}};
+    Actions action = {CALCUL, {0, 0}, {0, 0}};
     grille->calcX = 0;
     grille->calcY = 0;
     grille->affiche = 1;
@@ -513,7 +513,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     }
 
     // Ajouter une action de recalcul dans la queue
-    Actions action = {"CALCUL", {0, 0}, {0, 0}};
+    Actions action = {CALCUL, {0, 0}, {0, 0}};
     grille->calcX = 0;
     grille->calcY = 0;
     grille->affiche = 1;

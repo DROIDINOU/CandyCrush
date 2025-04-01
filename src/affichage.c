@@ -73,7 +73,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 {
     LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
 
-    Actions action = {"DEPLACEMENT", {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
+    Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
     Enfiler(q, &action);
 }
 
@@ -132,7 +132,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q)
     }
 
     grille->affiche = 0;
-    Actions actionAffichage = {"CALCUL", {0, 0}, {0, 0}};
+    Actions actionAffichage = {CALCUL, {0, 0}, {0, 0}};
     Enfiler(q, &actionAffichage);
 
     // mettre grille-> affiche a 0 ici et pas dans deplacement?

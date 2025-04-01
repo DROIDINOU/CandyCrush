@@ -69,7 +69,7 @@ int main()
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
-        Actions action = {"INITIALISATION", {0, 0}, {0, 0}};
+        Actions action = {INITIALISATION, {0, 0}, {0, 0}};
         Enfiler(&q, &action);
 
         while (q.taille > 0)
@@ -77,38 +77,39 @@ int main()
 
             // Récupérer l'action en haut de la queue
             action = Defiler(&q);
-            if (strcmp(action.actionName, "AFFICHAGE") == 0)
+
+            if (action.actionName == AFFICHAGE)
             {
                 afficherGrille(&maGrille, &q);
             }
-            else if (strcmp(action.actionName, "CALCUL") == 0)
+            else if (action.actionName == CALCUL)
             {
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
             }
-            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
+            else if (action.actionName == SUPPRESSIONV)
             {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
             }
-            else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
+            else if (action.actionName == SUPPRESSIONH)
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
             }
-            else if (strcmp(action.actionName, "VERIFICATION") == 0)
+            else if (action.actionName == VERIFICATION)
             {
                 Verification(&maGrille, &q);
             }
-            else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
+            else if (action.actionName == DEPLACEMENT)
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 // faux pas mettre ca dans main va falloir passer niveau ds main
                 NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
             }
 
-            else if (strcmp(action.actionName, "LECTURE") == 0)
+            else if (action.actionName == LECTURE)
             {
                 LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
             }
-            else if (strcmp(action.actionName, "INITIALISATION") == 0)
+            else if (action.actionName == INITIALISATION)
             {
                 initialiserGrille(&maGrille, &q);
             }

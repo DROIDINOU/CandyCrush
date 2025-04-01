@@ -35,7 +35,7 @@ typedef enum
 // Déclaration de la structure Actions
 typedef struct
 {
-    char actionName[20];
+    ActionType actionName;
     Coordonnees pion1;
     Coordonnees pion2;
     CodeErreur erreur;
