@@ -302,7 +302,6 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
 // T AS OUBLIE DE SUPPRIMER LA GELATINE ICI
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf("avant");
     printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 
@@ -343,7 +342,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             {
                 // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
                 int index = rand() % 5;
-                grille->tableau[i][*y1].pion = couleurs[index];
+                grille->tableau[i][*y1].pion = COULEURS[index];
                 grille->tableau[i][*y1].gelatine = false; // Par défaut, pas de gélatine
             }
         }
@@ -365,7 +364,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    char couleurs[] = {'J', 'V', 'B', 'R', 'M'};
     printf("entre dans suppression H");
     printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
@@ -392,7 +390,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         }
         // Générer un nouveau bonbon en haut
         int index = rand() % 5;
-        grille->tableau[0][j].pion = couleurs[index];
+        grille->tableau[0][j].pion = COULEURS[index];
         grille->tableau[0][j].gelatine = false; // Par défaut, pas de gélatine
     }
     int yDebut = *y1, yFin = *y1;

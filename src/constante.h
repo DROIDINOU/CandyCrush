@@ -11,8 +11,22 @@
 #define MAXCOULEUR 9
 
 // PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
-extern const char COULEURS[MAXCOULEUR];
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
+
+typedef enum
+{
+    JAUNE,
+    VERT,
+    BLEU,
+    ROUGE,
+    MAUVE,
+    BLANC,
+    GRIS,
+    JAUNE_CLAIR,
+    ROSE
+} CouleurBonbons;
+
+extern const CouleurBonbons COULEURS[MAXCOULEUR];
 
 typedef struct
 {
@@ -31,7 +45,7 @@ typedef struct
 
 typedef struct
 {
-    char pion;
+    CouleurBonbons pion;
     bool gelatine;
 } Case;
 

@@ -44,16 +44,17 @@ int main()
         EndDrawing();
     }
 
-    Texture2D textures[9] = {
-        LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png"),
-        LoadTexture("../candyimages/poignee_de_bonbons.png"),
-        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"),
-        LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"),
-        LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
-        LoadTexture("../candyimages/293530-P7Q9H0-62.jpg"),
-        LoadTexture("../candyimages/pile-sweet-donuts.jpg"),
-        LoadTexture("../candyimages/299018-P85W91-91.jpg"),
-        LoadTexture("../candyimages/2202_w020_n001_1260_gameicons_p15_1260.jpg")};
+    // changer les derniers images qui n ont pas bien été enregistrees
+    Texture2D textures[] = {
+        [MAUVE] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png"),
+        [ROUGE] = LoadTexture("../candyimages/poignee_de_bonbons.png"),
+        [BLEU] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"),
+        [VERT] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"),
+        [JAUNE] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
+        [BLANC] = LoadTexture("../candyimages/293530-P7Q9H0-62.jpg"),
+        [GRIS] = LoadTexture("../candyimages/pile-sweet-donuts.jpg"),
+        [JAUNE_CLAIR] = LoadTexture("../candyimages/5939.jpg"),
+        [ROSE] = LoadTexture("../candyimages/kisspng-spiral-circle-magenta-lollipop-5b2c7a0466c112.1881360715296414764209.png")};
     Texture2D explosionTexture = LoadTexture("../candyimages/circle_01.png");
     GrilleBonbons maGrille;
 
@@ -68,7 +69,7 @@ int main()
 
     bool etatAttente = false;
     double tempsDebutAttente = 0.0;
-    double dureeAttente = 0.6;
+    double dureeAttente = 0.3;
 
     bool etatFinNiveau = false;
     double tempsDebutFinNiveau = 0.0;
@@ -216,7 +217,7 @@ int main()
             DrawText(buffer, 320, 390, 40, RAYWHITE);
             DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
-
+        // faire sans le break
         if (etatFinJeu)
         {
             while (!WindowShouldClose())
@@ -225,7 +226,7 @@ int main()
                 ClearBackground(DARKBLUE); // un fond plus sombre et lisible
                 DrawRectangle(200, 350, 600, 150, BLACK);
                 DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
-                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !\n", NIVEAUX[0].compteurNiveau);
+                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !\n\n", NIVEAUX[0].compteurNiveau);
                 DrawText(buffer, 220, 390, 30, RAYWHITE);
                 DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
                 EndDrawing();

@@ -36,32 +36,32 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
             Texture2D bonbon = {0};
             switch (grille->tableau[i][j].pion)
             {
-            case 'M':
-                bonbon = textures[0];
+            case MAUVE:
+                bonbon = textures[MAUVE];
                 break;
-            case 'R':
-                bonbon = textures[1];
+            case ROUGE:
+                bonbon = textures[ROUGE];
                 break;
-            case 'B':
-                bonbon = textures[2];
+            case BLEU:
+                bonbon = textures[BLEU];
                 break;
-            case 'V':
-                bonbon = textures[3];
+            case VERT:
+                bonbon = textures[VERT];
                 break;
-            case 'J':
-                bonbon = textures[4];
+            case JAUNE:
+                bonbon = textures[JAUNE];
                 break;
-            case 'W':
-                bonbon = textures[5];
+            case BLANC:
+                bonbon = textures[BLANC];
                 break;
-            case 'G':
-                bonbon = textures[6];
+            case GRIS:
+                bonbon = textures[GRIS];
                 break;
-            case 'Y':
-                bonbon = textures[7];
+            case JAUNE_CLAIR:
+                bonbon = textures[JAUNE_CLAIR];
                 break;
-            case 'P':
-                bonbon = textures[8];
+            case ROSE:
+                bonbon = textures[ROSE];
                 break;
             default:
                 continue;
