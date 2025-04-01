@@ -23,3 +23,5 @@ void GererErreurFatale(CodeErreur codeErreur)
         break;
     }
 }
+
+void GererErreurEntree() {}

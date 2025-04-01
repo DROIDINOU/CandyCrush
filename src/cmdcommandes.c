@@ -1,5 +1,6 @@
 // del /p *.exe
 //  affichage.c main.c matrice.c constante.c queue.c
+// gcc -o sas affichage.c main.c matrice.c constante.c queue.c erreur.c
 // cls
 
 // a faire ne pas supprimer gelatines a initialisation et
