@@ -1,10 +1,3 @@
-
-
-// === Compilation ===
-// cd /c/Users/32471/MySDL2
-// gcc main.c matrice.c constante.c queue.c affichage.c -o mon_programme -lraylib
-// ./mon_programme.exe
-
 #include "raylib.h"
 #include "matrice.h"
 #include "main.h"
@@ -18,23 +11,19 @@
 
 int main()
 {
+    Music currentMusic;
+    bool musicChargee = false;
     srand(time(NULL));
     char buffer[50];
     InitWindow(1000, 1000, "Candy Crush Clone");
     InitAudioDevice();
-
-    Sound sound = LoadSound("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
-    Music music = LoadMusicStream("../assets/gaming-music-8-bit-console-play-background-intro-theme-278382.mp3");
     Music attenteMusic = LoadMusicStream("../assets/jellysplash_56f256e05113918.mp3");
 
-    SetMusicVolume(music, 0.2f);
-    PlayMusicStream(music);
     SetTargetFPS(60);
 
     bool jeuDemarre = false;
     while (!WindowShouldClose() && !jeuDemarre)
     {
-        UpdateMusicStream(music);
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawText("CANDY CRUSH CLONE", 350, 400, 40, DARKBLUE);
@@ -44,7 +33,6 @@ int main()
         EndDrawing();
     }
 
-    // changer les derniers images qui n ont pas bien été enregistrees
     Texture2D textures[] = {
         [MAUVE] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png"),
         [ROUGE] = LoadTexture("../candyimages/poignee_de_bonbons.png"),
@@ -79,9 +67,38 @@ int main()
     double tempsDebutFinJeu = 0.0;
     double dureeFinJeu = 2.5;
 
+    int niveauPrecedent = -1;
+
     while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        UpdateMusicStream(music);
+        if (niveauPrecedent != NIVEAUX[0].compteurNiveau)
+        {
+            char chemin[100];
+            sprintf(chemin, "../assets/music_niveau_%d.mp3", NIVEAUX[0].compteurNiveau);
+
+            if (musicChargee)
+            {
+                StopMusicStream(currentMusic);
+                UnloadMusicStream(currentMusic);
+                musicChargee = false;
+            }
+
+            currentMusic = LoadMusicStream(chemin);
+            if (currentMusic.ctxData == NULL)
+            {
+                printf("⚠ Erreur chargement musique : %s\n", chemin);
+            }
+            else
+            {
+                PlayMusicStream(currentMusic);
+                SetMusicVolume(currentMusic, 0.2f);
+                musicChargee = true;
+            }
+            niveauPrecedent = NIVEAUX[0].compteurNiveau;
+        }
+
+        if (musicChargee)
+            UpdateMusicStream(currentMusic);
 
         if (etatAttente)
         {
@@ -89,14 +106,16 @@ int main()
             if (!IsMusicStreamPlaying(attenteMusic))
             {
                 SetMusicVolume(attenteMusic, 1.0f);
-                SetMusicVolume(music, 0.0f);
+                if (musicChargee)
+                    SetMusicVolume(currentMusic, 0.0f);
                 PlayMusicStream(attenteMusic);
             }
             if ((GetTime() - tempsDebutAttente) >= dureeAttente)
             {
                 etatAttente = false;
                 StopMusicStream(attenteMusic);
-                SetMusicVolume(music, 0.2f);
+                if (musicChargee)
+                    SetMusicVolume(currentMusic, 0.2f);
             }
         }
         else if (q.taille > 0)
@@ -205,28 +224,22 @@ int main()
 
         if (etatFinNiveau)
         {
-            // va falloir faire un "niveau user"
             sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
-            // Cadre noir (rectangle de fond du message)
-            DrawRectangle(200, 350, 600, 150, BLACK); // Facultatif ici (fond déjà noir, mais pour structure)
-
-            // Contour du cadre (bordure visible)
-            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE); // Bord blanc pour bien voir
-
-            // Texte centré dans le cadre
+            DrawRectangle(200, 350, 600, 150, BLACK);
+            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
             DrawText(buffer, 320, 390, 40, RAYWHITE);
             DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
-        // faire sans le break
+
         if (etatFinJeu)
         {
             while (!WindowShouldClose())
             {
                 BeginDrawing();
-                ClearBackground(DARKBLUE); // un fond plus sombre et lisible
+                ClearBackground(DARKBLUE);
                 DrawRectangle(200, 350, 600, 150, BLACK);
                 DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
-                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !\n\n", NIVEAUX[0].compteurNiveau + 1);
+                sprintf(buffer, "FIN DU JEU  FELICITATIONS!", NIVEAUX[0].compteurNiveau + 1);
                 DrawText(buffer, 220, 390, 30, RAYWHITE);
                 DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
                 EndDrawing();
@@ -238,14 +251,23 @@ int main()
                 }
             }
         }
+
         EndDrawing();
     }
 
     for (int i = 0; i < 5; i++)
         UnloadTexture(textures[i]);
     UnloadTexture(explosionTexture);
+
     StopMusicStream(attenteMusic);
-    StopMusicStream(music);
+    UnloadMusicStream(attenteMusic);
+
+    if (musicChargee)
+    {
+        StopMusicStream(currentMusic);
+        UnloadMusicStream(currentMusic);
+    }
+
     CloseAudioDevice();
     CloseWindow();
 
