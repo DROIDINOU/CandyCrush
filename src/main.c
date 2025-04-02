@@ -226,7 +226,7 @@ int main()
                 ClearBackground(DARKBLUE); // un fond plus sombre et lisible
                 DrawRectangle(200, 350, 600, 150, BLACK);
                 DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
-                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !\n\n", NIVEAUX[0].compteurNiveau);
+                sprintf(buffer, "FIN DU NIVEAU FINAL %d \n      - FELICITATIONS !\n\n", NIVEAUX[0].compteurNiveau + 1);
                 DrawText(buffer, 220, 390, 30, RAYWHITE);
                 DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
                 EndDrawing();
