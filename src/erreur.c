@@ -18,6 +18,13 @@ void GererErreurFatale(CodeErreur codeErreur)
     case ERREURDEPLACEMENT:
         /* code */
         break;
+    case TYPEINCONNU:
+        printf("Type inconnu ... \n");
+        break;
+
+    case ECHECGENERATION:
+        printf("Erreur génération ... \n");
+        break;
 
     default:
         break;

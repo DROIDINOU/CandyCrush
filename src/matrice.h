@@ -8,7 +8,7 @@
 /***************************************************************************************************************************
                                                   INIT GRILLE
  ****************************************************************************************************************************/
-
+int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGrille(GrilleBonbons *grille, Queue *q);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);

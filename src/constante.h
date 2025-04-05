@@ -56,6 +56,12 @@ typedef struct
     int randomObstacle;    // NOMBRE ALEATOIRE D OBSTACLE (A AMELIORER)
 } Obstacles;
 
+typedef enum
+{
+    ALEATOIRECOULEUR,
+    ALEATOIREOBSTACLE
+} TypeElementRandom;
+
 // STRUCTURE IMBRIQUEE NIVEAU
 typedef struct
 {
