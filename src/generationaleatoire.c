@@ -47,7 +47,7 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
         }
         else
         {
-            GererErreurFatale(ECHECGENERATIONCOULEURALEATOIRE); // Si la couleur est valide, on retourne la valeur
+            GererErreurFatale(ECHECGENERATIONCOULEURALEATOIRE); // Dans le cas où la couleur n'est pas valide, on retourne une erreur
         }
     }
     break;

@@ -113,6 +113,8 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     grille->tableau[xPion1][yPion1].pion = grille->tableau[xPion2][yPion2].pion; // pion 1 devient pion 2
     grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
 
+    NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
+
     Actions action = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
     Enfiler(q, &action);
 }

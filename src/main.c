@@ -106,8 +106,6 @@ int main()
             else if (action.actionName == DEPLACEMENT)
             {
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-                // faux pas mettre ca dans main va falloir passer niveau ds main
-                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;
             }
 
             else if (action.actionName == LECTURE)
@@ -119,7 +117,7 @@ int main()
                 initialiserGrille(&maGrille, &q);
             }
 
-            // ERREURS DOIVENT ABSOLUMENT PLACEES APRES INITIALISATION
+            // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
             else if (action.actionName == ERREURQUEUEPLEINE)
             {
                 GererErreurFatale(ERREURQUEUEPLEINE);
