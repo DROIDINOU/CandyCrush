@@ -47,7 +47,6 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
         }
         else
         {
-            printf("Couleur aléatoire ERROR : %d\n", couleurAleatoire);
             GererErreurFatale(ECHECGENERATIONCOULEURALEATOIRE); // Si la couleur est valide, on retourne la valeur
         }
     }
@@ -61,8 +60,6 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
 
         // Génère une valeur entre minimum obstacle et 2 * minimum obstacle - 1
         int obstaclesAleatoire = rand() % nombreMinObstacle + nombreMinObstacle;
-
-        printf("Obstacle aléatoire généré : %d\n", obstaclesAleatoire);
 
         // Vérifie si la valeur générée est dans les bornes pas plus de gélatines que 3/4 du nombre de cases totales
 
