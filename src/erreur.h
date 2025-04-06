@@ -8,7 +8,9 @@ typedef enum
     ERREURQUEUEVIDE,   // 1 : Erreur liée à la mémoire
     ERREURDEPLACEMENT, // 2 : Erreur liée au déplacement des pions par l'utilisateur
     TYPEINCONNU,
-    ECHECGENERATION, // 3 : Type inconnu
+    ECHECGENERATIONCOULEURALEATOIRE,  // 3 : Type inconnu
+    ECHECGENERATIONTENTATIVES,        // 4 : Erreur de génération aléatoire
+    ECHECGENERATIONOBSTACLEALEATOIRE, // 5 : Erreur de génération aléatoire
 } CodeErreur;
 
 void GererErreurFatale(CodeErreur codeErreur);

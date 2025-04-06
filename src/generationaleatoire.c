@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "constante.h"
 #include "generationaleatoire.h"
 #include "erreur.h"
@@ -26,15 +27,14 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
 
     if (maxTentatives <= 0)
     {
-        return ECHECGENERATION;
+        GererErreurFatale(ECHECGENERATIONTENTATIVES);
     }
 
     switch (type)
     {
-    case ALEATOIRECOULEUR:
+    case COULEURALEATOIRE:
     {
         int couleurAleatoire = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo;
-        printf("Couleur aléatoire générée : %d\n", couleurAleatoire);
 
         if (couleurAleatoire < MAXCOULEUR) // Vérifie si la couleur est valide
         {
@@ -43,15 +43,17 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
             {
                 couleurAleatoire = 1; // Jamais 0 couleur
             }
+            return couleurAleatoire;
         }
         else
         {
-            return couleurAleatoire; // Si la couleur est valide, on retourne la valeur
+            printf("Couleur aléatoire ERROR : %d\n", couleurAleatoire);
+            GererErreurFatale(ECHECGENERATIONCOULEURALEATOIRE); // Si la couleur est valide, on retourne la valeur
         }
     }
     break;
 
-    case ALEATOIREOBSTACLE:
+    case OBSTACLEALEATOIRE:
     {
         // Nombre minimum d'obstacles à générer
         // On utilise le randomObstacle de la structure NIVEAUX pour déterminer le nombre d'obstacles minimum à générer
@@ -63,6 +65,7 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
         printf("Obstacle aléatoire généré : %d\n", obstaclesAleatoire);
 
         // Vérifie si la valeur générée est dans les bornes pas plus de gélatines que 3/4 du nombre de cases totales
+
         if (obstaclesAleatoire < TAILLE - TAILLE / 4)
         {
             if (obstaclesAleatoire == 0)
@@ -71,11 +74,15 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
             }
             return obstaclesAleatoire;
         }
+        else
+        {
+            GererErreurFatale(ECHECGENERATIONOBSTACLEALEATOIRE); // Si la couleur est valide, on retourne la valeur
+        }
     }
     break;
 
     default:
-        return TYPEINCONNU; // Type non reconnu
+        GererErreurFatale(TYPEINCONNU); // Type non reconnu
     }
 
     // Appel récursif si les conditions ne sont pas remplies sera éventuellement utilisé en cas

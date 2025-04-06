@@ -3,4 +3,5 @@
 #include "constante.h"
 
 int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
+
 #endif

@@ -1,21 +1,22 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 #include <stdbool.h>
-
 #define TAILLE 10 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
 #define NOMBREMESSAGES 2
 #define MAXLONGUEUR 100
 #define LONGUEURMESSAGEETREPONSE 40
-
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 6 // Nombre de messages concernant l'état du jeu
 #define MAXCOULEUR 9
 
 /*________________________________________________________________________________________________________________
-                    **** STRUCTURES GLOBALES:  MESSAGES D'ETAT DU JEU - MESSAGE DE SAISIE UTILISATEUR - NIVEAUX
+
+                                                **** ENUMERATIONS
+
+                    -> CouleurBonbons : couleurs des bonbons
+                    -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle)
 ___________________________________________________________________________________________________________________
  */
-// PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
 
 typedef enum
 {
@@ -30,54 +31,24 @@ typedef enum
     ROSE
 } CouleurBonbons;
 
-extern const CouleurBonbons COULEURS[MAXCOULEUR];
-// MESSAGE D'ETAT DU JEU
-extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];
-
-// MESSAGE DE SAISIE UTILISATEUR POUR ECHANGE BONBONS
-typedef struct
-{
-    char message[LONGUEURMESSAGEETREPONSE];
-    int nombreLigneOuColonne;
-} MessagesEchangeBonbons;
-
-extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES];
-
-// STRUCTURE IMBRIQUEE NIVEAU
-typedef struct
-{
-    int coupAJouer;
-    int coupsJoues; // Le nombre de coups joués par le joueur
-} Coups;
-
-typedef struct
-{
-    char typeObstacle[20]; // EXEMPLE GELATINES MAIS ON VA EN METTRE D 'AUTRES PAR LA SUITE
-    int randomObstacle;    // NOMBRE ALEATOIRE D OBSTACLE (A AMELIORER)
-} Obstacles;
-
 typedef enum
 {
-    ALEATOIRECOULEUR,
-    ALEATOIREOBSTACLE
+    COULEURALEATOIRE,
+    OBSTACLEALEATOIRE
 } TypeElementRandom;
 
-// STRUCTURE IMBRIQUEE NIVEAU
-typedef struct
-{
-    Coups coupsNiveau;
-    Obstacles obstacleNiveau;
-    int compteurNiveau; // Niveau actuel
-    int randomColorModulo;
-} Niveaux;
-
-// YABLEAU DE STUCTURES NIVEAU AVEC COMME LONGUEUR LE NOMBRE DE NIVEAUX
-extern Niveaux NIVEAUX[FINALNIVEAU];
-
 /*________________________________________________________________________________________________________________
-                    **** STRUCTURES DE LA GRILLE DE BONBONS ET DES CASES DE LA GRILLE DE BONBONS
+
+                                                          **** STRUCTURES
+                                            -> GrilleBonbons : structure de la grille de bonbons
+                                            -> Coups : structure des coups
+                                            -> Obstacles : structure des obstacles
+                                            -> Niveaux : structure des niveaux
+                                            -> MessagesEchangeBonbons : structure des messages d'échange de bonbons
 ___________________________________________________________________________________________________________________
- */
+*/
+
+// *** Structures de la grille de bonbons
 
 typedef struct
 {
@@ -99,5 +70,47 @@ typedef struct
     int deplacement;
 
 } GrilleBonbons;
+
+// *** Structures pour les niveaux
+typedef struct
+{
+    int coupAJouer; // Le nombre de coups à jouer
+    int coupsJoues; // Le nombre de coups joués par le joueur
+} Coups;
+
+typedef struct
+{
+    char typeObstacle[20]; // EXEMPLE GELATINES MAIS ON VA EN METTRE D 'AUTRES PAR LA SUITE
+    int randomObstacle;    // NOMBRE ALEATOIRE D OBSTACLE (A AMELIORER)
+} Obstacles;
+
+// STRUCTURE IMBRIQUEE NIVEAU
+typedef struct
+{
+    Coups coupsNiveau;
+    Obstacles obstacleNiveau;
+    int compteurNiveau; // Niveau actuel
+    int randomColorModulo;
+} Niveaux;
+
+typedef struct
+{
+    char message[LONGUEURMESSAGEETREPONSE];
+    int nombreLigneOuColonne;
+} MessagesEchangeBonbons;
+
+/*________________________________________________________________________________________________________________
+                    **** CONSTANTES GLOBALES
+                     -> NIVEAUX : tableau de niveaux
+                     -> COULEURS : tableau de couleurs
+                     -> MESSAGEETATJEU : tableau de messages d'état du jeu
+                     -> MESSAGESECHANGEBONBONS : tableau de messages d'échange de bonbons
+_________________________________________________________________________________________
+ */
+
+extern Niveaux NIVEAUX[FINALNIVEAU];                                  // Tableau des niveaux du jeux
+extern const CouleurBonbons COULEURS[MAXCOULEUR];                     // Tableau des couleurs des bonbons
+extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];     // Tableau des messages d'état du jeu
+extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau des messages d'échange de bonbons
 
 #endif

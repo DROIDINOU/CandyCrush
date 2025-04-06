@@ -6,17 +6,16 @@
 #include <stdbool.h>
 #include "constante.h"
 #include "erreur.h"
-#define LONGUEURQ 1 // Taille de la queue (théoriquement je pourrait descendre jusque deux ENCORE A TESTER!!)
+#define LONGUEURQ 10
 
-// Déclaration de la structure Coordonnees
+// structure Coordonnees
 typedef struct
 {
     int x;
     int y;
 } Coordonnees;
 
-// A DEPLACER DANS FICHIER ERREUR H ET C
-
+// énumération ActionType
 typedef enum
 {
     INITIALISATION,
@@ -29,18 +28,17 @@ typedef enum
     LECTURE,
 } ActionType;
 
-// Déclaration de la structure Actions
+// structure Actions
 typedef struct
 {
     ActionType actionName;
     Coordonnees pion1;
     Coordonnees pion2;
     CodeErreur erreur;
-    // bool initialisation; // Indique si l'action est une initialisation
 
 } Actions;
 
-// Déclaration de la structure Queue
+// structure Queue
 typedef struct
 {
     Actions elements[LONGUEURQ]; // Tableau de structures Actions
@@ -49,10 +47,11 @@ typedef struct
     int taille;                  // Taille actuelle de la queue
 } Queue;
 
+// Prototypes des fonctions de la queue
 void InitialiserQueue(Queue *q);
 bool EstVide(Queue *q);
 bool EstPleine(Queue *q);
 Actions Enfiler(Queue *q, Actions *action);
 Actions Defiler(Queue *q);
 void ImprimerQueue(Queue *q); // fonction de debugging a supprimer par après
-#endif                        // QUEUE_H
+#endif

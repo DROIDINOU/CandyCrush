@@ -31,8 +31,8 @@ void initialiserBonbons(GrilleBonbons *grille)
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {                                                                                    // Remplissage avec des couleurs aleatoires (le  nombre des couleurs/bonbons varient en fonction du niveau)
-            grille->tableau[ligne][colonne].pion = GenerationAleatoire(ALEATOIRECOULEUR, 1); // Appel de la fonction pour générer
+        {                                                                                    // Remplissage avec des couleurs aleatoires
+            grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
             // une couleur aléatoire
             grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
@@ -40,20 +40,11 @@ void initialiserBonbons(GrilleBonbons *grille)
 }
 
 // Fixe un nombre aléatoire de gélatines dans la grille
-// Initialise les gelatines a faux
 // Tant que gelatines inferieures au nombre de gélatines créées aléatoirement => placement des gelatines avec coordonnees aleatoires
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
-    for (int ligne = 0; ligne < grille->lignes; ligne++)
-    {
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            grille->tableau[ligne][colonne].gelatine = false; // Initialisation sans gelatine
-        }
-    }
-
-    int nombreGelatine = GenerationAleatoire(ALEATOIREOBSTACLE, 1); // génération d'un nombre aléatoire de gelatines
+    int nombreGelatine = GenerationAleatoire(OBSTACLEALEATOIRE, 1); // Nombre aléatoire de gelatines à placer
     while (nombreGelatine > 0)                                      // Tant qu'il reste des gelatines à placer
     {
         int x = rand() % TAILLE;             // Coordonnées aléatoires
