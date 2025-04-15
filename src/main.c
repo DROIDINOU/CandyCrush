@@ -1,9 +1,11 @@
 #include "raylib.h"
 #include "matrice.h"
 #include "main.h"
+#include "jeu.h"
 #include "affichage.h"
 #include "queue.h"
 #include "constante.h"
+#include "ressources.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,28 +24,11 @@ int main()
     SetTargetFPS(60);
 
     bool jeuDemarre = false;
-    while (!WindowShouldClose() && !jeuDemarre)
-    {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("CANDY CRUSH CLONE", 350, 400, 40, DARKBLUE);
-        DrawText("Appuyez sur ESPACE pour commencer", 300, 500, 30, DARKGRAY);
-        if (IsKeyPressed(KEY_SPACE))
-            jeuDemarre = true;
-        EndDrawing();
-    }
+    afficherMenuAccueil(&jeuDemarre);
 
-    Texture2D textures[] = {
-        [MAUVE] = LoadTexture("../candyimages/5cd560a569ed85884c879cb1da8e7d68.png"),
-        [ROUGE] = LoadTexture("../candyimages/poignee_de_bonbons.png"),
-        [BLEU] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-candy-crush-candy-crush-5ad0dcad6773e1.4200818515236374214238.png"),
-        [VERT] = LoadTexture("../candyimages/580b57fcd9996e24bc43c517.png"),
-        [JAUNE] = LoadTexture("../candyimages/kisspng-candy-crush-saga-candy-crush-soda-saga-lollipop-ga-sweet-cheats-for-candy-crush-saga-1-2-ipa-war4-5b67aab6d41443.6117650115335205668687.png"),
-        [BLANC] = LoadTexture("../candyimages/293530-P7Q9H0-62.jpg"),
-        [GRIS] = LoadTexture("../candyimages/pile-sweet-donuts.jpg"),
-        [JAUNE_CLAIR] = LoadTexture("../candyimages/5939.jpg"),
-        [ROSE] = LoadTexture("../candyimages/kisspng-spiral-circle-magenta-lollipop-5b2c7a0466c112.1881360715296414764209.png")};
-    Texture2D explosionTexture = LoadTexture("../candyimages/circle_01.png");
+    Texture2D textures[NB_COULEURS]; // ← Assure-toi que NB_COULEURS est bien défini dans constante.h
+    chargerTextures(textures);
+    Texture2D explosionTexture = chargerTextureExplosion();
     GrilleBonbons maGrille;
 
     Queue q;
@@ -173,49 +158,11 @@ int main()
             }
         }
 
-        if (etatFinNiveau && (GetTime() - tempsDebutFinNiveau >= dureeFinNiveau))
-        {
-            etatFinNiveau = false;
-            InitialiserQueue(&q);
-            Actions nouvelleAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
-            Enfiler(&q, &nouvelleAction);
-        }
-
-        if (etatFinJeu && (GetTime() - tempsDebutFinJeu >= dureeFinJeu))
-        {
-            etatFinJeu = false;
-        }
-
+        etatFinNiveau = verifierFinNiveau(etatFinNiveau, tempsDebutFinNiveau, dureeFinNiveau, &q);
+        etatFinJeu = verifierFinJeu(etatFinJeu, tempsDebutFinJeu, dureeFinJeu);
         if (attenteClics)
         {
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            {
-                Vector2 posSouris = GetMousePosition();
-                int tailleCase = 50;
-                int grilleLargeur = maGrille.colonnes * tailleCase;
-                int grilleHauteur = maGrille.lignes * tailleCase;
-                int offsetX = (1000 - grilleLargeur) / 2;
-                int offsetY = (1000 - grilleHauteur) / 2;
-
-                int xRel = posSouris.x - offsetX;
-                int yRel = posSouris.y - offsetY;
-
-                if (xRel >= 0 && xRel < grilleLargeur && yRel >= 0 && yRel < grilleHauteur)
-                {
-                    int colonne = xRel / tailleCase;
-                    int ligne = yRel / tailleCase;
-                    coordonneesClic[clicCompteur * 2] = ligne;
-                    coordonneesClic[clicCompteur * 2 + 1] = colonne;
-                    clicCompteur++;
-
-                    if (clicCompteur == 2)
-                    {
-                        LirePionsAChanger(&maGrille, coordonneesClic[0], coordonneesClic[1],
-                                          coordonneesClic[2], coordonneesClic[3], &q);
-                        attenteClics = false;
-                    }
-                }
-            }
+            attenteClics = gererClics(&maGrille, &clicCompteur, coordonneesClic, &q);
         }
 
         BeginDrawing();
@@ -255,8 +202,7 @@ int main()
         EndDrawing();
     }
 
-    for (int i = 0; i < 5; i++)
-        UnloadTexture(textures[i]);
+    libererTextures(textures);
     UnloadTexture(explosionTexture);
 
     StopMusicStream(attenteMusic);

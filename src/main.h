@@ -12,5 +12,6 @@
 #include "matrice.h"   // Pour initialiser_grille et GrilleBonbons
 #include "queue.h"     // Pour Queue et fonctions associées
 #include "constante.h" // Pour les constantes définies dans constante.c
+#include "ressources.h"
 
 #endif // MAIN_H
