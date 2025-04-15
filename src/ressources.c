@@ -1,5 +1,7 @@
 #include "raylib.h"
 #include "constante.h"
+#include <stdio.h>
+#include <string.h>
 
 void chargerTextures(Texture2D textures[])
 {
@@ -25,4 +27,50 @@ void libererTextures(Texture2D textures[])
 Texture2D chargerTextureExplosion()
 {
     return LoadTexture("../candyimages/circle_01.png");
+}
+
+void initialiserFenetre()
+{
+    InitWindow(1000, 1000, "Candy Crush Clone");
+    SetTargetFPS(60);
+}
+
+void initialiserAudio()
+{
+    InitAudioDevice();
+}
+
+Music chargerMusiqueAttente()
+{
+    return LoadMusicStream("../assets/jellysplash_56f256e05113918.mp3");
+}
+
+void gererMusiqueParNiveau(int *niveauPrecedent, Music *currentMusic, bool *musicChargee)
+{
+    if (*niveauPrecedent != NIVEAUX[0].compteurNiveau)
+    {
+        char chemin[100];
+        sprintf(chemin, "../assets/music_niveau_%d.mp3", NIVEAUX[0].compteurNiveau);
+
+        if (*musicChargee)
+        {
+            StopMusicStream(*currentMusic);
+            UnloadMusicStream(*currentMusic);
+            *musicChargee = false;
+        }
+
+        *currentMusic = LoadMusicStream(chemin);
+        if (currentMusic->ctxData == NULL)
+        {
+            printf("⚠ Erreur chargement musique : %s\n", chemin);
+        }
+        else
+        {
+            PlayMusicStream(*currentMusic);
+            SetMusicVolume(*currentMusic, 0.2f);
+            *musicChargee = true;
+        }
+
+        *niveauPrecedent = NIVEAUX[0].compteurNiveau;
+    }
 }

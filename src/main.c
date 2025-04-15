@@ -17,11 +17,9 @@ int main()
     bool musicChargee = false;
     srand(time(NULL));
     char buffer[50];
-    InitWindow(1000, 1000, "Candy Crush Clone");
-    InitAudioDevice();
-    Music attenteMusic = LoadMusicStream("../assets/jellysplash_56f256e05113918.mp3");
-
-    SetTargetFPS(60);
+    initialiserFenetre();
+    initialiserAudio();
+    Music attenteMusic = chargerMusiqueAttente();
 
     bool jeuDemarre = false;
     afficherMenuAccueil(&jeuDemarre);
@@ -56,31 +54,7 @@ int main()
 
     while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        if (niveauPrecedent != NIVEAUX[0].compteurNiveau)
-        {
-            char chemin[100];
-            sprintf(chemin, "../assets/music_niveau_%d.mp3", NIVEAUX[0].compteurNiveau);
-
-            if (musicChargee)
-            {
-                StopMusicStream(currentMusic);
-                UnloadMusicStream(currentMusic);
-                musicChargee = false;
-            }
-
-            currentMusic = LoadMusicStream(chemin);
-            if (currentMusic.ctxData == NULL)
-            {
-                printf("⚠ Erreur chargement musique : %s\n", chemin);
-            }
-            else
-            {
-                PlayMusicStream(currentMusic);
-                SetMusicVolume(currentMusic, 0.2f);
-                musicChargee = true;
-            }
-            niveauPrecedent = NIVEAUX[0].compteurNiveau;
-        }
+        gererMusiqueParNiveau(&niveauPrecedent, &currentMusic, &musicChargee);
 
         if (musicChargee)
             UpdateMusicStream(currentMusic);
