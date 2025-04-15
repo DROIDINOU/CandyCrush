@@ -34,29 +34,14 @@ int main()
     Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
     Enfiler(&q, &initAction);
 
-    bool attenteClics = false;
-    int clicCompteur = 0;
-    int coordonneesClic[4] = {-1, -1, -1, -1};
-
-    bool etatAttente = false;
-    double tempsDebutAttente = 0.0;
-    double dureeAttente = 0.3;
-
-    bool etatFinNiveau = false;
-    double tempsDebutFinNiveau = 0.0;
-    double dureeFinNiveau = 2.5;
-
-    bool etatFinJeu = false;
-    double tempsDebutFinJeu = 0.0;
-    double dureeFinJeu = 2.5;
-
-    int niveauPrecedent = -1;
+    EtatJeu etat;
+    initialiserEtatJeu(&etat);
 
     while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        gererMusiqueParNiveau(&niveauPrecedent, &currentMusic, &musicChargee);
+        gererMusiqueParNiveau(&etat.niveauPrecedent, &currentMusic, &musicChargee);
 
-        gererEtatMusical(&etatAttente, dureeAttente, &tempsDebutAttente,
+        gererEtatMusical(&etat.etatAttente, etat.dureeAttente, &etat.tempsDebutAttente,
                          &attenteMusic, &currentMusic, musicChargee);
         if (q.taille > 0)
         {
@@ -70,14 +55,14 @@ int main()
             else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
             {
                 SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                etatAttente = true;
-                tempsDebutAttente = GetTime();
+                etat.etatAttente = true;
+                etat.tempsDebutAttente = GetTime();
             }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                etatAttente = true;
-                tempsDebutAttente = GetTime();
+                etat.etatAttente = true;
+                etat.tempsDebutAttente = GetTime();
             }
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
@@ -92,8 +77,8 @@ int main()
             }
             else if (strcmp(action.actionName, "LECTURE") == 0)
             {
-                attenteClics = true;
-                clicCompteur = 0;
+                etat.attenteClics = true;
+                etat.clicCompteur = 0;
             }
             else if (strcmp(action.actionName, "INITIALISATION") == 0)
             {
@@ -102,29 +87,29 @@ int main()
             }
             else if (strcmp(action.actionName, "FINNIVEAU") == 0)
             {
-                etatFinNiveau = true;
-                tempsDebutFinNiveau = GetTime();
+                etat.etatFinNiveau = true;
+                etat.tempsDebutFinNiveau = GetTime();
                 maGrille.estVerifiee = 0;
             }
             else if (strcmp(action.actionName, "FIN") == 0)
             {
-                etatFinJeu = true;
-                tempsDebutFinJeu = GetTime();
+                etat.etatFinJeu = true;
+                etat.tempsDebutFinJeu = GetTime();
             }
         }
 
-        etatFinNiveau = verifierFinNiveau(etatFinNiveau, tempsDebutFinNiveau, dureeFinNiveau, &q);
-        etatFinJeu = verifierFinJeu(etatFinJeu, tempsDebutFinJeu, dureeFinJeu);
-        if (attenteClics)
+        etat.etatFinNiveau = verifierFinNiveau(etat.etatFinNiveau, etat.tempsDebutFinNiveau, etat.dureeFinNiveau, &q);
+        etat.etatFinJeu = verifierFinJeu(etat.etatFinJeu, etat.tempsDebutFinJeu, etat.dureeFinJeu);
+        if (etat.attenteClics)
         {
-            attenteClics = gererClics(&maGrille, &clicCompteur, coordonneesClic, &q);
+            etat.tempsDebutFinNiveau = gererClics(&maGrille, &etat.clicCompteur, etat.coordonneesClic, &q);
         }
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
         afficher_grille(&maGrille, textures, &q, explosionTexture);
 
-        if (etatFinNiveau)
+        if (etat.etatFinNiveau)
         {
             sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
             DrawRectangle(200, 350, 600, 150, BLACK);
@@ -133,7 +118,7 @@ int main()
             DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
         }
 
-        if (etatFinJeu)
+        if (etat.etatFinJeu)
         {
             while (!WindowShouldClose())
             {

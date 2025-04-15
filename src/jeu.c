@@ -3,7 +3,30 @@
 #include "constante.h"
 #include "affichage.h"
 #include "matrice.h"
+#include "jeu.h"
 #include <stdbool.h>
+
+void initialiserEtatJeu(EtatJeu *etat)
+{
+    etat->attenteClics = false;
+    etat->clicCompteur = 0;
+    for (int i = 0; i < 4; i++)
+        etat->coordonneesClic[i] = -1;
+
+    etat->etatAttente = false;
+    etat->tempsDebutAttente = 0.0;
+    etat->dureeAttente = 0.3;
+
+    etat->etatFinNiveau = false;
+    etat->tempsDebutFinNiveau = 0.0;
+    etat->dureeFinNiveau = 2.5;
+
+    etat->etatFinJeu = false;
+    etat->tempsDebutFinJeu = 0.0;
+    etat->dureeFinJeu = 2.5;
+
+    etat->niveauPrecedent = -1;
+}
 
 void afficherMenuAccueil(bool *jeuDemarre)
 {
