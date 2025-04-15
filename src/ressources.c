@@ -74,3 +74,31 @@ void gererMusiqueParNiveau(int *niveauPrecedent, Music *currentMusic, bool *musi
         *niveauPrecedent = NIVEAUX[0].compteurNiveau;
     }
 }
+
+void gererEtatMusical(bool *etatAttente, double dureeAttente, double *tempsDebutAttente,
+                      Music *musiqueAttente, Music *musiqueActuelle, bool musicChargee)
+{
+    if (musicChargee)
+        UpdateMusicStream(*musiqueActuelle);
+
+    if (*etatAttente)
+    {
+        UpdateMusicStream(*musiqueAttente);
+
+        if (!IsMusicStreamPlaying(*musiqueAttente))
+        {
+            SetMusicVolume(*musiqueAttente, 1.0f);
+            if (musicChargee)
+                SetMusicVolume(*musiqueActuelle, 0.0f);
+            PlayMusicStream(*musiqueAttente);
+        }
+
+        if ((GetTime() - *tempsDebutAttente) >= dureeAttente)
+        {
+            *etatAttente = false;
+            StopMusicStream(*musiqueAttente);
+            if (musicChargee)
+                SetMusicVolume(*musiqueActuelle, 0.2f);
+        }
+    }
+}

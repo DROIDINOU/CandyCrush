@@ -56,28 +56,9 @@ int main()
     {
         gererMusiqueParNiveau(&niveauPrecedent, &currentMusic, &musicChargee);
 
-        if (musicChargee)
-            UpdateMusicStream(currentMusic);
-
-        if (etatAttente)
-        {
-            UpdateMusicStream(attenteMusic);
-            if (!IsMusicStreamPlaying(attenteMusic))
-            {
-                SetMusicVolume(attenteMusic, 1.0f);
-                if (musicChargee)
-                    SetMusicVolume(currentMusic, 0.0f);
-                PlayMusicStream(attenteMusic);
-            }
-            if ((GetTime() - tempsDebutAttente) >= dureeAttente)
-            {
-                etatAttente = false;
-                StopMusicStream(attenteMusic);
-                if (musicChargee)
-                    SetMusicVolume(currentMusic, 0.2f);
-            }
-        }
-        else if (q.taille > 0)
+        gererEtatMusical(&etatAttente, dureeAttente, &tempsDebutAttente,
+                         &attenteMusic, &currentMusic, musicChargee);
+        if (q.taille > 0)
         {
             Actions action = Defiler(&q);
             strcpy(maGrille.lastAction, action.actionName);

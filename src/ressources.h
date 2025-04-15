@@ -11,5 +11,6 @@ void initialiserFenetre();
 void initialiserAudio();
 Music chargerMusiqueAttente();
 void gererMusiqueParNiveau(int *niveauPrecedent, Music *currentMusic, bool *musicChargee);
-
+void gererEtatMusical(bool *etatAttente, double dureeAttente, double *tempsDebutAttente,
+                      Music *musiqueAttente, Music *musiqueActuelle, bool musicChargee);
 #endif
