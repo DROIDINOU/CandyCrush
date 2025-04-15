@@ -6,7 +6,7 @@
 #define MAXLONGUEUR 100
 #define LONGUEURMESSAGEETREPONSE 40
 #define FINALNIVEAU 3
-#define NOMBREMESSAGESJEU 6 // Nombre de messages concernant l'état du jeu
+#define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu
 #define MAXCOULEUR 9
 
 /*________________________________________________________________________________________________________________
@@ -17,6 +17,16 @@
                     -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle)
 ___________________________________________________________________________________________________________________
  */
+typedef enum
+{
+    MESSAGE_COUPS_EPUISES,
+    MESSAGE_FELICITATIONS,
+    MESSAGE_SCORE,
+    MESSAGE_PERDU,
+    MESSAGE_FIN_JEU,
+    MESSAGE_CHARGEMENT,
+    MESSAGE_PIONS_NON_ADJACENTS
+} TypeMessage;
 
 typedef enum
 {

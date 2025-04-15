@@ -6,6 +6,8 @@
 #include <locale.h>
 #include "matrice.h"
 #include "constante.h"
+#include "erreur.h"
+
 // RESTE A FAIRE VERIFIER TOUS LES INCLUDE RESTE EST OK
 
 /*
@@ -49,8 +51,14 @@ int ObtenirReponseAuMessage(int index)
     return choixUtilisateur - 1; // retourne index programmeur
 }
 
+bool EstPionAdjacent(int x1, int y1, int x2, int y2)
+{
+    // Vérifie si les pions sont adjacents (horizontalement ou verticalement)
+    return (x1 == x2 && abs(y1 - y2) == 1) || (y1 == y2 && abs(x1 - x2) == 1);
+}
+
 // lit les coordonnees entrees par l utilisateur pour le swap de pions
-void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
+bool LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 {
     *x1 = ObtenirReponseAuMessage(0);
     printf("x1 = %d\n", *x1);
@@ -63,6 +71,8 @@ void LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 
     *y2 = ObtenirReponseAuMessage(1);
     printf("y2 = %d\n", *y2);
+
+    return EstPionAdjacent(*x1, *y1, *x2, *y2); // Vérifie si les pions sont adjacents
 }
 
 // lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
@@ -71,10 +81,19 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
                        int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
                        int *coordonneeYDeuxiemePion, Queue *q)
 {
-    LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
-
-    Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
-    Enfiler(q, &action);
+    if (LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion))
+    {
+        printf("Coordonnees valides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
+        Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
+        Enfiler(q, &action);
+    }
+    else
+    {
+        printf("Coordonnees invalides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
+        GererErreurNonFatale(ERREURDEPLACEMENT);
+        Actions action = {LECTURE, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
+        Enfiler(q, &action); // Si les coordonnées ne sont pas valides, on gère l'erreur
+    }
 }
 
 /*____________________________________________________________________________________________________________________________
@@ -96,7 +115,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q)
     // SI LA GRILLE EST EN PHASE INITIALISATION ET N EST PAS VERIFIEE -> affichage de chargemenbt
     if (!grille->estVerifiee)
     {
-        printf(MESSAGEETATJEU[5]);
+        printf(MESSAGEETATJEU[MESSAGE_CHARGEMENT]);
     }
 
     else

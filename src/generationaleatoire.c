@@ -21,11 +21,11 @@
                    jeu bonus)
  ****************************************************************************************************************************/
 
-int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
+int GenerationAleatoire(TypeElementRandom type, int maxRandom)
 {
     // Si maxTentatives est inférieur ou égal à zéro, il y a eu une erreur dans la génération
 
-    if (maxTentatives <= 0)
+    if (maxRandom <= 0)
     {
         GererErreurFatale(ECHECGENERATIONTENTATIVES);
     }
@@ -84,5 +84,5 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives)
 
     // Appel récursif si les conditions ne sont pas remplies sera éventuellement utilisé en cas
     // d'attributions de points bonus (jeux bonus) ou d'autres types de génération aléatoire
-    return GenerationAleatoire(type, maxTentatives - 1);
+    return GenerationAleatoire(type, maxRandom - 1);
 }

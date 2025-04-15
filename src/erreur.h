@@ -1,6 +1,5 @@
 #ifndef ERREUR_H
 #define ERREUR_H
-#include "constante.h" // Pour les constantes définies dans constante.c
 
 typedef enum
 {
@@ -14,4 +13,6 @@ typedef enum
 } CodeErreur;
 
 void GererErreurFatale(CodeErreur codeErreur);
+void GererErreurNonFatale(CodeErreur codeErreur);
+
 #endif

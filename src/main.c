@@ -134,7 +134,7 @@ int main()
         NIVEAUX[0].compteurNiveau += 1;
     }
 
-    printf(MESSAGEETATJEU[4]);
+    printf(MESSAGEETATJEU[MESSAGE_FIN_JEU]);
 
     return 0;
 }

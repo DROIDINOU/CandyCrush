@@ -9,13 +9,15 @@ const CouleurBonbons COULEURS[MAXCOULEUR] = {
 
 // Définition des messages d'état du jeu.
 // Type : tableau de characteres
+// rmq peut etre mettre const char*
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Vous avez epuise tous vos coups.\n",
     "Felicitations! Vous accedez au niveau suivant!\n",
     "Votre score est de :\n",
     "Vous avez perdu. Essayez encore.\n",
     "Fin du jeu\n",
-    " Chargement de la grille... \n"};
+    " Chargement de la grille... \n",
+    "les pions doivent etre adjacents\n"}; // Message d'erreur si les pions ne sont pas adjacents
 
 // Tableau contenant les messages addressés à l'utilisateur et le type de reponse attendue
 // Type : tableau de MessagesReponses (structure définie dans constante.h).

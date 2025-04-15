@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "erreur.h"
+#include "constante.h"
 
 void GererErreurFatale(CodeErreur codeErreur)
 {
@@ -15,9 +16,7 @@ void GererErreurFatale(CodeErreur codeErreur)
         printf("la queue est vide ... \n");
         exit(EXIT_FAILURE); // Sortie du programme avec un code d'erreur
         break;
-    case ERREURDEPLACEMENT:
-        /* code */
-        break;
+
     case TYPEINCONNU:
         printf("Type inconnu ... \n");
         exit(EXIT_FAILURE); // Sortie du programme avec un code d'erreur
@@ -39,6 +38,19 @@ void GererErreurFatale(CodeErreur codeErreur)
     default:
         printf("Erreur inconnue ... \n");
         exit(EXIT_FAILURE); // Sortie du programme avec un code d'erreur
+        break;
+    }
+}
+
+void GererErreurNonFatale(CodeErreur codeErreur)
+{
+    switch (codeErreur)
+    {
+    case ERREURDEPLACEMENT:
+        printf(MESSAGEETATJEU[MESSAGE_PIONS_NON_ADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
+        break;
+    default:
+        printf("Erreur inconnue ... \n");
         break;
     }
 }
