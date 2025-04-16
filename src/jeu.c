@@ -5,6 +5,7 @@
 #include "matrice.h"
 #include "jeu.h"
 #include <stdbool.h>
+#include <string.h>
 
 void initialiserEtatJeu(EtatJeu *etat)
 {
@@ -26,6 +27,12 @@ void initialiserEtatJeu(EtatJeu *etat)
     etat->dureeFinJeu = 2.5;
 
     etat->niveauPrecedent = -1;
+
+    etat->explosionEnCours = false;
+    etat->tempsExplosion = 0.0;
+    etat->dureeExplosion = 3.0;      // ✅ explosion visible pendant 1 seconde
+    strcpy(etat->typeExplosion, ""); // vide au début
+    etat->pretPourNiveauSuivant = false;
 }
 
 void afficherMenuAccueil(bool *jeuDemarre)
@@ -42,16 +49,31 @@ void afficherMenuAccueil(bool *jeuDemarre)
     }
 }
 
-bool verifierFinNiveau(bool etatFinNiveau, double tempsDebutFinNiveau, double dureeFinNiveau, Queue *q)
+void verifierFinNiveau(EtatJeu *etat, Queue *q)
 {
-    if (etatFinNiveau && (GetTime() - tempsDebutFinNiveau >= dureeFinNiveau))
+    // Étape 1 : attendre la fin du timer d'affichage du message
+    if (etat->etatFinNiveau &&
+        !etat->pretPourNiveauSuivant &&
+        (GetTime() - etat->tempsDebutFinNiveau >= etat->dureeFinNiveau))
     {
+        printf("⏳ Fin niveau affiché, prêt pour niveau suivant\n");
+        etat->pretPourNiveauSuivant = true;
+        return; // ← Laisser le message s'afficher encore une frame
+    }
+
+    // Étape 2 : déclencher le vrai changement de niveau
+    if (etat->pretPourNiveauSuivant)
+    {
+        printf("➡️ Passage au niveau suivant (compteur = %d)\n", NIVEAUX[0].compteurNiveau);
         InitialiserQueue(q);
+
         Actions nouvelleAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
         Enfiler(q, &nouvelleAction);
-        return false; // désactive l'état
+
+        // Reset des flags
+        etat->etatFinNiveau = false;
+        etat->pretPourNiveauSuivant = false;
     }
-    return etatFinNiveau;
 }
 
 bool verifierFinJeu(bool etatFinJeu, double tempsDebutFinJeu, double dureeFinJeu)
@@ -94,4 +116,57 @@ bool gererClics(GrilleBonbons *grille, int *clicCompteur, int coordonneesClic[],
         }
     }
     return true;
+}
+
+void gererEtatTemporel(EtatJeu *etat, GrilleBonbons *grille, Queue *q)
+{
+    if (etat->attenteClics)
+    {
+        etat->tempsDebutFinNiveau = gererClics(grille, &etat->clicCompteur, etat->coordonneesClic, q);
+    }
+
+    if (etat->explosionEnCours && GetTime() - etat->tempsExplosion >= etat->dureeExplosion)
+    {
+        etat->explosionEnCours = false;
+    }
+}
+
+void afficherEtatsEtFin(EtatJeu *etat, char *buffer, Texture2D *textures, GrilleBonbons *grille, Queue *q, Texture2D explosionTexture)
+{
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    afficher_grille(grille, textures, q, explosionTexture, etat);
+
+    if (etat->etatFinNiveau)
+    {
+        sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
+        DrawRectangle(200, 350, 600, 150, BLACK);
+        DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
+        DrawText(buffer, 320, 390, 40, RAYWHITE);
+        DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
+    }
+
+    if (etat->etatFinJeu)
+    {
+        while (!WindowShouldClose())
+        {
+            BeginDrawing();
+            ClearBackground(DARKBLUE);
+            DrawRectangle(200, 350, 600, 150, BLACK);
+            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
+            sprintf(buffer, "FIN DU JEU  FELICITATIONS!");
+            DrawText(buffer, 220, 390, 30, RAYWHITE);
+            DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
+            EndDrawing();
+
+            if (IsKeyPressed(KEY_ESCAPE))
+            {
+                NIVEAUX[0].compteurNiveau += 1;
+                break;
+            }
+        }
+    }
+
+    EndDrawing();
 }

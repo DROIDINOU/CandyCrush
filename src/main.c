@@ -27,6 +27,8 @@ int main()
     Texture2D textures[NB_COULEURS]; // ← Assure-toi que NB_COULEURS est bien défini dans constante.h
     chargerTextures(textures);
     Texture2D explosionTexture = chargerTextureExplosion();
+    printf("Explosion texture: id=%d, w=%d, h=%d\n",
+           explosionTexture.id, explosionTexture.width, explosionTexture.height);
     GrilleBonbons maGrille;
 
     Queue q;
@@ -52,18 +54,42 @@ int main()
 
             if (strcmp(action.actionName, "CALCUL") == 0)
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
-            {
-                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                etat.etatAttente = true;
-                etat.tempsDebutAttente = GetTime();
-            }
             else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
             {
-                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-                etat.etatAttente = true;
-                etat.tempsDebutAttente = GetTime();
+                Coordonnees tmp1 = action.pion1;
+                Coordonnees tmp2 = action.pion2;
+
+                maGrille.pion1Affiche = tmp1;
+                maGrille.pion2Affiche = tmp2;
+
+                // 🔥 Sauvegarde des coordonnées pour explosion
+                etat.explosionP1 = tmp1;
+                etat.explosionP2 = tmp2;
+
+                strcpy(etat.typeExplosion, "SUPPRESSIONH");
+                etat.explosionEnCours = true;
+                etat.tempsExplosion = GetTime();
+
+                SuppressionH(&maGrille, &tmp1.x, &tmp1.y, &tmp2.x, &tmp2.y, &q);
             }
+            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
+            {
+                Coordonnees tmp1 = action.pion1;
+                Coordonnees tmp2 = action.pion2;
+
+                maGrille.pion1Affiche = tmp1;
+                maGrille.pion2Affiche = tmp2;
+
+                etat.explosionP1 = tmp1;
+                etat.explosionP2 = tmp2;
+
+                strcpy(etat.typeExplosion, "SUPPRESSIONV");
+                etat.explosionEnCours = true;
+                etat.tempsExplosion = GetTime();
+
+                SuppressionV(&maGrille, &tmp1.x, &tmp1.y, &tmp2.x, &tmp2.y, &q);
+            }
+
             else if (strcmp(action.actionName, "VERIFICATION") == 0)
             {
                 Verification(&maGrille, &q);
@@ -97,49 +123,9 @@ int main()
                 etat.tempsDebutFinJeu = GetTime();
             }
         }
-
-        etat.etatFinNiveau = verifierFinNiveau(etat.etatFinNiveau, etat.tempsDebutFinNiveau, etat.dureeFinNiveau, &q);
-        etat.etatFinJeu = verifierFinJeu(etat.etatFinJeu, etat.tempsDebutFinJeu, etat.dureeFinJeu);
-        if (etat.attenteClics)
-        {
-            etat.tempsDebutFinNiveau = gererClics(&maGrille, &etat.clicCompteur, etat.coordonneesClic, &q);
-        }
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        afficher_grille(&maGrille, textures, &q, explosionTexture);
-
-        if (etat.etatFinNiveau)
-        {
-            sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
-            DrawRectangle(200, 350, 600, 150, BLACK);
-            DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
-            DrawText(buffer, 320, 390, 40, RAYWHITE);
-            DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
-        }
-
-        if (etat.etatFinJeu)
-        {
-            while (!WindowShouldClose())
-            {
-                BeginDrawing();
-                ClearBackground(DARKBLUE);
-                DrawRectangle(200, 350, 600, 150, BLACK);
-                DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
-                sprintf(buffer, "FIN DU JEU  FELICITATIONS!", NIVEAUX[0].compteurNiveau + 1);
-                DrawText(buffer, 220, 390, 30, RAYWHITE);
-                DrawText("Appuyez sur [ECHAP] pour quitter", 270, 440, 20, GRAY);
-                EndDrawing();
-
-                if (IsKeyPressed(KEY_ESCAPE))
-                {
-                    NIVEAUX[0].compteurNiveau += 1;
-                    break;
-                }
-            }
-        }
-
-        EndDrawing();
+        gererEtatTemporel(&etat, &maGrille, &q);
+        afficherEtatsEtFin(&etat, buffer, textures, &maGrille, &q, explosionTexture);
+        verifierFinNiveau(&etat, &q); // ← à la fin
     }
 
     libererTextures(textures);

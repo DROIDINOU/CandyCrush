@@ -6,8 +6,10 @@
 #include "matrice.h"
 #include "constante.h"
 #include "affichage.h"
+#include "ressources.h"
 #include "raylib.h"
 #include <string.h>
+#include "jeu.h"
 
 void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coordX2, int coordY2, Queue *q)
 {
@@ -15,8 +17,10 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coor
     Enfiler(q, &action);
 }
 
-void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture)
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture, EtatJeu *etat)
 {
+    DrawText(TextFormat("GetTime(): %.2f", GetTime()), 10, 10, 20, BLACK);
+
     int tailleCase = 50;
     int largeurFenetre = 1000;
     int hauteurFenetre = 1000;
@@ -33,39 +37,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
             int x = offsetX + j * tailleCase;
             int y = offsetY + i * tailleCase;
 
-            Texture2D bonbon = {0};
-            switch (grille->tableau[i][j].pion)
-            {
-            case MAUVE:
-                bonbon = textures[MAUVE];
-                break;
-            case ROUGE:
-                bonbon = textures[ROUGE];
-                break;
-            case BLEU:
-                bonbon = textures[BLEU];
-                break;
-            case VERT:
-                bonbon = textures[VERT];
-                break;
-            case JAUNE:
-                bonbon = textures[JAUNE];
-                break;
-            case BLANC:
-                bonbon = textures[BLANC];
-                break;
-            case GRIS:
-                bonbon = textures[GRIS];
-                break;
-            case JAUNE_CLAIR:
-                bonbon = textures[JAUNE_CLAIR];
-                break;
-            case ROSE:
-                bonbon = textures[ROSE];
-                break;
-            default:
-                continue;
-            }
+            Texture2D bonbon = textures[grille->tableau[i][j].pion];
 
             if (bonbon.id != 0)
             {
@@ -89,47 +61,53 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
         }
     }
 
-    if (strcmp(grille->lastAction, "SUPPRESSIONH") == 0 || strcmp(grille->lastAction, "SUPPRESSIONV") == 0)
+    if (etat->explosionEnCours &&
+        GetTime() - etat->tempsExplosion < etat->dureeExplosion &&
+        (strcmp(etat->typeExplosion, "SUPPRESSIONH") == 0 || strcmp(etat->typeExplosion, "SUPPRESSIONV") == 0))
     {
-        printf("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-        int x1 = grille->pion1Affiche.x;
-        int y1 = grille->pion1Affiche.y;
-        int x2 = grille->pion2Affiche.x;
-        int y2 = grille->pion2Affiche.y;
+        const char *type = etat->typeExplosion;
 
-        int xMin = (x1 < x2) ? x1 : x2;
-        int xMax = (x1 > x2) ? x1 : x2;
-        int yMin = (y1 < y2) ? y1 : y2;
-        int yMax = (y1 > y2) ? y1 : y2;
+        int l1 = etat->explosionP1.x;
+        int c1 = etat->explosionP1.y;
+        int l2 = etat->explosionP2.x;
+        int c2 = etat->explosionP2.y;
 
-        if (strcmp(grille->lastAction, "SUPPRESSIONH") == 0)
+        if (l1 < 0 || c1 < 0 || l2 < 0 || c2 < 0 ||
+            l1 >= grille->lignes || l2 >= grille->lignes ||
+            c1 >= grille->colonnes || c2 >= grille->colonnes)
         {
-            for (int y = yMin; y <= yMax; y++)
+            return;
+        }
+
+        Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
+
+        if (strcmp(type, "SUPPRESSIONH") == 0)
+        {
+            int l = l1;
+            int cMin = (c1 < c2) ? c1 : c2;
+            int cMax = (c1 > c2) ? c1 : c2;
+
+            for (int c = cMin; c <= cMax; c++)
             {
-                int px = offsetX + y * tailleCase;
-                int py = offsetY + x1 * tailleCase;
-                Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
-                Rectangle dst = {px, py, tailleCase, tailleCase}; // ← s’adapte pile à une case
-                Vector2 origin = {0, 0};
-                DrawTexturePro(explosionTexture, src, dst, origin, 0.0f, WHITE);
+                int px = offsetX + c * tailleCase;
+                int py = offsetY + l * tailleCase;
+                Rectangle dst = {px, py, tailleCase, tailleCase};
+                DrawTexturePro(explosionTexture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);
             }
         }
-        else if (strcmp(grille->lastAction, "SUPPRESSIONV") == 0)
+        else if (strcmp(type, "SUPPRESSIONV") == 0)
         {
-            for (int x = xMin; x <= xMax; x++)
+            int c = c1;
+            int lMin = (l1 < l2) ? l1 : l2;
+            int lMax = (l1 > l2) ? l1 : l2;
+
+            for (int l = lMin; l <= lMax; l++)
             {
-                int px = offsetX + y1 * tailleCase;
-                int py = offsetY + x * tailleCase;
-                Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
-                Rectangle dst = {px, py, tailleCase, tailleCase}; // ← s’adapte pile à une case
-                Vector2 origin = {0, 0};
-                DrawTexturePro(explosionTexture, src, dst, origin, 0.0f, WHITE);
+                int px = offsetX + c * tailleCase;
+                int py = offsetY + l * tailleCase;
+                Rectangle dst = {px, py, tailleCase, tailleCase};
+                DrawTexturePro(explosionTexture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);
             }
-        }
-        else if (strcmp(grille->lastAction, "FINNIVEAU") == 0)
-        {
-            printf("rentre dans fiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-            DrawText("FIN NIVEAU", 350, 400, 40, DARKBLUE);
         }
     }
 
