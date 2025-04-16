@@ -30,8 +30,8 @@ void initialiserEtatJeu(EtatJeu *etat)
 
     etat->explosionEnCours = false;
     etat->tempsExplosion = 0.0;
-    etat->dureeExplosion = 3.0;      // ✅ explosion visible pendant 1 seconde
-    strcpy(etat->typeExplosion, ""); // vide au début
+    etat->dureeExplosion = 1.0;             // ✅ explosion visible pendant 1 seconde
+    etat->typeExplosion = AUCUNE_EXPLOSION; // vide au début
     etat->pretPourNiveauSuivant = false;
 }
 
@@ -67,7 +67,7 @@ void verifierFinNiveau(EtatJeu *etat, Queue *q)
         printf("➡️ Passage au niveau suivant (compteur = %d)\n", NIVEAUX[0].compteurNiveau);
         InitialiserQueue(q);
 
-        Actions nouvelleAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
+        Actions nouvelleAction = {INITIALISATION, {0, 0}, {0, 0}, true};
         Enfiler(q, &nouvelleAction);
 
         // Reset des flags
@@ -122,7 +122,7 @@ void gererEtatTemporel(EtatJeu *etat, GrilleBonbons *grille, Queue *q)
 {
     if (etat->attenteClics)
     {
-        etat->tempsDebutFinNiveau = gererClics(grille, &etat->clicCompteur, etat->coordonneesClic, q);
+        etat->attenteClics = gererClics(grille, &etat->clicCompteur, etat->coordonneesClic, q);
     }
 
     if (etat->explosionEnCours && GetTime() - etat->tempsExplosion >= etat->dureeExplosion)

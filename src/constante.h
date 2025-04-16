@@ -1,9 +1,9 @@
 // constants.h
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-#define FINALNIVEAU 3
 #include <stdbool.h>
-
+#include "erreur.h"
+#define FINALNIVEAU 3
 // Déclaration d'une constante avec extern
 #define TAILLE 10
 #define NOMBREMESSAGES 4
@@ -11,8 +11,47 @@
 #define MAXCOULEUR 9
 #define NB_COULEURS 9
 
+/* #define LONGUEURMESSAGEETREPONSE 40
+#define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu*/
+
 // PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
+
+/*typedef enum
+{
+    MESSAGE_COUPS_EPUISES,
+    MESSAGE_FELICITATIONS,
+    MESSAGE_SCORE,
+    MESSAGE_PERDU,
+    MESSAGE_FIN_JEU,
+    MESSAGE_CHARGEMENT,
+    MESSAGE_PIONS_NON_ADJACENTS
+} TypeMessage;
+
+typedef enum
+{
+    COULEURALEATOIRE,
+    OBSTACLEALEATOIRE
+} TypeElementRandom;
+
+typedef struct
+{
+    char message[LONGUEURMESSAGEETREPONSE];
+    int nombreLigneOuColonne;
+} MessagesEchangeBonbons;
+
+extern const CouleurBonbons COULEURS[MAXCOULEUR];                     // Tableau des couleurs des bonbons
+extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];     // Tableau des messages d'état du jeu
+extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau des messages d'échange de bonbons
+
+
+
+
+
+
+
+
+*/
 
 typedef enum
 {
@@ -29,20 +68,28 @@ typedef enum
 
 extern const CouleurBonbons COULEURS[MAXCOULEUR];
 
+// supprimer coordonees
 typedef struct
 {
     int x;
     int y;
 } Coordonnees;
 
-typedef struct
+typedef enum
 {
-    char actionName[20];
-    Coordonnees pion1;
-    Coordonnees pion2;
-    bool initialisation; // Indicateur pour l'initialisation
-
-} Actions;
+    INITIALISATION,
+    AFFICHAGE,
+    VERIFICATION,
+    SUPPRESSIONH,
+    SUPPRESSIONV,
+    CALCUL,
+    DEPLACEMENT,
+    LECTURE,
+    FINNIVEAU,
+    FIN,
+    AUCUNE_EXPLOSION,
+} ActionType;
+// supprimer Actions
 
 typedef struct
 {
@@ -62,7 +109,7 @@ typedef struct
     int suppressionsRestantes;
     int affiche;
     int finniveau;
-    char lastAction[20]; // Ajout pour mémoriser la dernière action
+    ActionType lastAction; // Ajout pour mémoriser la dernière action
     Coordonnees pion1Affiche;
     Coordonnees pion2Affiche;
     int deplacement;
@@ -90,6 +137,14 @@ typedef struct
     int compteurNiveau; // Niveau actuel
     int randomColorModulo;
 } Niveaux;
+
+/*
+typedef struct
+{
+    char message[LONGUEURMESSAGEETREPONSE];
+    int nombreLigneOuColonne;
+} MessagesEchangeBonbons;
+ */
 
 // YABLEAU DE STUCTURES NIVEAU AVEC COMME LONGUEUR LE NOMBRE DE NIVEAUX
 extern Niveaux NIVEAUX[FINALNIVEAU];

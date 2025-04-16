@@ -13,7 +13,7 @@
 
 void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coordX2, int coordY2, Queue *q)
 {
-    Actions action = {"DEPLACEMENT", {coordX1, coordY1}, {coordX2, coordY2}, false};
+    Actions action = {DEPLACEMENT, {coordX1, coordY1}, {coordX2, coordY2}, false};
     Enfiler(q, &action);
 }
 
@@ -63,10 +63,10 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
 
     if (etat->explosionEnCours &&
         GetTime() - etat->tempsExplosion < etat->dureeExplosion &&
-        (strcmp(etat->typeExplosion, "SUPPRESSIONH") == 0 || strcmp(etat->typeExplosion, "SUPPRESSIONV") == 0))
+        (etat->typeExplosion == SUPPRESSIONH ||
+         etat->typeExplosion == SUPPRESSIONV))
     {
-        const char *type = etat->typeExplosion;
-
+        ActionType type = etat->typeExplosion;
         int l1 = etat->explosionP1.x;
         int c1 = etat->explosionP1.y;
         int l2 = etat->explosionP2.x;
@@ -81,7 +81,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
 
         Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
 
-        if (strcmp(type, "SUPPRESSIONH") == 0)
+        if (type == SUPPRESSIONH)
         {
             int l = l1;
             int cMin = (c1 < c2) ? c1 : c2;
@@ -95,7 +95,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
                 DrawTexturePro(explosionTexture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);
             }
         }
-        else if (strcmp(type, "SUPPRESSIONV") == 0)
+        else if (type == SUPPRESSIONV)
         {
             int c = c1;
             int lMin = (l1 < l2) ? l1 : l2;
@@ -111,10 +111,10 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
         }
     }
 
-    if (strcmp(grille->lastAction, "AFFICHAGE") == 0)
+    if (grille->lastAction == AFFICHAGE)
     {
         printf("AFFICHAGE\n");
-        Actions action = {"CALCUL", {0, 0}, {0, 0}, false};
+        Actions action = {CALCUL, {0, 0}, {0, 0}, false};
         Enfiler(q, &action);
     }
 }

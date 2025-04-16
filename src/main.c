@@ -11,29 +11,55 @@
 #include <time.h>
 #include <string.h>
 
-int main()
+// Regroupe tout ce qui concerne Raylib
+void initialiserRaylib(Texture2D textures[], Texture2D *explosionTexture, Music *attenteMusic)
 {
-    Music currentMusic;
-    bool musicChargee = false;
-    srand(time(NULL));
-    char buffer[50];
     initialiserFenetre();
     initialiserAudio();
-    Music attenteMusic = chargerMusiqueAttente();
+
+    *attenteMusic = chargerMusiqueAttente();
+    chargerTextures(textures);
+    *explosionTexture = chargerTextureExplosion();
+
+    printf("Explosion texture: id=%d, w=%d, h=%d\n", explosionTexture->id, explosionTexture->width, explosionTexture->height);
+}
+
+void libererRessources(Texture2D textures[], Texture2D *explosionTexture, Music *attenteMusic, Music *currentMusic, bool musicChargee)
+{
+    libererTextures(textures);
+    UnloadTexture(*explosionTexture);
+    StopMusicStream(*attenteMusic);
+    UnloadMusicStream(*attenteMusic);
+
+    if (musicChargee)
+    {
+        StopMusicStream(*currentMusic);
+        UnloadMusicStream(*currentMusic);
+    }
+
+    CloseAudioDevice();
+    CloseWindow();
+}
+
+int main()
+{
+    srand(time(NULL));
+    char buffer[50];
+
+    Texture2D textures[NB_COULEURS];
+    Texture2D explosionTexture;
+    Music attenteMusic, currentMusic;
+    bool musicChargee = false;
+
+    initialiserRaylib(textures, &explosionTexture, &attenteMusic);
 
     bool jeuDemarre = false;
     afficherMenuAccueil(&jeuDemarre);
 
-    Texture2D textures[NB_COULEURS]; // ← Assure-toi que NB_COULEURS est bien défini dans constante.h
-    chargerTextures(textures);
-    Texture2D explosionTexture = chargerTextureExplosion();
-    printf("Explosion texture: id=%d, w=%d, h=%d\n",
-           explosionTexture.id, explosionTexture.width, explosionTexture.height);
     GrilleBonbons maGrille;
-
     Queue q;
     InitialiserQueue(&q);
-    Actions initAction = {"INITIALISATION", {0, 0}, {0, 0}, true};
+    Actions initAction = {INITIALISATION, {0, 0}, {0, 0}, true};
     Enfiler(&q, &initAction);
 
     EtatJeu etat;
@@ -42,106 +68,73 @@ int main()
     while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         gererMusiqueParNiveau(&etat.niveauPrecedent, &currentMusic, &musicChargee);
+        gererEtatMusical(&etat.etatAttente, etat.dureeAttente, &etat.tempsDebutAttente, &attenteMusic, &currentMusic, musicChargee);
 
-        gererEtatMusical(&etat.etatAttente, etat.dureeAttente, &etat.tempsDebutAttente,
-                         &attenteMusic, &currentMusic, musicChargee);
         if (q.taille > 0)
         {
             Actions action = Defiler(&q);
-            strcpy(maGrille.lastAction, action.actionName);
+            maGrille.lastAction = action.actionName;
             maGrille.pion1Affiche = action.pion1;
             maGrille.pion2Affiche = action.pion2;
 
-            if (strcmp(action.actionName, "CALCUL") == 0)
+            switch (action.actionName)
+            {
+            case CALCUL:
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-            else if (strcmp(action.actionName, "SUPPRESSIONH") == 0)
-            {
-                Coordonnees tmp1 = action.pion1;
-                Coordonnees tmp2 = action.pion2;
-
-                maGrille.pion1Affiche = tmp1;
-                maGrille.pion2Affiche = tmp2;
-
-                // 🔥 Sauvegarde des coordonnées pour explosion
-                etat.explosionP1 = tmp1;
-                etat.explosionP2 = tmp2;
-
-                strcpy(etat.typeExplosion, "SUPPRESSIONH");
+                break;
+            case SUPPRESSIONH:
+                etat.explosionP1 = action.pion1;
+                etat.explosionP2 = action.pion2;
+                etat.typeExplosion = SUPPRESSIONH;
                 etat.explosionEnCours = true;
                 etat.tempsExplosion = GetTime();
-
-                SuppressionH(&maGrille, &tmp1.x, &tmp1.y, &tmp2.x, &tmp2.y, &q);
-            }
-            else if (strcmp(action.actionName, "SUPPRESSIONV") == 0)
-            {
-                Coordonnees tmp1 = action.pion1;
-                Coordonnees tmp2 = action.pion2;
-
-                maGrille.pion1Affiche = tmp1;
-                maGrille.pion2Affiche = tmp2;
-
-                etat.explosionP1 = tmp1;
-                etat.explosionP2 = tmp2;
-
-                strcpy(etat.typeExplosion, "SUPPRESSIONV");
+                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                break;
+            case SUPPRESSIONV:
+                etat.explosionP1 = action.pion1;
+                etat.explosionP2 = action.pion2;
+                etat.typeExplosion = SUPPRESSIONV;
                 etat.explosionEnCours = true;
                 etat.tempsExplosion = GetTime();
-
-                SuppressionV(&maGrille, &tmp1.x, &tmp1.y, &tmp2.x, &tmp2.y, &q);
-            }
-
-            else if (strcmp(action.actionName, "VERIFICATION") == 0)
-            {
+                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                break;
+            case VERIFICATION:
                 Verification(&maGrille, &q);
                 maGrille.estVerifiee = 1;
-            }
-            else if (strcmp(action.actionName, "DEPLACEMENT") == 0)
-            {
+                break;
+            case DEPLACEMENT:
                 maGrille.estVerifiee = 0;
                 NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues++;
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-            }
-            else if (strcmp(action.actionName, "LECTURE") == 0)
-            {
+                break;
+            case LECTURE:
                 etat.attenteClics = true;
                 etat.clicCompteur = 0;
-            }
-            else if (strcmp(action.actionName, "INITIALISATION") == 0)
-            {
+                break;
+            case INITIALISATION:
                 initialiser_grille(&maGrille);
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-            }
-            else if (strcmp(action.actionName, "FINNIVEAU") == 0)
-            {
+                break;
+            case FINNIVEAU:
                 etat.etatFinNiveau = true;
                 etat.tempsDebutFinNiveau = GetTime();
                 maGrille.estVerifiee = 0;
-            }
-            else if (strcmp(action.actionName, "FIN") == 0)
-            {
+                break;
+            case FIN:
                 etat.etatFinJeu = true;
                 etat.tempsDebutFinJeu = GetTime();
+                break;
+            default:
+                break;
             }
         }
+
         gererEtatTemporel(&etat, &maGrille, &q);
         afficherEtatsEtFin(&etat, buffer, textures, &maGrille, &q, explosionTexture);
-        verifierFinNiveau(&etat, &q); // ← à la fin
+        verifierFinNiveau(&etat, &q);
     }
 
-    libererTextures(textures);
-    UnloadTexture(explosionTexture);
-
-    StopMusicStream(attenteMusic);
-    UnloadMusicStream(attenteMusic);
-
-    if (musicChargee)
-    {
-        StopMusicStream(currentMusic);
-        UnloadMusicStream(currentMusic);
-    }
-
-    CloseAudioDevice();
-    CloseWindow();
+    libererRessources(textures, &explosionTexture, &attenteMusic, &currentMusic, musicChargee);
 
     printf("FIN DU JEU\n");
     return 0;

@@ -29,8 +29,8 @@ typedef struct
     // Explosion
     bool explosionEnCours;
     double tempsExplosion;
-    double dureeExplosion;  // durée d'affichage (ex: 1.0 sec)
-    char typeExplosion[20]; // "SUPPRESSIONH" ou "SUPPRESSIONV"
+    double dureeExplosion;    // durée d'affichage (ex: 1.0 sec)
+    ActionType typeExplosion; // "SUPPRESSIONH" ou "SUPPRESSIONV"
 
     // Niveau courant
     int niveauPrecedent;
