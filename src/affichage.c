@@ -19,6 +19,17 @@ void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coor
 
 void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture, EtatJeu *etat)
 {
+    // cette idee est bonne mais pas encore trouvee
+    /*if (!grille->estVerifiee)
+    {
+        // Cadre bleu semi-transparent qui couvre tout
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLUE, 0.6f));
+
+        // Message au centre
+        DrawRectangle(250, 430, 500, 100, DARKBLUE);
+        DrawRectangleLinesEx((Rectangle){250, 430, 500, 100}, 2, WHITE);
+        DrawText("Loading grille...", 370, 470, 25, WHITE);
+    }*/
     DrawText(TextFormat("GetTime(): %.2f", GetTime()), 10, 10, 20, BLACK);
 
     int tailleCase = 50;
@@ -116,5 +127,14 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
         printf("AFFICHAGE\n");
         Actions action = {CALCUL, {0, 0}, {0, 0}, false};
         Enfiler(q, &action);
+    }
+
+    if (!grille->estVerifiee)
+    {
+        // Recouvre toute la fenêtre avec un fond bleu opaque
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), DARKBLUE);
+
+        // Affiche le texte par-dessus
+        DrawText("Chargement de la grille...", 300, 480, 30, RAYWHITE);
     }
 }

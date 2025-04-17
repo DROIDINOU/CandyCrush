@@ -7,14 +7,29 @@
 #include "constante.h"
 #define LONGUEURQ 300 // Taille de la queue
 
-// deplacer erreur specifique a la queue dans un enum ici
+/*________________________________________________________________________________________________________________
+                                 **** STRUTURE ET PROTOTYPES DE LA QUEUE
+
+   -> Structure ErreurQueue : contient les types d'erreurs possibles (queue vide, queue pleine)
+   -> Structure Actions : Contient les informations sur l'action à effectuer (type d'action, coordonnées des pions, enum erreur))
+   -> Structure Queue : Contient les éléments de la queue (actions), ainsi que les indices de début, fin et taille
+   -> Prototypes de fonctions : InitialiserQueue, EstVide, EstPleine, Enfiler, Defiler, ImprimerQueue
+___________________________________________________________________________________________________________________
+ */
+
+typedef enum
+{
+    ERREURQUEUEVIDE,
+    ERREURQUEUEPLEINE
+} ErreurQueue;
+
 typedef struct
 {
     ActionType actionName;
     Coordonnees pion1;
     Coordonnees pion2;
     bool initialisation; // Indicateur pour l'initialisation
-    CodeErreur erreur;
+    ErreurQueue erreur;  // Indicateur d'erreur
 
 } Actions;
 
