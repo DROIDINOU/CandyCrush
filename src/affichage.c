@@ -129,7 +129,7 @@ void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Textu
         Enfiler(q, &action);
     }
 
-    if (!grille->estVerifiee)
+    if (!grille->estInitialisee)
     {
         // Recouvre toute la fenêtre avec un fond bleu opaque
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), DARKBLUE);

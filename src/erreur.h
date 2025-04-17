@@ -3,6 +3,8 @@
 
 typedef enum
 {
+    ERREURQUEUEVIDE,
+    ERREURQUEUEPLEINE,
     ERREURDEPLACEMENT, // 2 : Erreur liée au déplacement des pions par l'utilisateur
     TYPEINCONNU,
     ECHECGENERATIONCOULEURALEATOIRE,  // 3 : Type inconnu

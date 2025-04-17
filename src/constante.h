@@ -17,22 +17,7 @@
 // PEUT ETRE METTRE CELA DANS MATRICE VU QU ON L UTILISE QUE LA
 extern const char MESSAGEETREPONSESATTENDUES[NOMBREMESSAGES][3][MAXLONGUEUR];
 
-/*typedef enum
-{
-    MESSAGE_COUPS_EPUISES,
-    MESSAGE_FELICITATIONS,
-    MESSAGE_SCORE,
-    MESSAGE_PERDU,
-    MESSAGE_FIN_JEU,
-    MESSAGE_CHARGEMENT,
-    MESSAGE_PIONS_NON_ADJACENTS
-} TypeMessage;
-
-typedef enum
-{
-    COULEURALEATOIRE,
-    OBSTACLEALEATOIRE
-} TypeElementRandom;
+/*
 
 typedef struct
 {
@@ -53,6 +38,26 @@ extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau
 
 */
 
+/*________________________________________________________________________________________________________________
+
+                                                **** ENUMERATIONS
+                    -> TypeMessage : type de message (erreur, succès, etc.)
+                    -> CouleurBonbons : couleurs des bonbons
+                    -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle)
+___________________________________________________________________________________________________________________
+ */
+
+typedef enum
+{
+    MESSAGE_COUPS_EPUISES,
+    MESSAGE_FELICITATIONS,
+    MESSAGE_SCORE,
+    MESSAGE_PERDU,
+    MESSAGE_FIN_JEU,
+    MESSAGE_CHARGEMENT,
+    MESSAGE_PIONS_NON_ADJACENTS
+} TypeMessage;
+
 typedef enum
 {
     JAUNE,
@@ -65,6 +70,23 @@ typedef enum
     JAUNE_CLAIR,
     ROSE
 } CouleurBonbons;
+
+typedef enum
+{
+    COULEURALEATOIRE,
+    OBSTACLEALEATOIRE
+} TypeElementRandom;
+
+/*________________________________________________________________________________________________________________
+
+                                                          **** STRUCTURES
+                                            -> GrilleBonbons : structure de la grille de bonbons
+                                            -> Coups : structure des coups
+                                            -> Obstacles : structure des obstacles
+                                            -> Niveaux : structure des niveaux
+                                            -> MessagesEchangeBonbons : structure des messages d'échange de bonbons
+___________________________________________________________________________________________________________________
+*/
 
 extern const CouleurBonbons COULEURS[MAXCOULEUR];
 
@@ -145,6 +167,15 @@ typedef struct
     int nombreLigneOuColonne;
 } MessagesEchangeBonbons;
  */
+
+/*________________________________________________________________________________________________________________
+                   **** CONSTANTES GLOBALES
+                    -> NIVEAUX : tableau de niveaux
+                    -> COULEURS : tableau de couleurs
+                    -> MESSAGEETATJEU : tableau de messages d'état du jeu
+                    -> MESSAGESECHANGEBONBONS : tableau de messages d'échange de bonbons
+_________________________________________________________________________________________
+*/
 
 // YABLEAU DE STUCTURES NIVEAU AVEC COMME LONGUEUR LE NOMBRE DE NIVEAUX
 extern Niveaux NIVEAUX[FINALNIVEAU];

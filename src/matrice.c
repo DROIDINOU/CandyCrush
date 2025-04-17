@@ -4,22 +4,25 @@
 #include <stdbool.h>
 #include "matrice.h"
 #include "affichage.h"
+#include "generationaleatoire.h"
 #include <string.h>
 
-// UNE ACTION A LA FOIS
-// A FAIRE INITIALISER DOIT VERIFIER TOUT DANS CALCUL
-// FAIRE FONCTION VERIFICATION
-// BONUS FAIRE FONCTION CASCADE
-// supprimer struct en double
-// FAUDRA VERIFIER QUE COORDONNEES PAS DEJA DANS QUEUE
+// A FAIRE NE PAS SUPPRIMER GELATINES LORS DE L INITIALISATION
+// A FAIRE GERER LES CAS OU L UTILISATEUR ECHANGE DES MAUVAIS PIONS
+// LE CODE GERE LES ECHANGES DE PIONS OU QU ILS SOIENT !!!
 
-/***************************************************************************************************************************
--> parametres : grille
--> place les bonbons aléatoirement dans la grille
--> place aleatoirement les gelatines dans la grille
--> initialise les elements de la grille???? mettre les initialisation des elements ici ????
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTIONS D INITIALISER GRILLE
 
- ****************************************************************************************************************************/
+  *** Fonctions : initialiserBonbons - initialiserGelatines
+  **   Sous fonctions de initialiserGrille
+
+  -> initialiserBonbons : place les bonbons aleatoirement dans la grille en utilisant fonction de génération aléatoire
+                          definie dans generationaleatoire.c
+  -> initialiserGelatines : place aleatoirement les gelatines dans la grille en utilisant fonction de génération aléatoire
+                            definie dans generationaleatoire.c
+___________________________________________________________________________________________________________________
+ */
 
 // Initialise les bonbons dans la grille
 // Remplissage aléatoire des cases avec des couleurs
@@ -29,30 +32,21 @@ void initialiserBonbons(GrilleBonbons *grille)
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        { // Remplissage avec des couleurs aleatoires (le  nombre des couleurs/bonbons varient en fonction du niveau)
-            grille->tableau[ligne][colonne].pion = COULEURS[rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo];
+        {                                                                                    // Remplissage avec des couleurs aleatoires
+            grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
+            // une couleur aléatoire
             grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
     }
 }
 
 // Fixe un nombre aléatoire de gélatines dans la grille
-// Initialise les gelatines a faux
-// Tant que gelatines inferieures au nombre fixe => placement des gelatines avec coordonnees aleatoires
+// Tant que gelatines inferieures au nombre de gélatines créées aléatoirement => placement des gelatines avec coordonnees aleatoires
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
-    // a ameliorer trop compliqué
-    int nombreGelatine = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle + NIVEAUX[NIVEAUX[0].compteurNiveau].obstacleNiveau.randomObstacle; // Nombre de gelatines aléatoire entre 1 et 5
-    for (int ligne = 0; ligne < grille->lignes; ligne++)
-    {
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            grille->tableau[ligne][colonne].gelatine = false; // Initialisation sans gelatine
-        }
-    }
-
-    while (nombreGelatine > 0) // Tant qu'il reste des gelatines à placer
+    int nombreGelatine = GenerationAleatoire(OBSTACLEALEATOIRE, 1); // Nombre aléatoire de gelatines à placer
+    while (nombreGelatine > 0)                                      // Tant qu'il reste des gelatines à placer
     {
         int x = rand() % TAILLE;             // Coordonnées aléatoires
         int y = rand() % TAILLE;             // Coordonnées aléatoires

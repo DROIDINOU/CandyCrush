@@ -17,19 +17,12 @@
 ___________________________________________________________________________________________________________________
  */
 
-typedef enum
-{
-    ERREURQUEUEVIDE,
-    ERREURQUEUEPLEINE
-} ErreurQueue;
-
 typedef struct
 {
     ActionType actionName;
     Coordonnees pion1;
     Coordonnees pion2;
     bool initialisation; // Indicateur pour l'initialisation
-    ErreurQueue erreur;  // Indicateur d'erreur
 
 } Actions;
 

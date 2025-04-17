@@ -108,6 +108,7 @@ int main()
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
                 break;
             case LECTURE:
+                maGrille.estInitialisee = 1;
                 etat.attenteClics = true;
                 etat.clicCompteur = 0;
                 break;
@@ -124,6 +125,8 @@ int main()
                 etat.etatFinJeu = true;
                 etat.tempsDebutFinJeu = GetTime();
                 break;
+
+            // ajouter l erreur queue pleine
             default:
                 break;
             }
@@ -135,7 +138,5 @@ int main()
     }
 
     libererRessources(textures, &explosionTexture, &attenteMusic, &currentMusic, musicChargee);
-
-    printf("FIN DU JEU\n");
     return 0;
 }

@@ -2,20 +2,12 @@
 #include <stdlib.h>
 #include "erreur.h"
 #include "constante.h"
+#include "queue.h"
 
 void GererErreurFatale(CodeErreur codeErreur)
 {
     switch (codeErreur)
     {
-    case ERREURQUEUEPLEINE:
-        printf("la queue est pleine ... \n");
-        exit(EXIT_FAILURE); // Sortie du programme avec un code d'erreur
-        break;
-
-    case ERREURQUEUEVIDE:
-        printf("la queue est vide ... \n");
-        exit(EXIT_FAILURE); // Sortie du programme avec un code d'erreur
-        break;
 
     case TYPEINCONNU:
         printf("Type inconnu ... \n");
