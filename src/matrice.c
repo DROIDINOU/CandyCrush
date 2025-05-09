@@ -386,3 +386,97 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     // printf("\n Ajout de l'action CALCUL dans la file d'attente pour (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
 }
+
+/*
+________________________________________________________________________________________________________________
+                                 **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
+
+  -> Parametres : pointeurs int x et y - pointeur structure grille - pointeur structure queue
+  -> Verifie si un alignement vertical ou horizontal est present
+  -> Si alignement present, ajoute une ACTION SUPPRESSIONV ou SUPPRESSIONH a la queue et retourne true
+     sinon retourne false
+___________________________________________________________________________________________________________________
+
+
+ bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q)
+ {
+     char pion = grille->tableau[*x][*y].pion;
+     if (pion != ' ')
+     {
+         int compteur = 1;
+         int xDebut = *x, xFin = *x;
+
+         // Vérification vers le bas
+         int i = *x + 1;
+         while (i < TAILLE && grille->tableau[i][*y].pion == pion)
+         {
+             compteur++;
+             xFin = i;
+             i++;
+         }
+
+         // Vérification vers le haut
+         i = *x - 1;
+         while (i >= 0 && grille->tableau[i][*y].pion == pion)
+         {
+             compteur++;
+             xDebut = i;
+             i--;
+         }
+
+         // Si victoire verticale détectée
+         if (compteur >= 3)
+         {
+             Actions supV = {SUPPRESSIONV, {xDebut, *y}, {xFin, *y}};
+             Enfiler(q, &supV);
+             return true;
+         }
+     }
+     return false;
+ }
+
+ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
+ {
+     char pion = grille->tableau[*x][*y].pion;
+     if (pion != ' ')
+     {
+         int compteur = 1;
+         int yDebut = *y, yFin = *y;
+
+         // Vérification vers la droite
+         int j = *y + 1;
+         while (j < TAILLE && grille->tableau[*x][j].pion == pion)
+         {
+             compteur++;
+             yFin = j;
+             j++;
+         }
+
+         // Vérification vers la gauche
+         j = *y - 1;
+         while (j >= 0 && grille->tableau[*x][j].pion == pion)
+         {
+             compteur++;
+             yDebut = j;
+             j--;
+         }
+
+         // Si victoire horizontale détectée
+         if (compteur >= 3)
+         {
+             Actions supH = {SUPPRESSIONH, {*x, yDebut}, {*x, yFin}};
+             Enfiler(q, &supH);
+             return true;
+         }
+     }
+     return false;
+ }
+
+ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
+ {
+     bool victoireVerticale = VerifierVerticale(x, y, grille, q);
+     bool victoireHorizontale = VerifierHorizontale(x, y, grille, q);
+     return victoireVerticale || victoireHorizontale;
+ }
+
+*/
