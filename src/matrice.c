@@ -100,6 +100,7 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
                  int yPion2)
 
 {
+    printf("ON EST DANS LA FONCTION DEPLACEMENT\n");
     // Reinitialisation des elements de la grille
     grille->estVerifiee = 0;    // On doit revérifier la grille après le déplacement
     grille->estInitialisee = 1; // La grille a été initialisée
@@ -285,11 +286,9 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Si alignements, VerifierAlignements declenche une ACTION DE SUPPRESSION qui relance calcul a partir de 0
     if (grille->deplacement)
     {
-        printf("DEPLACEMENT \n");
         if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
         {
 
-            printf("On a rien trouvé dans deplacement \n");
             grille->estVerifiee = 1;
             grille->deplacement = 0;
             Actions action = {AFFICHAGE, {0, 0}, {0, 0}};
@@ -297,14 +296,12 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 
             return;
         }
-        printf("ici on a trouvé un alignement dans déplacement\n");
         return;
     }
 
     // Si la grille est verifiee on lance l action VERIFICATION
     if (grille->estVerifiee == 1)
     {
-        printf("LA GRILLE EST VERIFIEE\n");
         // grille->estVerifiee = 0;
         Actions verification = {VERIFICATION, {0, 0}, {0, 0}};
         Enfiler(q, &verification);
@@ -315,7 +312,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     //  SUPPRESSION EST LANCEE ET CETTE ACTION RELANCE UNE ACTION DE CALCUL AVEC LA VARIABLE INTERNE REMISE A 0
     if (VerifierAlignements(&x, &y, grille, q))
     {
-        printf("ON A TROUVE UN ALIGNEMENT HORS DEPLACEMENT OU APRES UN DEPLACEMENT CONCLUANT \n");
         return;
     };
 
@@ -332,7 +328,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Si on a atteint la fin, on peut enchaîner AFFICHAGE
     if (grille->calcX >= TAILLE)
     {
-        printf("Fin du parcours : pas d alignement trouve.\n");
         Actions aff = {AFFICHAGE, {0, 0}, {0, 0}};
         grille->calcX = 0;
         grille->calcY = 0;
@@ -380,7 +375,6 @@ void Verification(GrilleBonbons *grille, Queue *q)
                     return;
                 }
                 // si non on place une action de LECTURE pour continuer la manche
-                printf("Bonbon gelatine toujours present\n");
                 Actions action = {LECTURE, {0, 0}, {0, 0}};
                 Enfiler(q, &action);
                 return;
@@ -461,9 +455,9 @@ void SupprimerLigne(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
-    printf(QuatreALaSuiteVerticale(grille, x1, x2) ? "Quatre a la suite verticalement\n" : "Pas quatre a la suite verticalement\n");
-    //  1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
+    // printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
+    // printf(QuatreALaSuiteVerticale(grille, x1, x2) ? "Quatre a la suite verticalement\n" : "Pas quatre a la suite verticalement\n");
+    //   1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
     if (QuatreALaSuiteVerticale(grille, x1, x2) && grille->estInitialisee)
     {
         SupprimerColonne(grille, x1, y1, x2, y2);
@@ -533,9 +527,9 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
-    printf(QuatreALaSuiteHorizontale(grille, y1, y2) ? "Quatre a la suite horizontalement\n" : "Pas quatre a la suite horizontalement\n");
-    // 1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
+    // printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
+    // printf(QuatreALaSuiteHorizontale(grille, y1, y2) ? "Quatre a la suite horizontalement\n" : "Pas quatre a la suite horizontalement\n");
+    //  1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
     if (QuatreALaSuiteHorizontale(grille, x1, x2) && grille->estInitialisee)
     {
         SupprimerLigne(grille, x1, y1, x2, y2);

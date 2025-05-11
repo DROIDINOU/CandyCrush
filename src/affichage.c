@@ -35,20 +35,26 @@ int ObtenirReponseAuMessage(int index)
     int choixUtilisateur;
     do
     {
-        printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne); // Affiche le message
-        int result = scanf(" %d", &choixUtilisateur);                                                                  // Lit un seul caractère
-        while (getchar() != '\n')
-            ;
+        printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
+        int result = scanf(" %d", &choixUtilisateur);
 
-        // Vérifie que la réponse est valide
+        while (getchar() != '\n')
+            ; // Nettoie le buffer
+
         if (result != 1)
         {
             printf("Entrée invalide. Veuillez entrer un entier.\n");
-            choixUtilisateur = -1; // Force la boucle à se répéter
+            choixUtilisateur = -1; // Force la boucle à continuer
         }
-    } while (choixUtilisateur < 1 || choixUtilisateur > TAILLE + 1); // Si la réponse n'est pas valide, on redemande
+        else if (choixUtilisateur < 1 || choixUtilisateur > TAILLE)
+        {
+            printf("Erreur : Veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
+            choixUtilisateur = -1; // Répète la boucle si la valeur n'est pas correcte
+        }
 
-    return choixUtilisateur - 1; // retourne index programmeur
+    } while (choixUtilisateur == -1);
+
+    return choixUtilisateur - 1;
 }
 
 bool EstPionAdjacent(int x1, int y1, int x2, int y2)
@@ -60,16 +66,16 @@ bool EstPionAdjacent(int x1, int y1, int x2, int y2)
 // lit les coordonnees entrees par l utilisateur pour le swap de pions
 bool LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 {
-    *x1 = ObtenirReponseAuMessage(0);
+    *x1 = ObtenirReponseAuMessage(1);
     printf("x1 = %d\n", *x1);
 
-    *y1 = ObtenirReponseAuMessage(1);
+    *y1 = ObtenirReponseAuMessage(0);
     printf("y1 = %d\n", *y1);
 
-    *x2 = ObtenirReponseAuMessage(0);
+    *x2 = ObtenirReponseAuMessage(1);
     printf("x2 = %d\n", *x2);
 
-    *y2 = ObtenirReponseAuMessage(1);
+    *y2 = ObtenirReponseAuMessage(0);
     printf("y2 = %d\n", *y2);
 
     return EstPionAdjacent(*x1, *y1, *x2, *y2); // Vérifie si les pions sont adjacents
@@ -83,6 +89,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 {
     if (LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion))
     {
+        printf("lire coordonnees 1");
         printf("Coordonnees valides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
         Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
         Enfiler(q, &action);
