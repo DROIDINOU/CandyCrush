@@ -94,6 +94,7 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int coordonneeXPremierPion,
     char temp = grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion;
     grille->tableau[coordonneeXPremierPion][coordonneeYPremierPion].pion = grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion;
     grille->tableau[coordonneeXDeuxiemePion][coordonneeYDeuxiemePion].pion = temp;
+    grille->estInitialisee = 1;
     grille->calcX = 0;
     grille->calcY = 0;
     Actions action = {CALCUL, {coordonneeXPremierPion, coordonneeYPremierPion}, {coordonneeXDeuxiemePion, coordonneeYDeuxiemePion}};
@@ -135,7 +136,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         // On peut enchaîner AFFICHAGE ou LECTURE ou rien, selon ta logique :
         Actions aff = {AFFICHAGE, {0, 0}, {0, 0}, false};
         Enfiler(q, &aff);
-        grille->estVerifiee = true;
+        grille->estVerifiee = 1;
         return;
     }
 
@@ -229,7 +230,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         grille->calcX = 0;
         grille->calcY = 0;
         Enfiler(q, &aff);
-        grille->estVerifiee = true;
+        grille->estVerifiee = 1;
         return;
     }
 
@@ -293,8 +294,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         grille->tableau[i][*y1].pion = ' '; // Suppression en mettant un espace vide
         // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
 
-        if (grille->estVerifiee)
-        {
+        if (grille->estInitialisee)
+        { // Remplacement par un espace vide
             grille->tableau[i][*y1].gelatine = false;
         } // Suppression de la gélatine
     }
@@ -354,9 +355,10 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         { // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';
             // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
-            if (grille->estVerifiee)
+            if (grille->estInitialisee)
             {                                           // Remplacement par un espace vide
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine
+                // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
             }
         }
     }
