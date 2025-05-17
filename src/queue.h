@@ -26,6 +26,7 @@ typedef enum
     CALCUL,
     DEPLACEMENT,
     LECTURE,
+    AUCUNE_ACTION,
 } ActionType;
 
 // structure Actions
@@ -35,6 +36,7 @@ typedef struct
     Coordonnees pion1;
     Coordonnees pion2;
     CodeErreur erreur;
+    // bool initialisation;
 
 } Actions;
 
