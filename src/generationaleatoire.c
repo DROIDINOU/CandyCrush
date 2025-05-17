@@ -24,6 +24,7 @@
 int GenerationAleatoire(TypeElementRandom type, int maxRandom)
 {
     // Si maxTentatives est inférieur ou égal à zéro, il y a eu une erreur dans la génération
+    // ??? remarque ??
 
     if (maxRandom <= 0)
     {
