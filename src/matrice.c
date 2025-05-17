@@ -47,7 +47,8 @@ void initialiserBonbons(GrilleBonbons *grille)
 void initialiserGelatines(GrilleBonbons *grille)
 {
     int nombreGelatine = GenerationAleatoire(OBSTACLEALEATOIRE, 1); // Nombre aléatoire de gelatines à placer
-    while (nombreGelatine > 0)                                      // Tant qu'il reste des gelatines à placer
+    printf("nombre de gelatines : %d", nombreGelatine);
+    while (nombreGelatine > 0) // Tant qu'il reste des gelatines à placer
     {
         int x = rand() % TAILLE;             // Coordonnées aléatoires
         int y = rand() % TAILLE;             // Coordonnées aléatoires
@@ -121,7 +122,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // 1) Récupérer la cellule en cours
     int x = grille->calcX;
     int y = grille->calcY;
-    if (grille->estVerifiee == 1)
+    if (grille->estVerifiee)
     {
         printf("ne dis pas qu on est ici lol");
         Actions verification = {VERIFICATION, {0, 0}, {0, 0}, false};
@@ -247,7 +248,6 @@ Actions Verification(GrilleBonbons *grille, Queue *q)
     grille->estVerifiee = 1;
     bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
 
-    ImprimerQueue(q);
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -293,10 +293,12 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     {
         grille->tableau[i][*y1].pion = ' '; // Suppression en mettant un espace vide
         // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
-
+        printf("etat de est initilisee: %d", grille->estInitialisee);
         if (grille->estInitialisee)
         { // Remplacement par un espace vide
-            grille->tableau[i][*y1].gelatine = false;
+            printf("on supprime rien");
+            grille->tableau[i][*y1]
+                .gelatine = false;
         } // Suppression de la gélatine
     }
 
@@ -355,8 +357,10 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         { // Supprimer les bonbons alignés horizontalement
             grille->tableau[i][j].pion = ' ';
             // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
+            printf("etat de est initilisee: %d", grille->estInitialisee);
             if (grille->estInitialisee)
-            {                                           // Remplacement par un espace vide
+            {
+                printf("on supprime rien");             // Remplacement par un espace vide
                 grille->tableau[i][j].gelatine = false; // Suppression de la gélatine
                 // printf("grille est verif?????????????????????????????? %d", grille->estVerifiee);
             }
@@ -369,7 +373,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         for (int i = *x1; i > 0; i--)
         { // Faire descendre les bonbons au-dessus
             grille->tableau[i][j].pion = grille->tableau[i - 1][j].pion;
-            grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine; // Descendre la gélatine aussi
+            // grille->tableau[i][j].gelatine = grille->tableau[i - 1][j].gelatine; // Descendre la gélatine aussi
         }
         // Générer un nouveau bonbon en haut
         int index = rand() % 5;
