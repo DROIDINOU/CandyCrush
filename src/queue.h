@@ -26,6 +26,7 @@ typedef enum
     CALCUL,
     DEPLACEMENT,
     LECTURE,
+    AUCUNE_ACTION,
 } ActionType;
 
 // structure Actions

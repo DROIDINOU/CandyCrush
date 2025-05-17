@@ -118,14 +118,10 @@ int main()
             }
 
             // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
-            else if (action.actionName == ERREURQUEUEPLEINE)
+            // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
+            else if (action.actionName == AUCUNE_ACTION)
             {
-                GererErreurFatale(ERREURQUEUEPLEINE);
-            }
-
-            else if (action.actionName == ERREURQUEUEVIDE)
-            {
-                GererErreurFatale(ERREURQUEUEVIDE);
+                GererErreurFatale(action.erreur);
             }
         }
 
