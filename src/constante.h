@@ -7,7 +7,9 @@
 #define LONGUEURMESSAGEETREPONSE 40
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu
+// verifier si pas en double
 #define MAXCOULEUR 9
+#define NB_COULEURS 9
 
 /*________________________________________________________________________________________________________________
 
