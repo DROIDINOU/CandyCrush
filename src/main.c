@@ -1,135 +1,146 @@
+#include "raylib.h"
 #include "matrice.h"
 #include "main.h"
+#include "jeu.h"
 #include "affichage.h"
 #include "queue.h"
-#include "erreur.h"
 #include "constante.h"
+#include "ressources.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
-// A FAIRE DEPLACER NIVEAU ET AMELIORER ATTRIBUTION ALEATOIRE
-// PREVOIR OBSTACLES ET AUTRES
+// Regroupe tout ce qui concerne Raylib
+void initialiserRaylib(Texture2D textures[], Texture2D *explosionTexture, Music *attenteMusic)
+{
+    initialiserFenetre();
+    initialiserAudio();
+
+    *attenteMusic = chargerMusiqueAttente();
+    chargerTextures(textures);
+    *explosionTexture = chargerTextureExplosion();
+
+    printf("Explosion texture: id=%d, w=%d, h=%d\n", explosionTexture->id, explosionTexture->width, explosionTexture->height);
+}
+
+void libererRessources(Texture2D textures[], Texture2D *explosionTexture, Music *attenteMusic, Music *currentMusic, bool musicChargee)
+{
+    libererTextures(textures);
+    UnloadTexture(*explosionTexture);
+    StopMusicStream(*attenteMusic);
+    UnloadMusicStream(*attenteMusic);
+
+    if (musicChargee)
+    {
+        StopMusicStream(*currentMusic);
+        UnloadMusicStream(*currentMusic);
+    }
+
+    CloseAudioDevice();
+    CloseWindow();
+}
 
 int main()
 {
+    srand(time(NULL));
+    char buffer[50];
 
-    /*
-    ____________________________________________________________________________________________________________________________
+    Texture2D textures[NB_COULEURS];
+    Texture2D explosionTexture;
+    Music attenteMusic, currentMusic;
+    bool musicChargee = false;
 
-                                        **** INITIALISATION
+    initialiserRaylib(textures, &explosionTexture, &attenteMusic);
 
-        -> Structures de données : Niveaux - Grille - Queue
-           - Niveaux : structure globale definie dans constante.h contenant les informations sur les niveaux
-           - Grille : structure definie dans constante.h contenant les informations sur la grille
-           - Queue : structure definie dans queue.h contenant les informations sur la queue
+    bool jeuDemarre = false;
+    afficherMenuAccueil(&jeuDemarre);
 
-        -> Initialisation nombres aleatoires
-        -> Declaration de la structure grille de bonbons
-        -> Declaration et Initialisation de la queue q
-        -> Declaration des variables ligne, colonne, ligne1, colonne1 (variables servant lors de l echange des
-           coordonnees des bonbons)
-    ___________________________________________________________________________________________________________________________
-    */
+    GrilleBonbons maGrille;
+    Queue q;
+    InitialiserQueue(&q);
+    Actions initAction = {INITIALISATION, {0, 0}, {0, 0}, true};
+    Enfiler(&q, &initAction);
 
-    srand(time(NULL));                    // Generateur de nombres aleatoires
-    GrilleBonbons maGrille;               // Declaration de la structure grille de bonbons
-    Queue q;                              // Declaration de la queue q
-    InitialiserQueue(&q);                 // Initialisation de la queue q
-    int ligne, colonne, ligne1, colonne1; // Declaration des variables ligne, colonne, ligne1, colonne1
+    EtatJeu etat;
+    initialiserEtatJeu(&etat);
 
-    /*____________________________________________________________________________________________________________________________
-
-                                                 BOUCLE DE JEU
-    -> Tant que niveaux est inferieur au niveau final
-        -> Enfiler l'ACTION d'initialisation
-        -> Tant que la queue n'est pas vide
-                       -> Recuperer l'action en debut de la queue
-                              -> Si action est ERREURQUEUEPLEINE
-                                 - Afficher la queue est pleine
-                              -> Si action est ERREURQUEUEVIDE
-                                 - Afficher la queue est vide
-                              -> Si l'action est AFFICHAGE
-                                 - Afficher la grille
-                              -> Si l'action est CALCUL
-                                 - Calculer si trois pions ou plus se suivent en Vertical ou en Horizontal
-                              -> Si l action est SUPPESSIONV
-                                - Supprimer les suites de pions verticaux
-                              -> Si l action est SUPPESSIONH
-                                - Supprimer les suites de pions horizontaux
-                              -> Si l'action est VERIFICATION
-                                - verifier si il reste des gelatines
-                              -> Si l'action est DEPLACEMENT
-                                - Deplacer les pions
-                              -> Si l'action est LECTURE
-                                - Lire les coordonnees des pions a changer
-                              -> Si l'action est INITIALISATION
-                                    - Initialiser la grille
-
-        -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
-    -> Afficher FIN DU JEU
-    ___________________________________________________________________________________________________________________________   */
-
-    while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
+    while (!WindowShouldClose() && NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
-        Actions action = {INITIALISATION, {0, 0}, {0, 0}};
-        Enfiler(&q, &action);
+        gererMusiqueParNiveau(&etat.niveauPrecedent, &currentMusic, &musicChargee);
+        gererEtatMusical(&etat.etatAttente, etat.dureeAttente, &etat.tempsDebutAttente, &attenteMusic, &currentMusic, musicChargee);
 
-        while (q.taille > 0)
+        if (q.taille > 0)
         {
+            Actions action = Defiler(&q);
+            maGrille.lastAction = action.actionName;
+            maGrille.pion1Affiche = action.pion1;
+            maGrille.pion2Affiche = action.pion2;
 
-            // Récupérer l'action en haut de la queue
-            action = Defiler(&q);
-
-            if (action.actionName == AFFICHAGE)
+            switch (action.actionName)
             {
-                afficherGrille(&maGrille, &q);
-            }
-            else if (action.actionName == CALCUL)
-            {
+            case CALCUL:
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-            }
-            else if (action.actionName == SUPPRESSIONV)
-            {
-                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-            }
-            else if (action.actionName == SUPPRESSIONH)
-            {
+                break;
+            case SUPPRESSIONH:
+                etat.explosionP1 = action.pion1;
+                etat.explosionP2 = action.pion2;
+                etat.typeExplosion = SUPPRESSIONH;
+                etat.explosionEnCours = true;
+                etat.tempsExplosion = GetTime();
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-            }
-            else if (action.actionName == VERIFICATION)
-            {
+                break;
+            case SUPPRESSIONV:
+                etat.explosionP1 = action.pion1;
+                etat.explosionP2 = action.pion2;
+                etat.typeExplosion = SUPPRESSIONV;
+                etat.explosionEnCours = true;
+                etat.tempsExplosion = GetTime();
+                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+                break;
+            case VERIFICATION:
                 Verification(&maGrille, &q);
-            }
-            else if (action.actionName == DEPLACEMENT)
-            {
+                maGrille.estVerifiee = 1;
+                break;
+            case DEPLACEMENT:
+                maGrille.estVerifiee = 0;
+                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues++;
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-            }
-
-            else if (action.actionName == LECTURE)
-            {
-                LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
-            }
-            else if (action.actionName == INITIALISATION)
-            {
+                break;
+            case LECTURE:
+                maGrille.estInitialisee = 1;
+                etat.attenteClics = true;
+                etat.clicCompteur = 0;
+                break;
+            case INITIALISATION:
                 initialiserGrille(&maGrille, &q);
-            }
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
+                break;
+            case FINNIVEAU:
+                printf("Fin de niveau %d\n", NIVEAUX[0].compteurNiveau);
+                etat.etatFinNiveau = true;
+                etat.tempsDebutFinNiveau = GetTime();
+                maGrille.estVerifiee = 0;
+                maGrille.estInitialisee = 0;
+                break;
+            case FIN:
+                etat.etatFinJeu = true;
+                etat.tempsDebutFinJeu = GetTime();
+                break;
 
-            // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
-            else if (action.actionName == AUCUNE_ACTION)
-            {
-                GererErreurFatale(action.erreur);
+            // ajouter l erreur queue pleine
+            default:
+                break;
             }
         }
+        printf("Fin de niveau1 %d\n", NIVEAUX[0].compteurNiveau);
 
-        // Passer au niveau suivant
-        // Pour le moment je met niveau 3 quand coups epuises changer ca pour plus de clareté
-        NIVEAUX[0].compteurNiveau += 1;
+        gererEtatTemporel(&etat, &maGrille, &q);
+        afficherEtatsEtFin(&etat, buffer, textures, &maGrille, &q, explosionTexture);
+        verifierFinNiveau(&etat, &q);
+        printf("Fin de niveau2 %d\n", NIVEAUX[0].compteurNiveau);
     }
 
-    printf("%s", MESSAGEETATJEU[MESSAGE_FIN_JEU]);
-
+    libererRessources(textures, &explosionTexture, &attenteMusic, &currentMusic, musicChargee);
     return 0;
 }

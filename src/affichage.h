@@ -1,13 +1,13 @@
+// affichage.h
 #ifndef AFFICHAGE_H
 #define AFFICHAGE_H
-#include "constante.h"
-#include "erreur.h"
+#include "raylib.h"    // Ajout de cette ligne ✅
+#include "constante.h" // Assurez-vous que GrilleBonbons est défini avant d'utiliser la fonction
+#include "jeu.h"
 
-int ObtenirReponseAuMessage(int index);
-void afficherGrille(GrilleBonbons *grille, Queue *q);
-bool EstPionAdjacent(int x1, int y1, int x2, int y2);
-bool LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
-                       int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
-                       int *coordonneeYDeuxiemePion, Queue *q);
-
+// Déclaration de la fonction afficher_grille
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture, EtatJeu *etat);
+void LirePionsAChanger(GrilleBonbons *grille, int coordonneeXPremierPion,
+                       int coordonneeYPremierPion, int coordonneeXDeuxiemePion,
+                       int coordonneeYDeuxiemePion, Queue *q);
 #endif // AFFICHAGE_H

@@ -1,8 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 #include <stdbool.h>
-#define TAILLE 10 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
-#define NOMBREMESSAGES 2
+#include "types.h"
+#include "erreur.h"
+#define TAILLE 10        // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
+#define NOMBREMESSAGES 4 // ATTENTION EN DOUBLE
 #define MAXLONGUEUR 100
 #define LONGUEURMESSAGEETREPONSE 40
 #define FINALNIVEAU 3
@@ -70,17 +72,32 @@ typedef struct
 
 typedef struct
 {
-    int lignes;
-    int colonnes;
-    Case tableau[TAILLE][TAILLE];
-    int calcX; // Coordonnée X utilisee parcourir la grille
-    int calcY; // Coordonnée Y utilisee pour parcourir la grille
-    int estVerifiee;
-    int estInitialisee; // Indique si la grille a déjà été vérifiée
-    // int calculsRestants; // Nombre d'actions CALCUL en attente
-    int affiche; // element utilise pour afficher la grille
-    int deplacement;
+    int lignes;   // Nombre de lignes dans la grille
+    int colonnes; // Nombre de colonnes dans la grille
 
+    Case tableau[TAILLE][TAILLE];
+    /*
+     * Tableau 2D de "Case" de taille fixe TAILLE×TAILLE.
+     * Chaque "Case" contient un bonbon et d'autres drapeaux (gelatine, etc.).
+     */
+
+    int calcX; // Coordonnée X utilisée pour parcourir la grille
+    int calcY; // Coordonnée Y utilisée pour parcourir la grille
+
+    int estVerifiee;           // Booléen : indique si la grille a déjà été vérifiée
+    int estInitialisee;        // Booléen : indique si la grille a été initialisée (remplie)
+    int calculsRestants;       // Nombre d'actions CALCUL en attente
+    int suppressionsRestantes; // Nombre d'actions SUPPRESSION en attente
+
+    int affiche;   // Booléen : indique qu'un rafraîchissement de l'affichage est requis
+    int finniveau; // Booléen : flag "fin de niveau" pour déclencher l'écran de fin
+
+    ActionType lastAction; // Mémorise le dernier type d'action (CALCUL, SUPPRESSION, AFFICHAGE, etc.)
+
+    Coordonnees pion1Affiche; // Coordonnées du premier pion à animer lors d'un déplacement
+    Coordonnees pion2Affiche; // Coordonnées du second pion à animer lors d'un déplacement
+
+    int deplacement; // Booléen : indique si un déplacement de pions est en cours
 } GrilleBonbons;
 
 // *** Structures pour les niveaux

@@ -360,32 +360,41 @@ ________________________________________________________________________________
 void Verification(GrilleBonbons *grille, Queue *q)
 {
 
-    // VERIFICATION DES GELATINES ET DES COUPS JOUES
+    grille->estVerifiee = 1;
+    bool gelatinePresente = false; // On suppose qu'il n'y a pas de gélatine au début
+
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
         {
             if (grille->tableau[i][j].gelatine)
             {
-                // si les coups joues sont epuises fin de partie
-                if (NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues == NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer)
-                {
-                    NIVEAUX[0].compteurNiveau = FINALNIVEAU;
-                    printf(MESSAGEETATJEU[MESSAGE_COUPS_EPUISES]);
-                    return;
-                }
-                // si non on place une action de LECTURE pour continuer la manche
-                Actions action = {LECTURE, {0, 0}, {0, 0}};
+                printf("Bonbon gélatine toujours présent\n");
+
+                Actions action = {LECTURE, {0, 0}, {0, 0}, false};
                 Enfiler(q, &action);
-                return;
+                // printf("oooooooooooooooooooo\n");
+                gelatinePresente = true; // On détecte de la gélatine
+                return;                  // On quitte immédiatement la fonction
             }
         }
     }
 
-    // on passe au niveu suivant
-    printf(MESSAGEETATJEU[MESSAGE_FELICITATIONS]);
+    // Si on arrive ici, c'est qu'il n'y avait pas de gélatine
+    if (!gelatinePresente && NIVEAUX[0].compteurNiveau != FINALNIVEAU - 1)
+    {
+        printf("FIN NIVEAU\n");
+        NIVEAUX[0].compteurNiveau += 1;
+        printf("compteur niveau : %d", NIVEAUX[0].compteurNiveau);
 
+        Actions action = {FINNIVEAU, {0, 0}, {0, 0}, false};
+        Enfiler(q, &action);
+        return;
+    }
+    Actions action = {FIN, {0, 0}, {0, 0}, false};
+    Enfiler(q, &action);
     return;
+    ;
 }
 
 /*________________________________________________________________________________________________________________

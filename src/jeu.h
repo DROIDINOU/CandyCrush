@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "matrice.h"
 #include "queue.h"
+#include "types.h"
 
 typedef struct
 {

@@ -75,6 +75,7 @@ void afficherMenuAccueil(bool *jeuDemarre)
  */
 void verifierFinNiveau(EtatJeu *etat, Queue *q)
 {
+    printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     // Étape 1 : temporisation du message "Fin du niveau"
     if (etat->etatFinNiveau &&
         !etat->pretPourNiveauSuivant &&

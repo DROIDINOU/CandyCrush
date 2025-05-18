@@ -6,42 +6,8 @@
 #include <stdbool.h>
 #include "constante.h"
 #include "erreur.h"
+#include "types.h"
 #define LONGUEURQ 10
-
-// structure Coordonnees
-typedef struct
-{
-    int x;
-    int y;
-} Coordonnees;
-
-// énumération ActionType
-typedef enum
-{
-    INITIALISATION,
-    AFFICHAGE,
-    VERIFICATION,
-    SUPPRESSIONH,
-    SUPPRESSIONV,
-    CALCUL,
-    DEPLACEMENT,
-    LECTURE,
-    AUCUNE_ACTION,
-    FINNIVEAU,
-    FIN,
-    AUCUNE_EXPLOSION,
-} ActionType;
-
-// structure Actions
-typedef struct
-{
-    ActionType actionName;
-    Coordonnees pion1;
-    Coordonnees pion2;
-    CodeErreur erreur;
-    // bool initialisation;
-
-} Actions;
 
 // structure Queue
 typedef struct

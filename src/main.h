@@ -4,6 +4,10 @@
 #define NIVEAU1 0
 #define NIVEAU2 1
 #define NIVEAU3 2
+#define NIVEAU2 1
+#define NIVEAU3 2
+#define MaxLongueurNiveau 3
+#define NOMBREMESSAGES 4
 // Inclure les autres fichiers d'en-tête nécessaires
 #include "affichage.h" // Pour afficher_grille
 #include "matrice.h"   // Pour initialiser_grille et GrilleBonbons

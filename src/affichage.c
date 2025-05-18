@@ -2,235 +2,139 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-// #include <windows.h> Verifier pourquoi j utilisait cela
 #include <locale.h>
 #include "matrice.h"
 #include "constante.h"
-#include "erreur.h"
+#include "affichage.h"
+#include "ressources.h"
+#include "raylib.h"
+#include <string.h>
+#include "jeu.h"
 
-// RESTE A FAIRE VERIFIER TOUS LES INCLUDE RESTE EST OK
-
-/*
- ____________________________________________________________________________________________________________________________
-
-                        **** FONCTIONS DE LECTURE DES ENTREES UTILISATEUR
-
-    -> Fonctions : ObtenirReponseAuMessage - LireQuatreCoordonnees - LirePionsAChanger
-    -> Parametres ObtenirReponseAuMessage  : int index
-    -> Parametres LireQuatreCoordonnees : int *x1 - int *y1 - int *x2 - int *y2
-    -> Parametres LirePionsAChanger : GrilleBonbons *grille - int *coordonneeXPremierPion -
-                                     int *coordonneeYPremierPion - int *coordonneeXDeuxiemePion -
-                                     int *coordonneeYDeuxiemePion - Queue *q
-    -> ObtenirReponseAuMessage : Affiche le message et lit la reponse de l'utilisateur
-    -> LireQuatreCoordonnees : Lit les coordonnees des pions a changer
-    -> LirePionsAChanger : Lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
-                           avec les coordonnees des bonbons
-___________________________________________________________________________________________________________________________
-*/
-
-// Affiche un message et lit la réponse de l'utilisateur
-// index est l'index du message dans le tableau MessagesReponses
-int ObtenirReponseAuMessage(int index)
+void LirePionsAChanger(GrilleBonbons *grille, int coordX1, int coordY1, int coordX2, int coordY2, Queue *q)
 {
-    int choixUtilisateur;
-    do
-    {
-        printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
-        int result = scanf(" %d", &choixUtilisateur);
-
-        while (getchar() != '\n')
-            ; // Nettoie le buffer
-
-        if (result != 1)
-        {
-            printf("Entrée invalide. Veuillez entrer un entier.\n");
-            choixUtilisateur = -1; // Force la boucle à continuer
-        }
-        else if (choixUtilisateur < 1 || choixUtilisateur > TAILLE)
-        {
-            printf("Erreur : Veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
-            choixUtilisateur = -1; // Répète la boucle si la valeur n'est pas correcte
-        }
-
-    } while (choixUtilisateur == -1);
-
-    return choixUtilisateur - 1;
+    Actions action = {DEPLACEMENT, {coordX1, coordY1}, {coordX2, coordY2}, false};
+    Enfiler(q, &action);
 }
 
-bool EstPionAdjacent(int x1, int y1, int x2, int y2)
+void afficher_grille(GrilleBonbons *grille, Texture2D *textures, Queue *q, Texture2D explosionTexture, EtatJeu *etat)
 {
-    // Vérifie si les pions sont adjacents (horizontalement ou verticalement)
-    return (x1 == x2 && abs(y1 - y2) == 1) || (y1 == y2 && abs(x1 - x2) == 1);
-}
-
-// lit les coordonnees entrees par l utilisateur pour le swap de pions
-bool LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
-{
-    *x1 = ObtenirReponseAuMessage(1);
-    printf("x1 = %d\n", *x1);
-
-    *y1 = ObtenirReponseAuMessage(0);
-    printf("y1 = %d\n", *y1);
-
-    *x2 = ObtenirReponseAuMessage(1);
-    printf("x2 = %d\n", *x2);
-
-    *y2 = ObtenirReponseAuMessage(0);
-    printf("y2 = %d\n", *y2);
-
-    return EstPionAdjacent(*x1, *y1, *x2, *y2); // Vérifie si les pions sont adjacents
-}
-
-// lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
-// avec les coordonnees des bonbons
-void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
-                       int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
-                       int *coordonneeYDeuxiemePion, Queue *q)
-{
-    if (LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion))
+    // cette idee est bonne mais pas encore trouvee
+    /*if (!grille->estVerifiee)
     {
-        printf("lire coordonnees 1");
-        printf("Coordonnees valides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
-        Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
-        Enfiler(q, &action);
-    }
-    else
+        // Cadre bleu semi-transparent qui couvre tout
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLUE, 0.6f));
+
+        // Message au centre
+        DrawRectangle(250, 430, 500, 100, DARKBLUE);
+        DrawRectangleLinesEx((Rectangle){250, 430, 500, 100}, 2, WHITE);
+        DrawText("Loading grille...", 370, 470, 25, WHITE);
+    }*/
+    DrawText(TextFormat("GetTime(): %.2f", GetTime()), 10, 10, 20, BLACK);
+
+    int tailleCase = 50;
+    int largeurFenetre = 1000;
+    int hauteurFenetre = 1000;
+
+    int grilleLargeur = grille->colonnes * tailleCase;
+    int grilleHauteur = grille->lignes * tailleCase;
+    int offsetX = (largeurFenetre - grilleLargeur) / 2;
+    int offsetY = (hauteurFenetre - grilleHauteur) / 2;
+
+    for (int i = 0; i < grille->lignes; i++)
     {
-        printf("Coordonnees invalides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
-        GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents
-        // on reenfile l action de lecture
-        Actions action = {LECTURE, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
-        Enfiler(q, &action);
-    }
-}
-
-/*____________________________________________________________________________________________________________________________
-                                       **** FONCTION D'AFFICHAGE
-
--> Params : grille - queue
--> Afficher la grille des bonbons
--> Afficher la grille des gelatines
--> Place une action calcul dans la queue (les coordonnees sont à 0)
-______________________________________________________________________________________________________________________________
-*/
-
-// void afficherRegleManche() {} PAS ENCORE PRET POUR CELA FAUT AMELIORER MODULARITER VERIFICATIONSET SUPPRESSIONS
-
-// affiche la grille des bonbons et la grille de la gelatine sur une grille
-void afficherGrille(GrilleBonbons *grille, Queue *q)
-{
-    printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
-
-    // Si la grille n'est pas encore vérifiée
-    if (!grille->estVerifiee)
-    {
-        printf(MESSAGEETATJEU[MESSAGE_CHARGEMENT]);
-    }
-    else
-    {
-        // Affichage de la première ligne (numéros de colonnes)
-        printf("   ");
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
+        for (int j = 0; j < grille->colonnes; j++)
         {
-            if (colonne + 1 < 10)            // Si c'est un chiffre à un seul chiffre
-                printf("  %d", colonne + 1); //  deux espaces avant le chiffre
-            else                             // Si c'est un chiffre à deux chiffres
-                printf(" %d", colonne + 1);  // un espace avant les deux chiffres
-        }
-        printf("\n");
+            int x = offsetX + j * tailleCase;
+            int y = offsetY + i * tailleCase;
 
-        // Affichage de la grille avec les numéros de lignes
-        for (int ligne = 0; ligne < grille->lignes; ligne++)
-        {
-            // Afficher le numéro de la ligne (première colonne)
-            printf("%2d ", ligne + 1); // Affiche les numéros de ligne au début de chaque ligne
+            Texture2D bonbon = textures[grille->tableau[i][j].pion];
 
-            for (int colonne = 0; colonne < grille->colonnes; colonne++)
+            if (bonbon.id != 0)
             {
-                int pion = grille->tableau[ligne][colonne].pion;          // Le bonbon
-                bool gelatine = grille->tableau[ligne][colonne].gelatine; // La gélatine
-
-                // Si la case contient de la gélatine
-                if (gelatine)
-                {
-                    // Affichage avec fond gris clair et couleur principale pour le bonbon
-                    switch ((CouleurBonbons)pion)
-                    {
-                    case JAUNE:
-                        printf("\033[48;5;235m\033[38;5;226m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Jaune Clair avec gris
-                    case VERT:
-                        printf("\033[48;5;235m\033[38;5;82m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Vert avec gris
-                    case BLEU:
-                        printf("\033[48;5;235m\033[38;5;39m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Bleu avec gris
-                    case ROUGE:
-                        printf("\033[48;5;235m\033[38;5;160m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Rouge avec gris
-                    case MAUVE:
-                        printf("\033[48;5;235m\033[38;5;93m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Mauve avec gris
-                    case BLANC:
-                        printf("\033[48;5;235m\033[38;5;15m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Blanc avec gris
-                    case GRIS:
-                        printf("\033[48;5;235m\033[38;5;235m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Gris avec gris
-                    case JAUNE_CLAIR:
-                        printf("\033[48;5;235m\033[38;5;220m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Jaune Clair avec gris
-                    case ROSE:
-                        printf("\033[48;5;235m\033[38;5;213m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Rose avec gris
-                    default:
-                        printf("\033[48;5;235m\033[38;5;8m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Gris par défaut avec gris
-                    }
-                }
-                else
-                {
-                    // Affichage des cases de bonbons (sans gélatine)
-                    switch ((CouleurBonbons)pion)
-                    {
-                    case JAUNE:
-                        printf("\033[43m\033[30m%2d \033[0m", pion);
-                        break; // Fond Jaune pour le bonbon
-                    case VERT:
-                        printf("\033[42m\033[30m%2d \033[0m", pion);
-                        break; // Fond Vert pour le bonbon
-                    case BLEU:
-                        printf("\033[44m\033[30m%2d \033[0m", pion);
-                        break; // Fond Bleu pour le bonbon
-                    case ROUGE:
-                        printf("\033[41m\033[30m%2d \033[0m", pion);
-                        break; // Fond Rouge pour le bonbon
-                    case MAUVE:
-                        printf("\033[45m\033[30m%2d \033[0m", pion);
-                        break; // Fond Mauve pour le bonbon
-                    case BLANC:
-                        printf("\033[47m\033[30m%2d \033[0m", pion);
-                        break; // Fond Blanc pour le bonbon
-                    case GRIS:
-                        printf("\033[48;5;235m\033[30m%2d \033[0m", pion);
-                        break; // Fond Gris pour le bonbon
-                    case JAUNE_CLAIR:
-                        printf("\033[48;5;220m\033[30m%2d \033[0m", pion);
-                        break; // Fond Jaune Clair pour le bonbon
-                    case ROSE:
-                        printf("\033[48;5;213m\033[30m%2d \033[0m", pion);
-                        break; // Fond Rose pour le bonbon
-                    default:
-                        printf("\033[47m\033[30m%2d \033[0m", pion);
-                        break; // Fond par défaut pour le bonbon
-                    }
-                }
+                Rectangle src = {0, 0, bonbon.width, bonbon.height};
+                Rectangle dst = {x, y, tailleCase, tailleCase};
+                Vector2 origin = {0, 0};
+                DrawTexturePro(bonbon, src, dst, origin, 0.0f, GRAY);
+                DrawRectangleLines(x, y, tailleCase, tailleCase, RED);
             }
-            printf("\n");
+            else
+            {
+                DrawRectangle(x, y, tailleCase, tailleCase, BLACK);
+                printf("Erreur : bonbon invalide en (%d, %d)\n", i, j);
+            }
+
+            if (grille->tableau[i][j].gelatine)
+            {
+                DrawRectangle(x, y, tailleCase, tailleCase, Fade(WHITE, 0.4f));
+                DrawRectangleLinesEx((Rectangle){x, y, tailleCase, tailleCase}, 2, Fade(DARKGRAY, 0.7f));
+            }
         }
     }
 
-    grille->affiche = 0;                                // on remet le flag affichage à 0
-    Actions actionAffichage = {CALCUL, {0, 0}, {0, 0}}; // Mettre à jour l'action
-    Enfiler(q, &actionAffichage);                       // Ajoute l'action dans la queue
+    if (etat->explosionEnCours &&
+        GetTime() - etat->tempsExplosion < etat->dureeExplosion &&
+        (etat->typeExplosion == SUPPRESSIONH ||
+         etat->typeExplosion == SUPPRESSIONV))
+    {
+        ActionType type = etat->typeExplosion;
+        int l1 = etat->explosionP1.x;
+        int c1 = etat->explosionP1.y;
+        int l2 = etat->explosionP2.x;
+        int c2 = etat->explosionP2.y;
+
+        if (l1 < 0 || c1 < 0 || l2 < 0 || c2 < 0 ||
+            l1 >= grille->lignes || l2 >= grille->lignes ||
+            c1 >= grille->colonnes || c2 >= grille->colonnes)
+        {
+            return;
+        }
+
+        Rectangle src = {0, 0, explosionTexture.width, explosionTexture.height};
+
+        if (type == SUPPRESSIONH)
+        {
+            int l = l1;
+            int cMin = (c1 < c2) ? c1 : c2;
+            int cMax = (c1 > c2) ? c1 : c2;
+
+            for (int c = cMin; c <= cMax; c++)
+            {
+                int px = offsetX + c * tailleCase;
+                int py = offsetY + l * tailleCase;
+                Rectangle dst = {px, py, tailleCase, tailleCase};
+                DrawTexturePro(explosionTexture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);
+            }
+        }
+        else if (type == SUPPRESSIONV)
+        {
+            int c = c1;
+            int lMin = (l1 < l2) ? l1 : l2;
+            int lMax = (l1 > l2) ? l1 : l2;
+
+            for (int l = lMin; l <= lMax; l++)
+            {
+                int px = offsetX + c * tailleCase;
+                int py = offsetY + l * tailleCase;
+                Rectangle dst = {px, py, tailleCase, tailleCase};
+                DrawTexturePro(explosionTexture, src, dst, (Vector2){0, 0}, 0.0f, WHITE);
+            }
+        }
+    }
+
+    if (grille->lastAction == AFFICHAGE)
+    {
+        printf("AFFICHAGE\n");
+        Actions action = {CALCUL, {0, 0}, {0, 0}, false};
+        Enfiler(q, &action);
+    }
+
+    if (!grille->estInitialisee)
+    {
+        // Recouvre toute la fenêtre avec un fond bleu opaque
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), DARKBLUE);
+
+        // Affiche le texte par-dessus
+        DrawText("Chargement de la grille...", 300, 480, 30, RAYWHITE);
+    }
 }
