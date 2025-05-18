@@ -418,51 +418,66 @@ void Verification(GrilleBonbons *grille, Queue *q)
 
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2)
 {
-    return ((*y2 - *y1 + 1) == 4); // Vérifie si les coordonnées y sont consécutives (4 à la suite)
+    return ((*y2 - *y1 + 1) >= 4); // Vérifie si les coordonnées y sont consécutives (4 à la suite)
 }
 
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2)
 {
-    return ((*x2 - *x1 + 1) == 4);
+    return ((*x2 - *x1 + 1) >= 4);
 }
 
-void SupprimerColonne(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
+// Supprime toute la ligne 'row'
+void SupprimerLigne(GrilleBonbons *grille, int row)
 {
-    for (int i = 0; i <= TAILLE; i++)
+    // 1) Clear toute la ligne
+    for (int col = 0; col < grille->colonnes; col++)
     {
-        grille->tableau[i][*y1].pion = ' '; // Suppression de la colonne
-        if (grille->estInitialisee)
+        grille->tableau[row][col].pion = ' ';
+        grille->tableau[row][col].gelatine = false;
+    }
+    // 2) Faire tomber pour chaque colonne
+    for (int col = 0; col < grille->colonnes; col++)
+    {
+        for (int i = row; i > 0; i--)
         {
-            grille->tableau[i][*y1].gelatine = false; // Suppression de la gélatine
-            // Si aucun bonbon trouvé, on génère un nouveau bonbon en haut
-            int index = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo;
-            grille->tableau[i][*y1].pion = COULEURS[index];
+            grille->tableau[i][col].pion = grille->tableau[i - 1][col].pion;
         }
+        // 3) Nouveau bonbon en haut
+        int idx = rand() % 5;
+        grille->tableau[0][col].pion = COULEURS[idx];
     }
 }
 
-void SupprimerLigne(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
+// Supprime toute la colonne 'col'
+void SupprimerColonne(GrilleBonbons *grille, int col)
 {
-    for (int j = 0; j < TAILLE; j++)
+    // 1) Clear toute la colonne
+    for (int row = 0; row < grille->lignes; row++)
     {
-        grille->tableau[*x1][j].pion = ' ';
-        if (grille->estInitialisee)
-        {
-            grille->tableau[*x1][j].gelatine = false;
-        }
+        grille->tableau[row][col].pion = ' ';
+        grille->tableau[row][col].gelatine = false;
     }
-
-    //  Faire tomber les bonbons de chaque colonne de la ligne
-    for (int j = 0; j < TAILLE; j++)
+    // 2) Faire tomber dans cette colonne
+    for (int row = grille->lignes - 1; row > 0; row--)
     {
-        for (int i = *x1; i > 0; i--)
+        if (grille->tableau[row][col].pion == ' ')
         {
-            grille->tableau[i][j].pion = grille->tableau[i - 1][j].pion;
+            // trouve le premier bonbon au-dessus
+            int src = row - 1;
+            while (src >= 0 && grille->tableau[src][col].pion == ' ')
+                src--;
+            if (src >= 0)
+            {
+                grille->tableau[row][col].pion = grille->tableau[src][col].pion;
+                grille->tableau[src][col].pion = ' ';
+            }
+            else
+            {
+                // si plus rien au-dessus, on génère au hasard
+                int idx = rand() % 5;
+                grille->tableau[row][col].pion = COULEURS[idx];
+            }
         }
-
-        // Générer un nouveau bonbon en haut
-        int index = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo;
-        grille->tableau[0][j].pion = COULEURS[index];
     }
 }
 
@@ -473,7 +488,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     //   1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
     if (QuatreALaSuiteVerticale(grille, x1, x2) && grille->estInitialisee)
     {
-        SupprimerColonne(grille, x1, y1, x2, y2);
+        SupprimerColonne(grille, *y1);
     }
     else
     {
@@ -543,9 +558,10 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     // printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // printf(QuatreALaSuiteHorizontale(grille, y1, y2) ? "Quatre a la suite horizontalement\n" : "Pas quatre a la suite horizontalement\n");
     //  1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)
-    if (QuatreALaSuiteHorizontale(grille, x1, x2) && grille->estInitialisee)
+    if (QuatreALaSuiteHorizontale(grille, y1, y2) && grille->estInitialisee)
     {
-        SupprimerLigne(grille, x1, y1, x2, y2);
+        SupprimerLigne(grille, *x1);
+        printf("??????????????????????????????????????????????????????????????????????????????????????");
     }
     else
     {

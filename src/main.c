@@ -83,12 +83,11 @@ int main()
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
                 break;
             case SUPPRESSIONH:
-                etat.explosionP1 = action.pion1;
-                etat.explosionP2 = action.pion2;
-                etat.typeExplosion = SUPPRESSIONH;
+
                 etat.explosionEnCours = true;
                 etat.tempsExplosion = GetTime();
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
+
                 break;
             case SUPPRESSIONV:
                 etat.explosionP1 = action.pion1;
