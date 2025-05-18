@@ -31,9 +31,13 @@ void initialiserBonbons(GrilleBonbons *grille)
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {                                                                                    // Remplissage avec des couleurs aleatoires
-            grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
-            // une couleur aléatoire
+        { // Remplissage avec des couleurs aleatoires
+          // grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
+          // une couleur aléatoire
+            do
+            {
+                grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1);
+            } while (aDeuxPionsAdjacents(grille, ligne, colonne));
             grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
     }

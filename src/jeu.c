@@ -199,8 +199,8 @@ void afficherEtatsEtFin(EtatJeu *etat, char *buffer,
     if (etat->etatFinNiveau)
     {
         sprintf(buffer, "FIN DU NIVEAU %d !", NIVEAUX[0].compteurNiveau);
-        DrawRectangle(200, 350, 600, 150, BLACK);
-        DrawRectangleLinesEx((Rectangle){200, 350, 600, 150}, 4, RAYWHITE);
+        DrawRectangle(180, 330, 640, 180, BLACK);
+        DrawRectangleLinesEx((Rectangle){180, 330, 640, 180}, 4, RAYWHITE);
         DrawText(buffer, 320, 390, 40, RAYWHITE);
         DrawText("Préparation du niveau suivant...", 260, 440, 25, GRAY);
     }

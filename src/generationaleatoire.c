@@ -4,6 +4,32 @@
 #include "constante.h"
 #include "generationaleatoire.h"
 #include "erreur.h"
+#include <stdbool.h>
+
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j)
+{
+    int lignes = grille->lignes;
+    int colonnes = grille->colonnes;
+    int couleur = grille->tableau[i][j].pion;
+
+    // 1) Deux pions verticalement dessous
+    if (i + 2 < lignes &&
+        grille->tableau[i + 1][j].pion == couleur &&
+        grille->tableau[i + 2][j].pion == couleur)
+    {
+        return true;
+    }
+
+    // 2) Deux pions horizontalement à gauche
+    if (j >= 2 &&
+        grille->tableau[i][j - 1].pion == couleur &&
+        grille->tableau[i][j - 2].pion == couleur)
+    {
+        return true;
+    }
+
+    return false;
+}
 
 /***************************************************************************************************************************
                                                    GENERATION ALEATOIRE
