@@ -24,7 +24,7 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
                  int yPion2);
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2);
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2);
-void SupprimerLigne(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
+void SupprimerLigne(GrilleBonbons *grille, int row);
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
 suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
