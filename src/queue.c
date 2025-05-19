@@ -83,7 +83,6 @@ Actions Defiler(Queue *q)
     return action;
 }
 
-// fonction de debug a supprimer par apres
 void ImprimerQueue(Queue *q)
 {
     if (EstVide(q))
@@ -92,11 +91,19 @@ void ImprimerQueue(Queue *q)
         return;
     }
 
-    // printf("Contenu de la queue :\n");
+    printf("Contenu de la queue (taille = %d) :\n", q->taille);
+
     int index = q->debut;
     for (int i = 0; i < q->taille; i++)
     {
         Actions action = q->elements[index];
+
+        // Affiche l’action (ici on se contente d’imprimer l’enum et les coordonnées)
+        printf("  %2d: type=%d  coords=(%d,%d)->(%d,%d)\n",
+               i,
+               action.actionName,
+               action.pion1.x, action.pion1.y,
+               action.pion2.x, action.pion2.y);
 
         index = (index + 1) % LONGUEURQ;
     }

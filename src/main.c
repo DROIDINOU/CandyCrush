@@ -83,13 +83,12 @@ int main()
 
         while (q.taille > 0)
         {
-            bool stopLoop = false; // flag pour sortir de ce while
             Actions action = Defiler(&q);
 
             switch (action.actionName)
             {
             case INITIALISATION:
-                initialiserGrille(&maGrille, &q);
+                initialiserGrille(&maGrille, &q, &etatJeu);
                 break;
 
             case VERIFICATION:
@@ -118,6 +117,9 @@ int main()
 
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
+                maGrille.estVerifiee = 1;
+                // Actions actionLecture = {LECTURE, {0, 0}, {0, 0}};
+                // Enfiler(&q, &actionLecture);
                 break;
 
             case DEPLACEMENT:
@@ -141,9 +143,10 @@ int main()
         }
 
         // Passe au niveau suivant
+        etatJeu.niveausuivant = 0;
         NIVEAUX[0].compteurNiveau += 1;
     }
 
-    printf("%s", MESSAGEETATJEU[MESSAGEFINJEU]);
+    afficherGrille(&maGrille, &q, &etatJeu);
     return 0;
 }

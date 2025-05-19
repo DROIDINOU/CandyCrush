@@ -9,7 +9,7 @@
                                                   INIT GRILLE
  ****************************************************************************************************************************/
 int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
-void initialiserGrille(GrilleBonbons *grille, Queue *q);
+void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
