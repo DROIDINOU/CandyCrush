@@ -19,13 +19,13 @@ ________________________________________________________________________________
  */
 typedef enum
 {
-    MESSAGE_COUPS_EPUISES,
-    MESSAGE_FELICITATIONS,
-    MESSAGE_SCORE,
-    MESSAGE_PERDU,
-    MESSAGE_FIN_JEU,
-    MESSAGE_CHARGEMENT,
-    MESSAGE_PIONS_NON_ADJACENTS
+    MESSAGECOUPSEPUISES,
+    MESSAGEFELICITATIONS,
+    MESSAGESCORE,
+    MESSAGEPERDU,
+    MESSAGEFINJEU,
+    MESSAGECHARGEMENT,
+    MESSAGEPIONSNONADJACENTS
 } TypeMessage;
 
 typedef enum
@@ -59,6 +59,13 @@ ________________________________________________________________________________
 */
 
 // *** Structures de la grille de bonbons
+
+typedef struct
+{
+    int niveausuivant;
+    int findepartie;
+    int coupsepuises;
+} EtatJeu;
 
 typedef struct
 {

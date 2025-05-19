@@ -2,13 +2,30 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-// #include <windows.h> Verifier pourquoi j utilisait cela
 #include <locale.h>
+
+#ifdef _WIN32
+#include <conio.h>   // pour _getch()
+#include <windows.h> // pour Sleep() et SetConsoleCursorPosition
+#define PAUSE(ms) Sleep(ms)
+#else
+#include <unistd.h> // pour usleep()
+#define PAUSE(ms) usleep((ms) * 1000)
+#endif
+
 #include "matrice.h"
 #include "constante.h"
 #include "erreur.h"
 
-// RESTE A FAIRE VERIFIER TOUS LES INCLUDE RESTE EST OK
+// Efface tout l'écran (CMD sous Windows ou "clear" sur Unix)
+static void clearScreen(void)
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
 
 /*
  ____________________________________________________________________________________________________________________________
@@ -33,27 +50,38 @@ ________________________________________________________________________________
 int ObtenirReponseAuMessage(int index)
 {
     int choixUtilisateur;
+    int result;
+    int c;
+
     do
     {
-        printf("%s: %d  ", MESSAGESECHANGEBONBONS[index].message, MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
-        int result = scanf(" %d", &choixUtilisateur);
+        // Affiche le message et la plage
+        printf("%s (1-%d) : ",
+               MESSAGESECHANGEBONBONS[index].message,
+               MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
 
-        while (getchar() != '\n')
-            ; // Nettoie le buffer
+        // 1) Lecture de l'entier
+        result = scanf("%d", &choixUtilisateur);
 
+        // 2) Vider le reste de la ligne (jusqu'au '\n' ou EOF)
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+
+        // 3) Contrôle de la conversion et de la plage
         if (result != 1)
         {
             printf("Entrée invalide. Veuillez entrer un entier.\n");
-            choixUtilisateur = -1; // Force la boucle à continuer
+            choixUtilisateur = -1;
         }
         else if (choixUtilisateur < 1 || choixUtilisateur > TAILLE)
         {
-            printf("Erreur : Veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
-            choixUtilisateur = -1; // Répète la boucle si la valeur n'est pas correcte
+            printf("Erreur : veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
+            choixUtilisateur = -1;
         }
 
     } while (choixUtilisateur == -1);
 
+    // on renvoie en 0-based
     return choixUtilisateur - 1;
 }
 
@@ -99,8 +127,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
         printf("Coordonnees invalides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
         GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents
         // on reenfile l action de lecture
-        Actions action = {LECTURE, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
-        Enfiler(q, &action);
+        LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
     }
 }
 
@@ -117,17 +144,23 @@ ________________________________________________________________________________
 // void afficherRegleManche() {} PAS ENCORE PRET POUR CELA FAUT AMELIORER MODULARITER VERIFICATIONSET SUPPRESSIONS
 
 // affiche la grille des bonbons et la grille de la gelatine sur une grille
-void afficherGrille(GrilleBonbons *grille, Queue *q)
+void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    printf("ON EST DANS LA FONCTION AFFICHAGE GRILLE\n");
-
+    PAUSE(500); // 0,5 seconde, quelle que soit la plateforme
+    clearScreen();
     // Si la grille n'est pas encore vérifiée
-    if (!grille->estVerifiee)
+    if (!grille->estVerifiee && !grille->estInitialisee)
     {
-        printf(MESSAGEETATJEU[MESSAGE_CHARGEMENT]);
+        printf(MESSAGEETATJEU[MESSAGECHARGEMENT]);
     }
+
     else
     {
+        if (etatJeu->niveausuivant == 1)
+        {
+            printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
+            etatJeu->niveausuivant = 0;
+        }
         // Affichage de la première ligne (numéros de colonnes)
         printf("   ");
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -153,6 +186,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q)
                 // Si la case contient de la gélatine
                 if (gelatine)
                 {
+
                     // Affichage avec fond gris clair et couleur principale pour le bonbon
                     switch ((CouleurBonbons)pion)
                     {

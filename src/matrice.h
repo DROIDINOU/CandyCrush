@@ -16,7 +16,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2)
 bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);
-void Verification(GrilleBonbons *grille, Queue *q);
+void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,

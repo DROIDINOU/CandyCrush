@@ -100,7 +100,6 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
                  int yPion2)
 
 {
-    printf("ON EST DANS LA FONCTION DEPLACEMENT\n");
     // Reinitialisation des elements de la grille
     grille->estVerifiee = 0;    // On doit revérifier la grille après le déplacement
     grille->estInitialisee = 1; // La grille a été initialisée
@@ -265,7 +264,6 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
 {
-    printf("ENTRE DANS CALCUL\n");
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
     int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements
@@ -273,7 +271,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Action affichage si on est pas en deplacement
     if (grille->affiche && !grille->deplacement)
     {
-        printf("AFFICHAGE HORS DEPLACEMENT\n");
         Actions aff = {AFFICHAGE, {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
         Enfiler(q, &aff);
         grille->affiche = 0;
@@ -357,7 +354,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 ____________________________________________________________________________________________________________________*/
 
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
-void Verification(GrilleBonbons *grille, Queue *q)
+void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
 
     // VERIFICATION DES GELATINES ET DES COUPS JOUES
@@ -371,7 +368,7 @@ void Verification(GrilleBonbons *grille, Queue *q)
                 if (NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues == NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer)
                 {
                     NIVEAUX[0].compteurNiveau = FINALNIVEAU;
-                    printf(MESSAGEETATJEU[MESSAGE_COUPS_EPUISES]);
+                    printf(MESSAGEETATJEU[MESSAGECOUPSEPUISES]);
                     return;
                 }
                 // si non on place une action de LECTURE pour continuer la manche
@@ -381,27 +378,50 @@ void Verification(GrilleBonbons *grille, Queue *q)
             }
         }
     }
-
+    etatJeu->niveausuivant = 1;
     // on passe au niveu suivant
-    printf(MESSAGEETATJEU[MESSAGE_FELICITATIONS]);
+    // printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
 
     return;
 }
 
 /*________________________________________________________________________________________________________________
                                  **** FONCTION DE SUPRESSIONS VERTICALES ET HORIZONTALES
-
-    -> Parametres : Pointeur vers struct grille - pointeurs vers coordonnes des extremites de la ligen a supprimer
-    -> Supprimer les lignes de victoires et remplace par un espace vide
-    -> Si grille initialisee on supprime les gelatines éventuelles (en phase d'initialisation on les conserve)
-    -> faire tomber les bonbons en cascade
-       - si il y a des bonbons disponible faire tomber les bonbons
-       - si pas de bonbons disponibles générer aléatoirement de nouveaux bonbons
-
-    -> Vu qu'il y a des suppressions on recalcule a partir du début de la grille
-       (tous les élement de la grille sont remis a 0 sauf affichage qui est a 1)
-
-    _____________________________________________________________________________________*/
+/**
+ * GESTION DES SUPPRESSIONS HORIZONTALES ET VERTICALES
+ *
+ * Cette série de fonctions prend en charge la détection et la suppression
+ * de groupes de 4 bonbons consécutifs (ou plus) sur une même ligne ou
+ * colonne, ainsi que la cascade et le réapprovisionnement en bonbons, puis
+ * déclenche le recalcul de l’état de la grille.
+ *
+ * Paramètres généraux (SuppressionH / SuppressionV) :
+ *   - grille : pointeur vers la structure de la grille de bonbons.
+ *   - x1, y1 : coordonnées de la première extrémité du segment à supprimer.
+ *   - x2, y2 : coordonnées de la seconde extrémité du segment.
+ *   - q      : file d’actions pour enchaîner l’opération de recalcul.
+ *
+ * Étapes de traitement :
+ * 1) Détection d’une séquence de 4 bonbons ou plus :
+ *    • Horizontal (SuppressionH) : si y2 – y1 + 1 ≥ 4 → suppression de toute la ligne x1.
+ *    • Vertical   (SuppressionV) : si x2 – x1 + 1 ≥ 4 → suppression de toute la colonne y1.
+ * 2) Suppression partielle sinon :
+ *    • Effacement du seul segment [x1..x2]×[y1..y2].
+ * 3) Nettoyage :
+ *    • Remplacement des cases supprimées par des espaces vides (‘ ’).
+ *    • Suppression éventuelle des gelatines pour les grilles déjà initialisées.
+ * 4) Cascade :
+ *    • Les bonbons au-dessus dégringolent pour combler les vides.
+ *    • Si aucun bonbon n’est disponible, génération aléatoire de nouveaux bonbons
+ *      en haut de chaque colonne concernée.
+ * 5) Enchaînement du recalcul :
+ *    • Réinitialisation des indicateurs calcX, calcY, affiche et deplacement.
+ *    • Enfilement d’une action CALCUL dans la file q.
+ *
+ * Grâce à ce workflow, toute suppression de ligne ou de colonne est
+ * immédiatement visible et la grille reste toujours dans un état cohérent.
+ *
+ *  _____________________________________________________________________________________*/
 
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2)
 {

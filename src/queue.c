@@ -28,7 +28,6 @@ ________________________________________________________________________________
 // Initialisation des elements de la queue (debut, fin et taille)
 void InitialiserQueue(Queue *q)
 {
-    printf("Initialisation de la queue\n");
     q->debut = 0;
     q->fin = -1;
     q->taille = 0;
@@ -50,9 +49,8 @@ Actions Enfiler(Queue *q, Actions *action)
 {
     if (EstPleine(q))
     {
-        printf("Erreur : la queue est pleine\n");
         Actions fullAction;
-        fullAction.actionName = AUCUNE_ACTION;
+        fullAction.actionName = ERREURACTION;
         fullAction.erreur = ERREURQUEUEPLEINE;
         fullAction.pion1.x = 0;
         fullAction.pion1.y = 0;
@@ -71,7 +69,7 @@ Actions Defiler(Queue *q)
     if (q->taille == 0)
     {
         Actions emptyAction;
-        emptyAction.actionName = AUCUNE_ACTION;
+        emptyAction.actionName = ERREURACTION;
         emptyAction.erreur = ERREURQUEUEVIDE;
         emptyAction.pion1.x = 0;
         emptyAction.pion1.y = 0;
@@ -99,10 +97,6 @@ void ImprimerQueue(Queue *q)
     for (int i = 0; i < q->taille; i++)
     {
         Actions action = q->elements[index];
-        printf("Action: %s, Pion1: (%d, %d), Pion2: (%d, %d)\n",
-               action.actionName,
-               action.pion1.x, action.pion1.y,
-               action.pion2.x, action.pion2.y);
 
         index = (index + 1) % LONGUEURQ;
     }

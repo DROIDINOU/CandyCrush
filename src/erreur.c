@@ -47,7 +47,7 @@ void GererErreurNonFatale(CodeErreur codeErreur)
     switch (codeErreur)
     {
     case ERREURDEPLACEMENT:
-        printf(MESSAGEETATJEU[MESSAGE_PIONS_NON_ADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
+        printf(MESSAGEETATJEU[MESSAGEPIONSNONADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
         break;
     default:
         printf("Erreur inconnue ... \n");

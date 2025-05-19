@@ -38,6 +38,10 @@ int main()
     Queue q;                              // Declaration de la queue q
     InitialiserQueue(&q);                 // Initialisation de la queue q
     int ligne, colonne, ligne1, colonne1; // Declaration des variables ligne, colonne, ligne1, colonne1
+    EtatJeu etatJeu;
+    etatJeu.niveausuivant = 0;
+    etatJeu.findepartie = 0;
+    etatJeu.coupsepuises = 0;
 
     /*____________________________________________________________________________________________________________________________
 
@@ -74,63 +78,72 @@ int main()
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
         printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
-        Actions action = {INITIALISATION, {0, 0}, {0, 0}};
-        Enfiler(&q, &action);
+        Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
+        Enfiler(&q, &actionInit);
 
         while (q.taille > 0)
         {
+            bool stopLoop = false; // flag pour sortir de ce while
+            Actions action = Defiler(&q);
 
-            // Récupérer l'action en haut de la queue
-            action = Defiler(&q);
-
-            if (action.actionName == AFFICHAGE)
+            switch (action.actionName)
             {
-                afficherGrille(&maGrille, &q);
-            }
-            else if (action.actionName == CALCUL)
-            {
-                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y);
-            }
-            else if (action.actionName == SUPPRESSIONV)
-            {
-                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-            }
-            else if (action.actionName == SUPPRESSIONH)
-            {
-                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y, &action.pion2.x, &action.pion2.y, &q);
-            }
-            else if (action.actionName == VERIFICATION)
-            {
-                Verification(&maGrille, &q);
-            }
-            else if (action.actionName == DEPLACEMENT)
-            {
-                Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y, action.pion2.x, action.pion2.y);
-            }
-
-            else if (action.actionName == LECTURE)
-            {
-                LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
-            }
-            else if (action.actionName == INITIALISATION)
-            {
+            case INITIALISATION:
                 initialiserGrille(&maGrille, &q);
-            }
+                break;
 
-            // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
-            // CES ERREURS DOIVENT ABSOLUMENT ETRE PLACEES APRES INITIALISATION
-            else if (action.actionName == AUCUNE_ACTION)
-            {
+            case VERIFICATION:
+                Verification(&maGrille, &q, &etatJeu);
+                break;
+
+            case CALCUL:
+                Calcul(&q, &maGrille,
+                       &action.pion1.x, &action.pion1.y,
+                       &action.pion2.x, &action.pion2.y);
+                break;
+
+            case SUPPRESSIONV:
+                SuppressionV(&maGrille,
+                             &action.pion1.x, &action.pion1.y,
+                             &action.pion2.x, &action.pion2.y,
+                             &q);
+                break;
+
+            case SUPPRESSIONH:
+                SuppressionH(&maGrille,
+                             &action.pion1.x, &action.pion1.y,
+                             &action.pion2.x, &action.pion2.y,
+                             &q);
+                break;
+
+            case AFFICHAGE:
+                afficherGrille(&maGrille, &q, &etatJeu);
+                break;
+
+            case DEPLACEMENT:
+                Deplacement(&q,
+                            &maGrille,
+                            action.pion1.x, action.pion1.y,
+                            action.pion2.x, action.pion2.y);
+                break;
+
+            case LECTURE:
+                LirePionsAChanger(&maGrille,
+                                  &ligne, &colonne,
+                                  &ligne1, &colonne1,
+                                  &q);
+                break;
+
+            case ERREURACTION:
                 GererErreurFatale(action.erreur);
+                break;
             }
         }
 
-        // Passer au niveau suivant
-        // Pour le moment je met niveau 3 quand coups epuises changer ca pour plus de clareté
+        // Passe au niveau suivant
         NIVEAUX[0].compteurNiveau += 1;
     }
 
-    printf("%s", MESSAGEETATJEU[MESSAGE_FIN_JEU]);
-
+    printf("%s", MESSAGEETATJEU[MESSAGEFINJEU]);
     return 0;
 }
