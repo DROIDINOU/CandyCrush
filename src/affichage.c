@@ -137,7 +137,6 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 -> Params : grille - queue
 -> Afficher la grille des bonbons
 -> Afficher la grille des gelatines
--> Place une action calcul dans la queue (les coordonnees sont à 0)
 ______________________________________________________________________________________________________________________________
 */
 
@@ -146,10 +145,9 @@ ________________________________________________________________________________
 // affiche la grille des bonbons et la grille de la gelatine sur une grille
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    ImprimerQueue(q);
     PAUSE(2000); // 0,5 seconde, quelle que soit la plateforme
     clearScreen();
-    //    Si la grille n'est pas encore vérifiée
+    //     Si la grille n'est pas encore vérifiée
     if (etatJeu->findepartie == 1)
     {
         if (etatJeu->coupsepuises == 1)
@@ -166,6 +164,11 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
     else
     {
+        if (etatJeu->niveausuivant == 1)
+        {
+            printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
+            return;
+        }
         printf("debut de l'affichage\n");
         // Affichage de la première ligne (numéros de colonnes)
         printf("   ");
@@ -267,10 +270,6 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                 }
             }
             printf("\n");
-        }
-        if (etatJeu->niveausuivant == 1)
-        {
-            printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
         }
     }
     // grille->affiche = 0;                                 // on remet le flag affichage à 0

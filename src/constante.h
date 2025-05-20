@@ -65,6 +65,7 @@ typedef struct
     int niveausuivant;
     int findepartie;
     int coupsepuises;
+    int findesniveaux;
 } EtatJeu;
 
 typedef struct

@@ -12,7 +12,7 @@ int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
-void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2);
+void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, bool initialisation);
 bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);

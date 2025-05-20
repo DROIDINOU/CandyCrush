@@ -98,7 +98,7 @@ int main()
             case CALCUL:
                 Calcul(&q, &maGrille,
                        &action.pion1.x, &action.pion1.y,
-                       &action.pion2.x, &action.pion2.y);
+                       &action.pion2.x, &action.pion2.y, false);
                 break;
 
             case SUPPRESSIONV:
@@ -142,10 +142,10 @@ int main()
         }
 
         // Passe au niveau suivant
+
         etatJeu.niveausuivant = 0;
         NIVEAUX[0].compteurNiveau += 1;
     }
-
     // afficherGrille(&maGrille, &q, &etatJeu);
     return 0;
 }
