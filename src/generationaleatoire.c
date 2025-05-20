@@ -5,6 +5,27 @@
 #include "generationaleatoire.h"
 #include "erreur.h"
 
+// Renommez-la par exemple en aTroisAdjacents pour plus de clarté
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j)
+{
+    int couleur = grille->tableau[i][j].pion;
+    // 1) deux pions directement à gauche
+    if (j >= 2 &&
+        grille->tableau[i][j - 1].pion == couleur &&
+        grille->tableau[i][j - 2].pion == couleur)
+    {
+        return true;
+    }
+    // 2) deux pions directement au-dessus
+    if (i >= 2 &&
+        grille->tableau[i - 1][j].pion == couleur &&
+        grille->tableau[i - 2][j].pion == couleur)
+    {
+        return true;
+    }
+    return false;
+}
+
 /***************************************************************************************************************************
                                                    GENERATION ALEATOIRE
     Fonction : GenerationAleatoire

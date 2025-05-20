@@ -117,7 +117,6 @@ int main()
 
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
-                maGrille.estVerifiee = 1;
                 // Actions actionLecture = {LECTURE, {0, 0}, {0, 0}};
                 // Enfiler(&q, &actionLecture);
                 break;
@@ -147,6 +146,6 @@ int main()
         NIVEAUX[0].compteurNiveau += 1;
     }
 
-    afficherGrille(&maGrille, &q, &etatJeu);
+    // afficherGrille(&maGrille, &q, &etatJeu);
     return 0;
 }

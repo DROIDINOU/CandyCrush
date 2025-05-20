@@ -31,9 +31,13 @@ void initialiserBonbons(GrilleBonbons *grille)
     for (int ligne = 0; ligne < grille->lignes; ligne++)
     {
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {                                                                                    // Remplissage avec des couleurs aleatoires
-            grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
-            // une couleur aléatoire
+        { // Remplissage avec des couleurs aleatoires
+          // grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1); // Appel de la fonction pour générer
+          // une couleur aléatoire
+            do
+            {
+                grille->tableau[ligne][colonne].pion = GenerationAleatoire(COULEURALEATOIRE, 1);
+            } while (aDeuxPionsAdjacents(grille, ligne, colonne));
             grille->tableau[ligne][colonne].gelatine = false; // Par défaut, pas de gelatine
         }
     }
@@ -78,11 +82,15 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
-    etatJeu->niveausuivant = 0;                // On initialise le niveau suivant à 0
-    initialiserBonbons(grille);                // initialise la grille de bonbons
-    initialiserGelatines(grille);              // initialise la grille de gelatines
-    Actions action = {CALCUL, {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
+    etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
+    initialiserBonbons(grille); // initialise la grille de bonbons
+    initialiserGelatines(grille);
+    Actions aff = {AFFICHAGE, {0, 0}, {0, 0}};
+    Enfiler(q, &aff);                                // initialise la grille de gelatines
+    Actions action = {VERIFICATION, {0, 0}, {0, 0}}; // On ajoute une action CALCUL avec les coordonnées de la première case
     Enfiler(q, &action);
+
+    grille->estInitialisee = 1;
 }
 
 /*_______________________________________________________________________________________________________________
@@ -114,25 +122,9 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
 
     NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1; // Incremente le nombre de coups joues
-
-    Actions action = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
+    Actions action = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}};  // On ajoute une action CALCUL avec les nouvelles coordonnées
     Enfiler(q, &action);
 }
-
-/*
-bool actionExiste(Queue *q, const char *nom, int x1, int y1, int x2, int y2)
-{
-    for (int i = q->debut; i != q->fin; i = (i + 1) % LONGUEURQ)
-    {
-        if (strcmp(q->elements[i].actionName, nom) == 0 && // Vérification du nom
-            q->elements[i].pion1.x == x1 && q->elements[i].pion1.y == y1 &&
-            q->elements[i].pion2.x == x2 && q->elements[i].pion2.y == y2)
-        {
-            return true; // Action trouvée
-        }
-    }
-    return false; // Action non trouvée
-}*/
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
@@ -264,6 +256,7 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 void Calcul(Queue *q, GrilleBonbons *grille,
             int *x1, int *y1, int *x2, int *y2)
 {
+    printf("DEBUG - CALCUL\n");
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
     int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements
@@ -325,9 +318,13 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Si on a atteint la fin, on peut enchaîner AFFICHAGE
     if (grille->calcX >= TAILLE)
     {
+        Actions aff1 = {AFFICHAGE, {0, 0}, {0, 0}};
         Actions aff = {VERIFICATION, {0, 0}, {0, 0}};
         grille->calcX = 0;
         grille->calcY = 0;
+        // Enfiler(q, &aff1);
+        Enfiler(q, &aff1);
+
         Enfiler(q, &aff);
         return;
     }
@@ -355,15 +352,16 @@ ________________________________________________________________________________
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
+    printf("DEBUG - VERIFICATION\n");
     int gelatinepresente = 0;
-    if (grille->estVerifiee == 0 && grille->estInitialisee == 0)
-    {
-        printf("La grille n'est pas initialisée.\n");
-        // Si la grille n'est pas initialisée, on l'initialise
-        Actions aff = {AFFICHAGE, {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
-        Enfiler(q, &aff);
-        // Si la grille n'est pas initialisée, on l'initialise
-    }
+    // if (grille->estVerifiee == 0 && grille->estInitialisee == 0)
+    //{
+    // printf("La grille n'est pas initialisée.\n");
+    //  Si la grille n'est pas initialisée, on l'initialise
+    // Actions aff = {AFFICHAGE, {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
+    // Enfiler(q, &aff);
+    //  Si la grille n'est pas initialisée, on l'initialise
+    //}
     // VERIFICATION DES GELATINES ET DES COUPS JOUES
     for (int i = 0; i < grille->lignes; i++)
     {
@@ -388,15 +386,16 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     if (gelatinepresente == 1)
     {
         // si non on place une action de LECTURE pour continuer la manche
-        Actions action = {AFFICHAGE, {0, 0}, {0, 0}};
+        Actions action = {LECTURE, {0, 0}, {0, 0}};
         Enfiler(q, &action);
+
         printf("c est pas ici le probleme !!!!!");
         return;
     }
 
     // on passe au niveu suivant
     // printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
-    // etatJeu->niveausuivant = 1;
+    etatJeu->niveausuivant = 1;
 
     return;
 }
@@ -483,6 +482,7 @@ void SupprimerColonne(GrilleBonbons *grille, int col)
 
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
+    printf("DEBUG - SUPPRESSIONV\n");
     // printf(" SUPPRESSIONV  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // printf(QuatreALaSuiteVerticale(grille, x1, x2) ? "Quatre a la suite verticalement\n" : "Pas quatre a la suite verticalement\n");
     //   1 SUPPRESSION DES BONBONS (remplacement par un espace vide et suppression de la gélatine)
@@ -555,6 +555,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
+    printf("DEBUG - SUPPRESSIONH\n");
     // printf(" SUPPRESSIONH  (%d,%d) -> (%d,%d)\n", *x1, *y1, *x2, *y2);
     // printf(QuatreALaSuiteHorizontale(grille, y1, y2) ? "Quatre a la suite horizontalement\n" : "Pas quatre a la suite horizontalement\n");
     //  1️ SUPPRESSION DES BONBONS HORIZONTAUX (remplacement par un espace vide et suppression de la gélatine)

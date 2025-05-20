@@ -149,7 +149,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     ImprimerQueue(q);
     PAUSE(2000); // 0,5 seconde, quelle que soit la plateforme
     clearScreen();
-    //  Si la grille n'est pas encore vérifiée
+    //    Si la grille n'est pas encore vérifiée
     if (etatJeu->findepartie == 1)
     {
         if (etatJeu->coupsepuises == 1)
@@ -163,16 +163,10 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             return;
         }
     }
-    else if (!grille->estVerifiee && grille->estInitialisee == 0)
-    {
-        // grille->estVerifiee = 1; // Marquer la grille comme vérifiée
-        printf(MESSAGEETATJEU[MESSAGECHARGEMENT]);
-        return;
-    }
 
     else
     {
-
+        printf("debut de l'affichage\n");
         // Affichage de la première ligne (numéros de colonnes)
         printf("   ");
         for (int colonne = 0; colonne < grille->colonnes; colonne++)
@@ -280,7 +274,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         }
     }
     // grille->affiche = 0;                                 // on remet le flag affichage à 0
-    Actions actionAffichage = {LECTURE, {0, 0}, {0, 0}}; // Mettre à jour l'action
-    Enfiler(q, &actionAffichage);                        // Ajoute l'action dans la queue
+    // Actions actionAffichage = {LECTURE, {0, 0}, {0, 0}}; // Mettre à jour l'action
+    // Enfiler(q, &actionAffichage);                        // Ajoute l'action dans la queue
     //  On marque l'état de jeu comme affiché
 }
