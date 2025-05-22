@@ -115,35 +115,26 @@ int main()
                              &q);
                 break;
 
-            case CHUTE_LIGNE:
-                AppliquerChuteLigne(&maGrille, action.pion1.x, &q);
-                Enfiler(&q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-                break;
-
             case CHUTE_LIGNE_RESET:
-                AppliquerChuteLigneReset(&maGrille, action.pion1.y, &q);
+                AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
                 break;
 
             case CHUTE_COLONNE:
                 AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q); // x = colonne, y = ligne de départ
                 // Enfiler(&q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
                 break;
-            case CHUTE_PARTIELLE:
+            case CHUTEPARTIELLE:
                 AppliquerChutePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
-                break;
-
-            case CHUTE_COLONNE_PARTIELLE:
-                AppliquerChuteColonnePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
 
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
-                PAUSE(500); // ← Ajoute une pause d’environ 0.5 seconde
+                PAUSE(200); // ← Ajoute une pause d’environ 0.5 seconde
                 // Actions actionLecture = {LECTURE, {0, 0}, {0, 0}};
                 // Enfiler(&q, &actionLecture);
                 break;
             case APRES_AFFICHAGE:
-                maGrille.calcX = 0; // ← essentiel
+                maGrille.calcX = 0; // DEPLACER CELA
                 maGrille.calcY = 0;
                 Enfiler(&q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
                 break;

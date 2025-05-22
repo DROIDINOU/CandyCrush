@@ -8,6 +8,7 @@
 /***************************************************************************************************************************
                                                   INIT GRILLE
  ****************************************************************************************************************************/
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j);
 int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void initialiserGelatines(GrilleBonbons *grille);
@@ -24,14 +25,11 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
                  int yPion2);
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2);
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2);
-void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
 void SupprimerColonne(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChuteColonne(GrilleBonbons *grille, int col, int startRow, Queue *q);
+void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
+void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChutePartielle(GrilleBonbons *grille, int col, int row, Queue *q);
-void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int col, int startRow, Queue *q);
-void SupprimerLigneEtReset(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChuteLigneReset(GrilleBonbons *grille, int row, Queue *q);
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
 suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une

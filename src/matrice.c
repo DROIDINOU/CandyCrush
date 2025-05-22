@@ -11,16 +11,43 @@
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
 
-  *** Fonctions : initialiserBonbons - initialiserGelatines
-  **   Sous fonctions de initialiserGrille
+  *** Fonctions : initialiserBonbons - initialiserGelatines - aDeuxPionsAdjacents
+  **  Sous fonctions de initialiserGrille : initialiserBonbons - initialiserGelatines
+  *   Sous fonction d' initialiserBonbons : aDeuxPionsAdjacents
+
+  - > aDeuxPionsAdjacents : Verifie si les pions que l'utilisateur souhaite déplacer sont adjacents ou non
 
   -> initialiserBonbons : place les bonbons aleatoirement dans la grille en utilisant fonction de génération aléatoire
                           definie dans generationaleatoire.c et s'assure que la grille ne contient pas de lignes de victoire
                           (trois pions ou plus alignés horizontalement ou verticalement)
   -> initialiserGelatines : place aleatoirement les gelatines dans la grille en utilisant fonction de génération aléatoire
                             definie dans generationaleatoire.c
+
+
 ___________________________________________________________________________________________________________________
  */
+
+/*---------Sous fonction d'initialiserBonbons*/
+// Vérifie que les pions deplaces par joueur sont adjacents ou non
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j)
+{
+    int couleur = grille->tableau[i][j].pion;
+    //  deux pions directement à gauche
+    if (j >= 2 &&
+        grille->tableau[i][j - 1].pion == couleur &&
+        grille->tableau[i][j - 2].pion == couleur)
+    {
+        return true;
+    }
+    //  deux pions directement au-dessus
+    if (i >= 2 &&
+        grille->tableau[i - 1][j].pion == couleur &&
+        grille->tableau[i - 2][j].pion == couleur)
+    {
+        return true;
+    }
+    return false;
+}
 
 // Initialise les bonbons dans la grille
 // Remplissage aléatoire des cases avec des couleurs
@@ -68,7 +95,8 @@ void initialiserGelatines(GrilleBonbons *grille)
 -> initialise les élements de la structure grille
 -> place les bonbons aléatoirement dans la grille (appel de la fonction initialiserBonbons)
 -> place aleatoirement les gelatines dans la grille (appel de la fonction initialiserGelatines)
--> appel à la fonction calcul
+-> appel à la fonction calcul (remarque :on passe par calcul qui est la fonction centrale
+   même si on pourrait très bien directement passer à lecture. Calcul enverra directement à verification)
 
  ****************************************************************************************************************************/
 
@@ -82,12 +110,12 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
-    etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
-    initialiserBonbons(grille); // initialise la grille de bonbons
-    initialiserGelatines(grille);
-    Calcul(q, grille, NULL, NULL, NULL, NULL, true);
+    etatJeu->niveausuivant = 0;                      // On initialise le niveau suivant à 0
+    initialiserBonbons(grille);                      // initialise la grille de bonbons
+    initialiserGelatines(grille);                    // initialise les gelatines
+    Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
 
-    grille->estInitialisee = 1;
+    grille->estInitialisee = 1; // VERIFIER SI TOUJOURS UTILE
 }
 
 /*_______________________________________________________________________________________________________________
@@ -450,110 +478,27 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
  *
  *  _____________________________________________________________________________________*/
 
-void AppliquerChuteLigneReset(GrilleBonbons *grille, int row, Queue *q)
-{
-    for (int col = 0; col < grille->colonnes; col++)
-    {
-        for (int i = row - 1; i >= 0; i--)
-        {
-            grille->tableau[i + 1][col].pion = grille->tableau[i][col].pion;
-        }
+/*------------------------------------------------------------------------------------------------------------------------
+                                        Sous fonctions de détection des victoires 4+
+--------------------------------------------------------------------------------------------------------------------------/*/
 
-        grille->tableau[0][col].pion = COULEURS[rand() % 5];
-        grille->tableau[0][col].gelatine = false;
-    }
-
-    // ✅ Affiche la grille après que tout est tombé
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-}
-
-void AppliquerChutePartielle(GrilleBonbons *grille, int col, int row, Queue *q)
-{
-    for (int i = row; i > 0; i--)
-    {
-        grille->tableau[i][col].pion = grille->tableau[i - 1][col].pion;
-        // ✅ NE PAS copier la gélatine
-    }
-
-    int idx = rand() % 5;
-    grille->tableau[0][col].pion = COULEURS[idx];
-    grille->tableau[0][col].gelatine = false;
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-}
-
-void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int col, int startRow, Queue *q)
-{
-    for (int row = startRow; row > 0; row--)
-    {
-        grille->tableau[row][col].pion = grille->tableau[row - 1][col].pion;
-        // ✅ NE PAS toucher à la gélatine !
-    }
-
-    grille->tableau[0][col].pion = COULEURS[rand() % 5];
-    grille->tableau[0][col].gelatine = false; // Nouvelle case, pas de gélatine
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-}
-
-void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q)
-{
-    for (int col = 0; col < grille->colonnes; col++)
-    {
-        for (int i = row; i > 0; i--)
-        {
-            grille->tableau[i][col].pion = grille->tableau[i - 1][col].pion;
-            // ✅ NE PAS copier la gélatine
-        }
-
-        grille->tableau[0][col].pion = COULEURS[rand() % 5];
-        grille->tableau[0][col].gelatine = false; // nouvelle case = pas de gélatine
-    }
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
-}
-
-void AppliquerChuteColonne(GrilleBonbons *grille, int col, int startRow, Queue *q)
-{
-    int lignes = grille->lignes;
-    for (int row = lignes - 1; row >= 0; row--)
-    {
-        int idx = rand() % 5;
-        grille->tableau[row][col].pion = COULEURS[idx];
-        grille->tableau[row][col].gelatine = false;
-    }
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-}
-
+// detections des victoires horizontales 4+
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2)
 {
     return ((*y2 - *y1 + 1) >= 4);
 }
 
+// detections des victoires verticales 4+
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2)
 {
     return ((*x2 - *x1 + 1) >= 4);
 }
 
-void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
-{
-    for (int col = 0; col < grille->colonnes; col++)
-    {
-        grille->tableau[row][col].pion = VIDE;
-        if (grille->estInitialisee)
-            grille->tableau[row][col].gelatine = false;
-    }
+/*------------------------------------------------------------------------------------------------------------------------
+                                        Sous fonctions de cascades pour victoires 4+
+--------------------------------------------------------------------------------------------------------------------------/*/
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-
-    for (int col = 0; col < grille->colonnes; col++)
-    {
-        Enfiler(q, &(Actions){CHUTE_COLONNE_PARTIELLE, {col, row}, {0, 0}, false});
-    }
-    Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
-}
+//-------- CASCADES COLONNES
 
 void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
 {
@@ -569,37 +514,22 @@ void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
     Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
 }
 
-void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
+void AppliquerChuteColonne(GrilleBonbons *grille, int col, int startRow, Queue *q)
 {
-    if (QuatreALaSuiteVerticale(grille, x1, x2) && grille->estInitialisee)
+    int lignes = grille->lignes;
+    for (int row = lignes - 1; row >= 0; row--)
     {
-        SupprimerColonne(grille, *y1, q);
+        int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1);
+        grille->tableau[row][col].pion = COULEURS[indiceCouleur];
+        grille->tableau[row][col].gelatine = false;
     }
-    else
-    {
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 
-        int nbSupp = 0;
-
-        for (int i = *x1; i <= *x2; i++)
-        {
-            grille->tableau[i][*y1].pion = VIDE;
-            if (grille->estInitialisee)
-                grille->tableau[i][*y1].gelatine = false;
-            nbSupp++;
-        }
-
-        // On fait descendre nbSupp fois, toujours sur la même case tout en bas
-        for (int i = 0; i < nbSupp; i++)
-        {
-            Enfiler(q, &(Actions){CHUTE_PARTIELLE, {*y1, *x2}, {0, 0}, false});
-        }
-
-        Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
-    }
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 }
 
-void SupprimerLigneEtReset(GrilleBonbons *grille, int row, Queue *q)
+//-------- CASCADES LIGNES
+
+void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
 {
     for (int col = 0; col < grille->colonnes; col++)
     {
@@ -611,29 +541,108 @@ void SupprimerLigneEtReset(GrilleBonbons *grille, int row, Queue *q)
     // 👁 Affiche la ligne vide AVANT toute chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 
-    // 💡 Nouvelle action : déclenche la chute ensuite
+    //  Nouvelle action : déclenche la chute ensuite
     Enfiler(q, &(Actions){CHUTE_LIGNE_RESET, {0, row}, {0, 0}, false});
     Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
 }
 
-void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
+void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q)
 {
-    if (QuatreALaSuiteHorizontale(grille, y1, y2) && grille->estInitialisee)
+    for (int col = 0; col < grille->colonnes; col++)
     {
-        SupprimerLigneEtReset(grille, *x1, q);
+        for (int i = row - 1; i >= 0; i--)
+        {
+            grille->tableau[i + 1][col].pion = grille->tableau[i][col].pion;
+        }
+        int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1);
+        grille->tableau[0][col].pion = COULEURS[indiceCouleur];
+        grille->tableau[0][col].gelatine = false;
     }
-    else
+
+    // ✅ Affiche la grille après que tout est tombé
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+}
+
+/*------------------------------------------------------------------------------------------------------------------------
+                                        Sous fonctions de cascades pour victoires 3
+--------------------------------------------------------------------------------------------------------------------------/*/
+
+// Cascade Appliquée au victoires 3 (suppression partielle)
+// copie la case précédente de la colonne et remonte jusqu'à la case tout au dessus (cascade)
+// la case du dessus se voit attribuer une nouvelle couleur aléatoire (en fonction du niveau)
+void AppliquerChutePartielle(GrilleBonbons *grille, int col, int row, Queue *q)
+{
+    // remonter vers la case tout au dessus
+    for (int i = row; i > 0; i--)
+    {
+        grille->tableau[i][col].pion = grille->tableau[i - 1][col].pion; // attribuer valeur de la case située au dessus
+    }
+
+    int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1); // indice de la couleur en fonction du niveau
+    grille->tableau[0][col].pion = COULEURS[indiceCouleur];       // attribue une nouvelle couleur a la case située tout au dessus
+    grille->tableau[0][col].gelatine = false;                     // pas de gélatine
+
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false}); // enfile une action d'affichage
+}
+
+/*****************************************************************************************************************************
+                   FONCTIONS CENTRALES DE SUPPRESSION VERTICALES ET HORIZONTALE DES LIGNES DE VICTOIRE 3 ET 4+
+
+*****************************************************************************************************************************/
+
+// suppression des victoires verticales (3 et 4+)
+void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
+{
+    // Si victoire verticale avec 4 pions ou plus
+    if (QuatreALaSuiteVerticale(grille, x1, x2) && grille->estInitialisee)
+    {
+        SupprimerColonne(grille, *y1, q);
+    }
+    else // Cas d'une combinaison verticale de 3
     {
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 
+        // Calcul du nombre de pions à supprimer (ligne de début à ligne de fin, inclus)
+        int nbPionsASupprimer = *x2 - *x1 + 1;
+
+        // Suppression des pions et de la gélatine dans la colonne concernée
+        for (int i = *x1; i <= *x2; i++)
+        {
+            grille->tableau[i][*y1].pion = VIDE; // pion vide (gris)
+            if (grille->estInitialisee)
+                grille->tableau[i][*y1].gelatine = false; // suppression des gelatines
+        }
+
+        // Enfiler autant de chutes que de pions supprimés, en bas de la colonne
+        for (int i = 0; i < nbPionsASupprimer; i++)
+        {
+            Enfiler(q, &(Actions){CHUTEPARTIELLE, {*y1, *x2}, {0, 0}, false});
+        }
+
+        Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});
+    }
+}
+
+// suppression des victoires horizontales (3 et 4+)
+void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
+{ // si victoires horizontales 4+
+    if (QuatreALaSuiteHorizontale(grille, y1, y2) && grille->estInitialisee)
+    {
+        SupprimerLigne(grille, *x1, q);
+    }
+    else // // Cas d'une combinaison horizontale de 3
+    {
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+
+        // Suppression des pions et de la gélatine dans la ligne concernée
         for (int j = *y1; j <= *y2; j++)
         {
-            grille->tableau[*x1][j].pion = VIDE;
+            grille->tableau[*x1][j].pion = VIDE; // pion vide (gris)
             if (grille->estInitialisee)
-                grille->tableau[*x1][j].gelatine = false;
+                grille->tableau[*x1][j].gelatine = false; // suppression des gélatines
 
-            // Faire descendre tout ce qui est au-dessus de *x1
-            Enfiler(q, &(Actions){CHUTE_PARTIELLE, {j, *x1}, {0, 0}, false});
+            // Faire descendre tout ce qui est au-dessus de la ligne (x1)
+            Enfiler(q, &(Actions){CHUTEPARTIELLE, {j, *x1}, {0, 0}, false});
         }
 
         Enfiler(q, &(Actions){APRES_AFFICHAGE, {0, 0}, {0, 0}, false});

@@ -25,8 +25,8 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
 //            - message (tableau de characteres): message d'affichage pour l'utilisateur.
 //            - nombreLigneOuColonne(int): valeur attendue pour l'entrée utilisateur.
 MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
-    {"Veuillez entrer la colonne 1 a ", TAILLE},
-    {"Veuillez entrer la ligne 1 a ", TAILLE}};
+    {"Veuillez entrer la colonne 1 a", TAILLE},
+    {"Veuillez entrer la ligne 1 a", TAILLE}};
 
 // Définition des niveaux du jeu sous forme d'un tableau de structures.
 // Type : tableau de Niveaux (structure définie dans constante.h).

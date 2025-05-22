@@ -5,27 +5,6 @@
 #include "generationaleatoire.h"
 #include "erreur.h"
 
-// Renommez-la par exemple en aTroisAdjacents pour plus de clarté
-bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j)
-{
-    int couleur = grille->tableau[i][j].pion;
-    // 1) deux pions directement à gauche
-    if (j >= 2 &&
-        grille->tableau[i][j - 1].pion == couleur &&
-        grille->tableau[i][j - 2].pion == couleur)
-    {
-        return true;
-    }
-    // 2) deux pions directement au-dessus
-    if (i >= 2 &&
-        grille->tableau[i - 1][j].pion == couleur &&
-        grille->tableau[i - 2][j].pion == couleur)
-    {
-        return true;
-    }
-    return false;
-}
-
 /***************************************************************************************************************************
                                                    GENERATION ALEATOIRE
     Fonction : GenerationAleatoire
@@ -36,17 +15,14 @@ bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j)
                   En fonction du type, elle génère un nombre aléatoire entre 0 et le nombre maximum de couleurs ou d'obstacles.
                   Si maxTentatives est atteint, la fonction retourne une erreur.
                   Pour le moment les types sont : ALEATOIRECOULEUR et ALEATOIREOBSTACLE et maxTentatives n'est pas utilisé
-                  dans ces cas.
-                  MaxTentatives sera utilise pour des cas ou il n'y a pas d'obligation de générer un nombre aléatoire
-                  (exemple : un nombre de points bonus qui sera généré aléatoirement et pourrait ne pas être attribué, genre de
-                   jeu bonus)
+                  dans ces cas (toujours à 1)
+                  MaxTentatives sera utilise pour d'autres types (exemple : un nombre de points bonus qui sera généré
+                  aléatoirement et pourrait ne pas être attribué, genre de jeu bonus)
  ****************************************************************************************************************************/
 
 int GenerationAleatoire(TypeElementRandom type, int maxRandom)
 {
-    // Si maxTentatives est inférieur ou égal à zéro, il y a eu une erreur dans la génération
-    // ??? remarque ??
-
+    // A CHANGER CE SERA PAS UNE ERREUR FATALE
     if (maxRandom <= 0)
     {
         GererErreurFatale(ECHECGENERATIONTENTATIVES);
@@ -63,7 +39,7 @@ int GenerationAleatoire(TypeElementRandom type, int maxRandom)
             // Si la couleur est valide, on retourne la valeur
             if (couleurAleatoire == 0)
             {
-                couleurAleatoire = 1; // Jamais 0 couleur
+                couleurAleatoire = 1; // Jamais 0 couleur PAS UN PEU INUTILE CA ??
             }
             return couleurAleatoire;
         }

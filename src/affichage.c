@@ -47,7 +47,7 @@ int ObtenirReponseAuMessage(int index)
     do
     {
         // Affiche le message et la plage
-        printf("%s (1-%d) : ",
+        printf("%s %d : ",
                MESSAGESECHANGEBONBONS[index].message,
                MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
 
@@ -130,145 +130,86 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 -> Afficher la grille des gelatines
 ______________________________________________________________________________________________________________________________
 */
-
-// void afficherRegleManche() {} PAS ENCORE PRET POUR CELA FAUT AMELIORER MODULARITER VERIFICATIONSET SUPPRESSIONS
-
-// affiche la grille des bonbons et la grille de la gelatine sur une grille
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    PAUSE(50); // 0,5 seconde, quelle que soit la plateforme
+    PAUSE(50);
     clearScreen();
-    //     Si la grille n'est pas encore vérifiée
+
     if (etatJeu->findepartie == 1)
     {
-        if (etatJeu->coupsepuises == 1)
-        {
-            printf(MESSAGEETATJEU[MESSAGECOUPSEPUISES]);
-            return;
-        }
-        else
-        {
-            printf(MESSAGEETATJEU[MESSAGEFINJEU]);
-            return;
-        }
+        printf(etatJeu->coupsepuises ? MESSAGEETATJEU[MESSAGECOUPSEPUISES] : MESSAGEETATJEU[MESSAGEFINJEU]);
+        return;
     }
 
-    else
+    if (etatJeu->niveausuivant == 1)
     {
-        if (etatJeu->niveausuivant == 1)
-        {
-            printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
-            return;
-        }
-        printf("debut de l'affichage\n");
-        // Affichage de la première ligne (numéros de colonnes)
-        printf("   ");
-        for (int colonne = 0; colonne < grille->colonnes; colonne++)
-        {
-            if (colonne + 1 < 10)            // Si c'est un chiffre à un seul chiffre
-                printf("  %d", colonne + 1); //  deux espaces avant le chiffre
-            else                             // Si c'est un chiffre à deux chiffres
-                printf(" %d", colonne + 1);  // un espace avant les deux chiffres
-        }
-        printf("\n");
-
-        // Affichage de la grille avec les numéros de lignes
-        for (int ligne = 0; ligne < grille->lignes; ligne++)
-        {
-            // Afficher le numéro de la ligne (première colonne)
-            printf("%2d ", ligne + 1); // Affiche les numéros de ligne au début de chaque ligne
-
-            for (int colonne = 0; colonne < grille->colonnes; colonne++)
-            {
-                int pion = grille->tableau[ligne][colonne].pion;          // Le bonbon
-                bool gelatine = grille->tableau[ligne][colonne].gelatine; // La gélatine
-                if (pion == VIDE)
-                {
-                    printf("\033[48;5;240m\033[30m%2s \033[0m", " ");
-                    continue;
-                }
-                // Si la case contient de la gélatine
-                if (gelatine)
-                {
-
-                    // Affichage avec fond gris clair et couleur principale pour le bonbon
-                    switch ((CouleurBonbons)pion)
-                    {
-                    case JAUNE:
-                        printf("\033[48;5;235m\033[38;5;226m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Jaune Clair avec gris
-                    case VERT:
-                        printf("\033[48;5;235m\033[38;5;82m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Vert avec gris
-                    case BLEU:
-                        printf("\033[48;5;235m\033[38;5;39m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Bleu avec gris
-                    case ROUGE:
-                        printf("\033[48;5;235m\033[38;5;160m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Rouge avec gris
-                    case MAUVE:
-                        printf("\033[48;5;235m\033[38;5;93m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Mauve avec gris
-                    case BLANC:
-                        printf("\033[48;5;235m\033[38;5;15m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Blanc avec gris
-                    case GRIS:
-                        printf("\033[48;5;235m\033[38;5;235m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Gris avec gris
-                    case JAUNE_CLAIR:
-                        printf("\033[48;5;235m\033[38;5;220m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Jaune Clair avec gris
-                    case ROSE:
-                        printf("\033[48;5;235m\033[38;5;213m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Rose avec gris
-                    default:
-                        printf("\033[48;5;235m\033[38;5;8m%2d \033[0m", pion);
-                        break; // Gélatine sur fond Gris par défaut avec gris
-                    }
-                }
-                else
-                {
-                    // Affichage des cases de bonbons (sans gélatine)
-                    switch ((CouleurBonbons)pion)
-                    {
-                    case JAUNE:
-                        printf("\033[43m\033[30m%2d \033[0m", pion);
-                        break; // Fond Jaune pour le bonbon
-                    case VERT:
-                        printf("\033[42m\033[30m%2d \033[0m", pion);
-                        break; // Fond Vert pour le bonbon
-                    case BLEU:
-                        printf("\033[44m\033[30m%2d \033[0m", pion);
-                        break; // Fond Bleu pour le bonbon
-                    case ROUGE:
-                        printf("\033[41m\033[30m%2d \033[0m", pion);
-                        break; // Fond Rouge pour le bonbon
-                    case MAUVE:
-                        printf("\033[45m\033[30m%2d \033[0m", pion);
-                        break; // Fond Mauve pour le bonbon
-                    case BLANC:
-                        printf("\033[47m\033[30m%2d \033[0m", pion);
-                        break; // Fond Blanc pour le bonbon
-                    case GRIS:
-                        printf("\033[48;5;235m\033[30m%2d \033[0m", pion);
-                        break; // Fond Gris pour le bonbon
-                    case JAUNE_CLAIR:
-                        printf("\033[48;5;220m\033[30m%2d \033[0m", pion);
-                        break; // Fond Jaune Clair pour le bonbon
-                    case ROSE:
-                        printf("\033[48;5;213m\033[30m%2d \033[0m", pion);
-                        break; // Fond Rose pour le bonbon
-                    default:
-                        printf("\033[47m\033[30m%2d \033[0m", pion);
-                        break; // Fond par défaut pour le bonbon
-                    }
-                }
-            }
-            printf("\n");
-        }
+        printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
+        return;
     }
-    // grille->affiche = 0;                                 // on remet le flag affichage à 0
-    // Actions actionAffichage = {LECTURE, {0, 0}, {0, 0}}; // Mettre à jour l'action
-    // Enfiler(q, &actionAffichage);                        // Ajoute l'action dans la queue
-    //  On marque l'état de jeu comme affiché
+
+    // En-tête colonnes
+    printf("  ");
+    for (int col = 0; col < grille->colonnes; col++)
+        printf("  %2d", col + 1);
+    printf("\n");
+
+    // Affichage des lignes
+    for (int row = 0; row < grille->lignes; row++)
+    {
+        printf("%2d ", row + 1);
+
+        for (int col = 0; col < grille->colonnes; col++)
+        {
+            int pion = grille->tableau[row][col].pion;
+            bool gelatine = grille->tableau[row][col].gelatine;
+
+            if (pion == VIDE)
+            {
+                printf(" ⬚ ");
+                continue;
+            }
+
+            char *emoji;
+            switch ((CouleurBonbons)pion)
+            {
+            case JAUNE:
+                emoji = "🟡";
+                break;
+            case VERT:
+                emoji = "🟢";
+                break;
+            case BLEU:
+                emoji = "🔵";
+                break;
+            case ROUGE:
+                emoji = "🔴";
+                break;
+            case MAUVE:
+                emoji = "🟣";
+                break;
+            case BLANC:
+                emoji = "⚪";
+                break;
+            case GRIS:
+                emoji = "⚫";
+                break;
+            case JAUNE_CLAIR:
+                emoji = "🟨";
+                break;
+            case ROSE:
+                emoji = "🌸";
+                break;
+            default:
+                emoji = "❓";
+                break;
+            }
+
+            if (gelatine)
+                printf("\033[48;5;208m %s \033[0m", emoji); // fond orange vif
+            else
+                printf(" %s ", emoji);
+        }
+
+        printf("\n");
+    }
 }
