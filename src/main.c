@@ -77,7 +77,6 @@ int main()
 
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        printf("Vous venez d'entrer dans le Niveau %d\n", NIVEAUX[0].compteurNiveau + 1);
         Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
         Enfiler(&q, &actionInit);
 
@@ -117,14 +116,17 @@ int main()
 
             case CHUTE_LIGNE_RESET:
                 AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
+                PAUSE(100);
                 break;
 
             case CHUTE_COLONNE:
                 AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q); // x = colonne, y = ligne de départ
+                PAUSE(100);
                 // Enfiler(&q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
                 break;
             case CHUTEPARTIELLE:
                 AppliquerChutePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
+                PAUSE(100);
                 break;
 
             case AFFICHAGE:

@@ -10,6 +10,8 @@ typedef enum
     ECHECGENERATIONCOULEURALEATOIRE,  // 3 : Type inconnu
     ECHECGENERATIONTENTATIVES,        // 4 : Erreur de génération aléatoire
     ECHECGENERATIONOBSTACLEALEATOIRE, // 5 : Erreur de génération aléatoire
+    ERREURENTREEINVALIDE,             // 6 : Erreur entrée invalide (doit être un chiffre)
+    ERREURNOMBREENTREEINCORRECTE,     // 7: Chiffre hors plage grille
 } CodeErreur;
 
 void GererErreurFatale(CodeErreur codeErreur);

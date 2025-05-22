@@ -17,7 +17,8 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Vous avez perdu. Essayez encore.\n",
     "Fin du jeu\n",
     " Chargement de la grille... \n",
-    "les pions doivent etre adjacents\n"}; // Message d'erreur si les pions ne sont pas adjacents
+    "les pions doivent etre adjacents\n",
+}; // Message d'erreur si les pions ne sont pas adjacents
 
 // Tableau contenant les messages addressés à l'utilisateur et le type de reponse attendue
 // Type : tableau de MessagesReponses (structure définie dans constante.h).

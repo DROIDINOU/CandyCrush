@@ -61,12 +61,12 @@ int ObtenirReponseAuMessage(int index)
         // 3) Contrôle de la conversion et de la plage
         if (result != 1)
         {
-            printf("Entrée invalide. Veuillez entrer un entier.\n");
+            GererErreurNonFatale(ERREURENTREEINVALIDE);
             choixUtilisateur = -1;
         }
         else if (choixUtilisateur < 1 || choixUtilisateur > TAILLE)
         {
-            printf("Erreur : veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
+            GererErreurNonFatale(ERREURNOMBREENTREEINCORRECTE);
             choixUtilisateur = -1;
         }
 
@@ -206,7 +206,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
             if (pion == VIDE)
             {
-                printf(" ⬚ ");
+                printf("  ⬚ ");
                 continue;
             }
 

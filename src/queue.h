@@ -31,7 +31,8 @@ typedef enum
     CHUTEPARTIELLE,
     APRES_AFFICHAGE,
     CHUTE_COLONNE_PARTIELLE,
-    CHUTE_LIGNE_RESET
+    CHUTE_LIGNE_RESET,
+    CHUTE_COLONNE_UNITAIRE,
 } ActionType;
 
 // structure Actions

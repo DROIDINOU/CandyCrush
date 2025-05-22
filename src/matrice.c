@@ -110,12 +110,12 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
-    etatJeu->niveausuivant = 0;                      // On initialise le niveau suivant à 0
-    initialiserBonbons(grille);                      // initialise la grille de bonbons
-    initialiserGelatines(grille);                    // initialise les gelatines
+    etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
+    initialiserBonbons(grille); // initialise la grille de bonbons
+    initialiserGelatines(grille);
+    grille->estInitialisee = 1;                      // VERIFIER SI TOUJOURS UTILE
+                                                     // initialise les gelatines
     Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
-
-    grille->estInitialisee = 1; // VERIFIER SI TOUJOURS UTILE
 }
 
 /*_______________________________________________________________________________________________________________
@@ -385,6 +385,7 @@ ________________________________________________________________________________
 // transformer en bool et laisser calcul gerer l action supprmier parametre queue
 void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
+
     printf("DEBUG - VERIFICATION\n");
     int gelatinepresente = 0;
 
@@ -538,7 +539,7 @@ void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
             grille->tableau[row][col].gelatine = false;
     }
 
-    // 👁 Affiche la ligne vide AVANT toute chute
+    //  Affiche la ligne vide AVANT toute chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 
     //  Nouvelle action : déclenche la chute ensuite
