@@ -130,6 +130,41 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 -> Afficher la grille des gelatines
 ______________________________________________________________________________________________________________________________
 */
+
+void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
+{
+    int len = strlen(texte);
+    int padding = (largeur - len) / 2;
+    if (padding < 0)
+        padding = 0;
+
+    int ligneTexte = hauteur / 2;
+
+    // Lignes vides avant le message
+    for (int i = 0; i < ligneTexte; i++)
+    {
+        for (int j = 0; j < largeur; j++)
+            printf(" ");
+        printf("\n");
+    }
+
+    // Ligne contenant le message centré en orange
+    for (int i = 0; i < padding; i++)
+        printf(" ");
+    printf("\033[38;5;208m%s\033[0m", texte);
+    for (int i = 0; i < largeur - padding - len; i++)
+        printf(" ");
+    printf("\n");
+
+    // Lignes vides après
+    for (int i = ligneTexte + 1; i < hauteur; i++)
+    {
+        for (int j = 0; j < largeur; j++)
+            printf(" ");
+        printf("\n");
+    }
+}
+
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(50);
@@ -137,16 +172,22 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
     if (etatJeu->findepartie == 1)
     {
-        printf(etatJeu->coupsepuises ? MESSAGEETATJEU[MESSAGECOUPSEPUISES] : MESSAGEETATJEU[MESSAGEFINJEU]);
+        const char *texte = etatJeu->coupsepuises
+                                ? MESSAGEETATJEU[MESSAGECOUPSEPUISES]
+                                : MESSAGEETATJEU[MESSAGEFINJEU];
+
+        afficherMessagePleinEcran(texte, grille->colonnes * 4, grille->lignes);
+        PAUSE(2000);
         return;
     }
-
     if (etatJeu->niveausuivant == 1)
     {
-        printf(MESSAGEETATJEU[MESSAGEFELICITATIONS]);
+        afficherMessagePleinEcran(MESSAGEETATJEU[MESSAGEFELICITATIONS],
+                                  grille->colonnes * 4,
+                                  grille->lignes);
+        PAUSE(2000);
         return;
     }
-
     // En-tête colonnes
     printf("  ");
     for (int col = 0; col < grille->colonnes; col++)

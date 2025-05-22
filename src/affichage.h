@@ -14,6 +14,7 @@
 #include "queue.h"
 
 int ObtenirReponseAuMessage(int index);
+void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur);
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 bool EstPionAdjacent(int x1, int y1, int x2, int y2);
 void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,

@@ -12,13 +12,13 @@
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
 
   *** Fonctions : initialiserBonbons - initialiserGelatines - aDeuxPionsAdjacents
-  **  Sous fonctions de initialiserGrille : initialiserBonbons - initialiserGelatines
+  **  Sous fonctions d' initialiserGrille : initialiserBonbons - initialiserGelatines
   *   Sous fonction d' initialiserBonbons : aDeuxPionsAdjacents
 
   - > aDeuxPionsAdjacents : Verifie si les pions que l'utilisateur souhaite déplacer sont adjacents ou non
 
   -> initialiserBonbons : place les bonbons aleatoirement dans la grille en utilisant fonction de génération aléatoire
-                          definie dans generationaleatoire.c et s'assure que la grille ne contient pas de lignes de victoire
+                          definie dans generationaleatoire.h et s'assure que la grille ne contient pas de lignes de victoire
                           (trois pions ou plus alignés horizontalement ou verticalement)
   -> initialiserGelatines : place aleatoirement les gelatines dans la grille en utilisant fonction de génération aléatoire
                             definie dans generationaleatoire.c
