@@ -8,6 +8,7 @@
 #define FINALNIVEAU 3
 #define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu
 #define MAXCOULEUR 9
+#define VIDE -1
 
 /*________________________________________________________________________________________________________________
 
@@ -30,6 +31,7 @@ typedef enum
 
 typedef enum
 {
+
     JAUNE,
     VERT,
     BLEU,

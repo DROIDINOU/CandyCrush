@@ -3,16 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <locale.h>
-
-#ifdef _WIN32
-#include <conio.h>   // pour _getch()
-#include <windows.h> // pour Sleep() et SetConsoleCursorPosition
-#define PAUSE(ms) Sleep(ms)
-#else
-#include <unistd.h> // pour usleep()
-#define PAUSE(ms) usleep((ms) * 1000)
-#endif
-
+#include "affichage.h"
 #include "matrice.h"
 #include "constante.h"
 #include "erreur.h"
@@ -145,7 +136,7 @@ ________________________________________________________________________________
 // affiche la grille des bonbons et la grille de la gelatine sur une grille
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    PAUSE(2000); // 0,5 seconde, quelle que soit la plateforme
+    PAUSE(50); // 0,5 seconde, quelle que soit la plateforme
     clearScreen();
     //     Si la grille n'est pas encore vérifiée
     if (etatJeu->findepartie == 1)
@@ -191,7 +182,11 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             {
                 int pion = grille->tableau[ligne][colonne].pion;          // Le bonbon
                 bool gelatine = grille->tableau[ligne][colonne].gelatine; // La gélatine
-
+                if (pion == VIDE)
+                {
+                    printf("\033[48;5;240m\033[30m%2s \033[0m", " ");
+                    continue;
+                }
                 // Si la case contient de la gélatine
                 if (gelatine)
                 {

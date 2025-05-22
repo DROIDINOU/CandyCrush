@@ -27,6 +27,12 @@ typedef enum
     DEPLACEMENT,
     LECTURE,
     ERREURACTION,
+    CHUTE_LIGNE,
+    CHUTE_COLONNE,
+    CHUTE_PARTIELLE,
+    APRES_AFFICHAGE,
+    CHUTE_COLONNE_PARTIELLE,
+    CHUTE_LIGNE_RESET
 } ActionType;
 
 // structure Actions
