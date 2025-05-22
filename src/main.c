@@ -121,7 +121,7 @@ int main()
                 break;
 
             case CHUTE_LIGNE_RESET:
-                AppliquerChuteLigneReset(&maGrille, action.pion1.x, &q);
+                AppliquerChuteLigneReset(&maGrille, action.pion1.y, &q);
                 break;
 
             case CHUTE_COLONNE:

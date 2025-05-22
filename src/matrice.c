@@ -463,6 +463,7 @@ void AppliquerChuteLigneReset(GrilleBonbons *grille, int row, Queue *q)
         grille->tableau[0][col].gelatine = false;
     }
 
+    // ✅ Affiche la grille après que tout est tombé
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 }
 
