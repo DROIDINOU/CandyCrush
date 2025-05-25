@@ -10,7 +10,7 @@
 #include <string.h>
 
 // A FAIRE DEPLACER NIVEAU ET AMELIORER ATTRIBUTION ALEATOIRE
-// PREVOIR OBSTACLES ET AUTRES
+// REMETTRE LES CASCADES DANS EXPLICATION ET ORDONNE MAIN DANS ORDRE LOGIQUE
 
 int main()
 {
@@ -114,15 +114,14 @@ int main()
                              &q);
                 break;
 
-            case CHUTE_LIGNE_RESET:
+            case CHUTELIGNEENTIERE:
                 AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
                 PAUSE(100);
                 break;
 
-            case CHUTE_COLONNE:
-                AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q); // x = colonne, y = ligne de départ
+            case CHUTECOLONNEENTIERE:
+                AppliquerChuteColonne(&maGrille, action.pion1.y, &q);
                 PAUSE(100);
-                // Enfiler(&q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
                 break;
             case CHUTEPARTIELLE:
                 AppliquerChutePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
@@ -131,13 +130,10 @@ int main()
 
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
-                PAUSE(200); // ← Ajoute une pause d’environ 0.5 seconde
-                // Actions actionLecture = {LECTURE, {0, 0}, {0, 0}};
-                // Enfiler(&q, &actionLecture);
+                PAUSE(200);
                 break;
-            case APRES_AFFICHAGE:
-                maGrille.calcX = 0; // DEPLACER CELA
-                maGrille.calcY = 0;
+            case RELANCERCALCUL:
+
                 Enfiler(&q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
                 break;
 
@@ -163,9 +159,7 @@ int main()
 
         // Passe au niveau suivant
 
-        etatJeu.niveausuivant = 0;
         NIVEAUX[0].compteurNiveau += 1;
     }
-    // afficherGrille(&maGrille, &q, &etatJeu);
     return 0;
 }

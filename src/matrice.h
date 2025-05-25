@@ -1,4 +1,3 @@
-// queue.h (ou le nom de ton fichier d'en-tête)
 #ifndef MATRICE_H
 #define MATRICE_H
 #include "queue.h"
@@ -6,30 +5,59 @@
 #include "constante.h"
 
 /***************************************************************************************************************************
-                                                  INIT GRILLE
+                                                  INITIALISATION GRILLE
  ****************************************************************************************************************************/
-bool aDeuxPionsAdjacents(GrilleBonbons *grille, int i, int j);
-int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
+
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTION DE Initialiser grille
+___________________________________________________________________________________________________________________
+ */
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int position1, int position2);
+int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
+
+/***************************************************************************************************************************
+                                                  DEPLACEMENT
+ ****************************************************************************************************************************/
+
+void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1, int yPion1, int xPion2, int yPion2);
+
+/***************************************************************************************************************************
+                                                  CALCUL
+ ****************************************************************************************************************************/
+
 void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, bool initialisation);
+
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
+___________________________________________________________________________________________________________________
+ */
+
 bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);
 void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
+
+/***************************************************************************************************************************
+                                                  SUPPRESSIONS H ET V
+ ****************************************************************************************************************************/
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
-void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
-                 int yPion1, int xPion2,
-                 int yPion2);
+
+/*________________________________________________________________________________________________________________
+                                 **** SOUS FONCTION DE SUPPRESSION H ET V (cascades)
+___________________________________________________________________________________________________________________
+ */
+
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2);
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2);
 void SupprimerColonne(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChuteColonne(GrilleBonbons *grille, int col, int startRow, Queue *q);
+void AppliquerChuteColonne(GrilleBonbons *grille, int col, Queue *q);
 void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChutePartielle(GrilleBonbons *grille, int col, int row, Queue *q);
+void AppliquerChutePartielle(GrilleBonbons *grille, int row, int col, Queue *q);
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
 suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une

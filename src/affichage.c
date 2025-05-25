@@ -42,7 +42,7 @@ int ObtenirReponseAuMessage(int index)
 {
     int choixUtilisateur;
     int result;
-    int c;
+    int caractereLu; // utilisé pour vider le tampon d'entrée après scanf;
 
     do
     {
@@ -55,7 +55,7 @@ int ObtenirReponseAuMessage(int index)
         result = scanf("%d", &choixUtilisateur);
 
         // 2) Vider le reste de la ligne (jusqu'au '\n' ou EOF)
-        while ((c = getchar()) != '\n' && c != EOF)
+        while ((caractereLu = getchar()) != '\n' && caractereLu != EOF)
             ;
 
         // 3) Contrôle de la conversion et de la plage
@@ -72,13 +72,13 @@ int ObtenirReponseAuMessage(int index)
 
     } while (choixUtilisateur == -1);
 
-    // on renvoie en 0-based
+    // retourne le choix de l utilisateur utilisable pour le programmeur (-1)
     return choixUtilisateur - 1;
 }
 
+// Vérifie si les pions sont adjacents (horizontalement ou verticalement)
 bool EstPionAdjacent(int x1, int y1, int x2, int y2)
 {
-    // Vérifie si les pions sont adjacents (horizontalement ou verticalement)
     return (x1 == x2 && abs(y1 - y2) == 1) || (y1 == y2 && abs(x1 - x2) == 1);
 }
 
@@ -86,16 +86,12 @@ bool EstPionAdjacent(int x1, int y1, int x2, int y2)
 bool LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 {
     *x1 = ObtenirReponseAuMessage(1);
-    printf("x1 = %d\n", *x1);
 
     *y1 = ObtenirReponseAuMessage(0);
-    printf("y1 = %d\n", *y1);
 
     *x2 = ObtenirReponseAuMessage(1);
-    printf("x2 = %d\n", *x2);
 
     *y2 = ObtenirReponseAuMessage(0);
-    printf("y2 = %d\n", *y2);
 
     return EstPionAdjacent(*x1, *y1, *x2, *y2); // Vérifie si les pions sont adjacents
 }
@@ -108,16 +104,13 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 {
     if (LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion))
     {
-        printf("lire coordonnees 1");
-        printf("Coordonnees valides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
         Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
         Enfiler(q, &action);
     }
     else
     {
-        printf("Coordonnees invalides : (%d,%d) et (%d,%d)\n", *coordonneeXPremierPion, *coordonneeYPremierPion, *coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion);
-        GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents
-        // on reenfile l action de lecture
+        GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents (pas gere via
+        // affichage mais directement dans le prompt)
         LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
     }
 }
@@ -125,6 +118,7 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
 /*____________________________________________________________________________________________________________________________
                                        **** FONCTION D'AFFICHAGE
 
+-> afficherMessagePleinEcran - afficherGrille
 -> Params : grille - queue
 -> Afficher la grille des bonbons
 -> Afficher la grille des gelatines
@@ -133,7 +127,7 @@ ________________________________________________________________________________
 
 void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 {
-    int len = strlen(texte);
+    int len = strlen(texte); // longueur du texte a afficher
     int padding = (largeur - len) / 2;
     if (padding < 0)
         padding = 0;
@@ -168,13 +162,13 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(50);
-    clearScreen();
-
-    if (etatJeu->findepartie == 1)
+    clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    // On commence par verifier l'état du jeux pour afficher les messages
+    if (etatJeu->findepartie == 1) // affichage messages fin de partie
     {
         const char *texte = etatJeu->coupsepuises
                                 ? MESSAGEETATJEU[MESSAGECOUPSEPUISES]
-                                : MESSAGEETATJEU[MESSAGEFINJEU];
+                                : MESSAGEETATJEU[MESSAGEFINJEU]; // pas encore vérifié que affichage est ok
 
         afficherMessagePleinEcran(texte, grille->colonnes * 4, grille->lignes);
         PAUSE(2000);
@@ -186,6 +180,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                                   grille->colonnes * 4,
                                   grille->lignes);
         PAUSE(2000);
+        etatJeu->niveausuivant = 0;
         return;
     }
     // En-tête colonnes

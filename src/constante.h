@@ -14,6 +14,7 @@
 
                                                 **** ENUMERATIONS
 
+                    -> TypeMessage : type de messages
                     -> CouleurBonbons : couleurs des bonbons
                     -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle)
 ___________________________________________________________________________________________________________________
@@ -61,14 +62,12 @@ typedef enum
 ___________________________________________________________________________________________________________________
 */
 
-// *** Structures de la grille de bonbons
-
 typedef struct
 {
     int niveausuivant;
     int findepartie;
     int coupsepuises;
-    int findesniveaux;
+    int findesniveaux; // verifier si utile
 } EtatJeu;
 
 typedef struct
@@ -77,6 +76,8 @@ typedef struct
     bool gelatine;
 } Case;
 
+// *** Structures de la grille de bonbons
+// supprimer ce qui n est pas utilise
 typedef struct
 {
     int lignes;
@@ -86,8 +87,7 @@ typedef struct
     int calcY; // Coordonnée Y utilisee pour parcourir la grille
     int estVerifiee;
     int estInitialisee; // Indique si la grille a déjà été vérifiée
-    // int calculsRestants; // Nombre d'actions CALCUL en attente
-    int affiche; // element utilise pour afficher la grille
+    int affiche;        // element utilise pour afficher la grille
     int deplacement;
 
 } GrilleBonbons;
