@@ -120,7 +120,7 @@ int main()
                 break;
 
             case CHUTECOLONNEENTIERE:
-                AppliquerChuteColonne(&maGrille, action.pion1.y, &q);
+                AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q);
                 PAUSE(100);
                 break;
             case CHUTEPARTIELLE:

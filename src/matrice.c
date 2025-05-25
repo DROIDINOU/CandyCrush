@@ -502,39 +502,34 @@ bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2)
 
 void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
 {
-    // toutes les cases de la colonne sont <videes>
     for (int row = 0; row < grille->lignes; row++)
     {
         grille->tableau[row][col].pion = VIDE;
-        // if (grille->estInitialisee)
-        grille->tableau[row][col].gelatine = false; // si des gélatines sont présentes elles sont supprimées
-    }
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false}); // afficher la suppression
-
-    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {
-                                                   grille->lignes - 1,
-                                                   col,
-                                               },
-                          {0, 0},
-                          false}); // lance AppliquerChuteColonne
-    grille->calcX = 0;
-    grille->calcY = 0;
-    Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false}); // relance calcul
-}
-
-// remplace les bonbons par d 'autres bonbons (sens pas important vu que tout est affiché d'un coup)
-void AppliquerChuteColonne(GrilleBonbons *grille, int col, Queue *q)
-{
-    int lignes = grille->lignes;
-    for (int row = lignes - 1; row >= 0; row--)
-    {
-        int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1); // generation couleur aleatoire
-        grille->tableau[row][col].pion = COULEURS[indiceCouleur];     // attribution nouvelle couleur a case
-        grille->tableau[row][col].gelatine = false;                   // suppression des gelatines
+        grille->tableau[row][col].gelatine = false;
     }
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+
+    // Lancer la cascade pion par pion en partant du bas
+    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {grille->lignes - 1, col}, {0, 0}, false});
+
+    Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
+}
+
+// remplace les bonbons par d 'autres bonbons (sens pas important vu que tout est affiché d'un coup)
+void AppliquerChuteColonne(GrilleBonbons *grille, int row, int col, Queue *q)
+{
+    if (row < 0)
+        return; // fin de la cascade
+
+    int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1);
+    grille->tableau[row][col].pion = COULEURS[indiceCouleur];
+    grille->tableau[row][col].gelatine = false;
+
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+
+    // Enfile l’action pour le pion suivant au-dessus
+    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false});
 }
 
 //-------- CASCADES LIGNES
