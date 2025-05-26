@@ -7,6 +7,7 @@
 #include "matrice.h"
 #include "constante.h"
 #include "erreur.h"
+#include <Windows.h>
 
 // Efface tout l'écran (CMD sous Windows ou "clear" sur Unix)
 static void clearScreen(void)
@@ -161,9 +162,9 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    PAUSE(50);
+    PAUSE(200);
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
-    // On commence par verifier l'état du jeux pour afficher les messages
+    //       On commence par verifier l'état du jeux pour afficher les messages
     if (etatJeu->findepartie == 1) // affichage messages fin de partie
     {
         const char *texte = etatJeu->coupsepuises

@@ -109,11 +109,10 @@ int main()
 
             case SUPPRESSIONH:
                 SuppressionH(&maGrille,
-                             &action.pion1.x, &action.pion1.y,
-                             &action.pion2.x, &action.pion2.y,
+                             &action.pion1.x, &action.pion1.y, // x1, y1
+                             &action.pion2.y, &action.pion2.x, // y2, x2 — INVERSION ICI
                              &q);
                 break;
-
             case CHUTELIGNEENTIERE:
                 AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
                 PAUSE(100);
@@ -123,17 +122,56 @@ int main()
                 AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q);
                 PAUSE(100);
                 break;
+            case PREPAREGENERATIONHAUT:
+                afficherGrille(&maGrille, &q, &etatJeu);
+                PAUSE(150);
+                Enfiler(&q, &(Actions){
+                                GENERATIONHAUT,
+                                {action.pion1.x, action.pion1.y},
+                                {0, 0},
+                                false});
+                break;
+            case GENERATIONHAUT:
+                AppliquerGenerationHaut(&maGrille,
+                                        action.pion1.x, // ligne
+                                        action.pion1.y, // colonne
+                                        &q);
+                break;
+            case LANCERCASCADEV:
+                LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x, action.pion1.y, &q);
+                PAUSE(200);
+                break;
             case CHUTEPARTIELLE:
-                AppliquerChutePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
-                PAUSE(100);
+                AppliquerChuteVerticalePartielle(&maGrille,
+                                                 action.pion1.x, // dest
+                                                 action.pion1.y, // col
+                                                 action.pion2.x, // limite
+                                                 &q);
+                PAUSE(300);
+                break;
+            case CHUTEVERTICALEHORIZONTALE:
+                AppliquerChuteVerticaleDepuisH(&maGrille,
+                                               action.pion1.x, // ligne à remplir
+                                               action.pion1.y, // colonne
+                                               &q);
+                break;
+            case CHUTEVERTICALE:
+                printf("[DEBUG] CHUTEVERTICALE déclenchée : ligne %d à %d, colonne %d\n", action.pion1.x, action.pion2.x, action.pion1.y);
+                LancerCascadeVerticale(&maGrille,
+                                       action.pion1.x, // ligne début
+                                       action.pion2.x, // ligne fin
+                                       action.pion1.y, // colonne
+                                       &q);
+                PAUSE(300);
                 break;
 
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
-                PAUSE(200);
+                PAUSE(300);
                 break;
             case RELANCERCALCUL:
-
+                maGrille.calcX = 0;
+                maGrille.calcY = 0;
                 Enfiler(&q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
                 break;
 
@@ -149,6 +187,12 @@ int main()
                                   &ligne, &colonne,
                                   &ligne1, &colonne1,
                                   &q);
+                break;
+            case CHUTEHORIZONTALE:
+                AppliquerChuteHorizontaleParCase(&maGrille,
+                                                 action.pion1.x, // ligne
+                                                 action.pion1.y, // col
+                                                 &q);
                 break;
 
             case ERREURACTION:
