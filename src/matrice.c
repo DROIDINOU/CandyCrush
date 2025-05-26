@@ -759,7 +759,7 @@ void SuppressionH(GrilleBonbons *grille,
                            false});
             ligne_courante--;
         }
-
+        printf("est ce que je suis ici ?\n");
         // Si la ligne 0 sera vide, on prévoit une génération après un affichage
         Enfiler(q, &(Actions){
                        PREPAREGENERATIONHAUT,
@@ -785,6 +785,12 @@ void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col,
     {
         // NE RIEN FAIRE, ATTENDRE L'ACTION GENERATIONHAUT
         printf("[DEBUG] Ligne 0 attend génération externe [%d][%d] (pas de génération ici)\n", destRow, col);
+        Enfiler(q, &(Actions){
+                       PREPAREGENERATIONHAUT,
+                       {0, col},
+                       {0, 0},
+                       false});
+        printf("on va voir si c est bien ca");
         return;
     }
 
@@ -837,6 +843,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     printf("[GENERATIONHAUT] 🎁 [%d][%d] = %d\n", row, col, couleur);
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(100);
+    Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
 }
 
 void AppliquerChuteHorizontaleParCase(GrilleBonbons *grille, int destRow, int col, Queue *q)
