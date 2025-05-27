@@ -33,16 +33,15 @@ typedef enum
 
 typedef enum
 {
-
-    JAUNE,
-    VERT,
-    BLEU,
-    ROUGE,
-    MAUVE,
-    BLANC,
-    GRIS,
-    JAUNE_CLAIR,
-    ROSE
+    JAUNE = 1,
+    VERT = 2,
+    BLEU = 3,
+    ROUGE = 4,
+    MAUVE = 5,
+    BLANC = 6,
+    GRIS = 7,
+    JAUNE_CLAIR = 8,
+    ROSE = 9
 } CouleurBonbons;
 
 typedef enum
@@ -89,6 +88,7 @@ typedef struct
     int estInitialisee; // Indique si la grille a déjà été vérifiée
     int affiche;        // element utilise pour afficher la grille
     int deplacement;
+    bool casesAGenerer[TAILLE]; // ✅ Nouveau
 
 } GrilleBonbons;
 

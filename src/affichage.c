@@ -163,18 +163,18 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(200);
-    // clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
-    //         On commence par verifier l'état du jeux pour afficher les messages
-    if (etatJeu->findepartie == 1) // affichage messages fin de partie
+    clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises
                                 ? MESSAGEETATJEU[MESSAGECOUPSEPUISES]
-                                : MESSAGEETATJEU[MESSAGEFINJEU]; // pas encore vérifié que affichage est ok
+                                : MESSAGEETATJEU[MESSAGEFINJEU];
 
         afficherMessagePleinEcran(texte, grille->colonnes * 4, grille->lignes);
         PAUSE(2000);
         return;
     }
+
     if (etatJeu->niveausuivant == 1)
     {
         afficherMessagePleinEcran(MESSAGEETATJEU[MESSAGEFELICITATIONS],
@@ -184,6 +184,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         etatJeu->niveausuivant = 0;
         return;
     }
+
     // En-tête colonnes
     printf("  ");
     for (int col = 0; col < grille->colonnes; col++)
@@ -200,46 +201,51 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             int pion = grille->tableau[row][col].pion;
             bool gelatine = grille->tableau[row][col].gelatine;
 
+            char *emoji;
+
             if (pion == VIDE)
             {
-                printf("  ⬚ ");
-                continue;
+                emoji = "⬚";
+            }
+            else
+            {
+                switch (pion)
+                {
+                case JAUNE:
+                    emoji = "🟡";
+                    break;
+                case VERT:
+                    emoji = "🟢";
+                    break;
+                case BLEU:
+                    emoji = "🔵";
+                    break;
+                case ROUGE:
+                    emoji = "🔴";
+                    break;
+                case MAUVE:
+                    emoji = "🟣";
+                    break;
+                case BLANC:
+                    emoji = "⚪";
+                    break;
+                case GRIS:
+                    emoji = "⚫";
+                    break;
+                case JAUNE_CLAIR:
+                    emoji = "🟨";
+                    break;
+                case ROSE:
+                    emoji = "🌸";
+                    break;
+                default:
+                    emoji = "❓";
+                    break;
+                }
             }
 
-            char *emoji;
-            switch ((CouleurBonbons)pion)
-            {
-            case JAUNE:
-                emoji = "🟡";
-                break;
-            case VERT:
-                emoji = "🟢";
-                break;
-            case BLEU:
-                emoji = "🔵";
-                break;
-            case ROUGE:
-                emoji = "🔴";
-                break;
-            case MAUVE:
-                emoji = "🟣";
-                break;
-            case BLANC:
-                emoji = "⚪";
-                break;
-            case GRIS:
-                emoji = "⚫";
-                break;
-            case JAUNE_CLAIR:
-                emoji = "🟨";
-                break;
-            case ROSE:
-                emoji = "🌸";
-                break;
-            default:
-                emoji = "❓";
-                break;
-            }
+            // 🛠 DEBUG : pour voir les valeurs numériques, décommente ici :
+            // printf("[%2d]", pion);
 
             if (gelatine)
                 printf("\033[48;5;208m %s \033[0m", emoji); // fond orange vif

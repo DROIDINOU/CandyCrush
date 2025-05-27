@@ -60,7 +60,6 @@ void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q);
 void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
 void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int dest, int src, int col, Queue *q);
 void AppliquerChuteHorizontaleParCase(GrilleBonbons *grille, int destRow, int col, Queue *q);
-void LancerCascadeHorizontale(GrilleBonbons *grille, int ligne, int y1, int y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille,
                   int *x1, int *y1, // début
                   int *y2, int *x2, // fin
@@ -69,6 +68,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
 void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col, Queue *q);
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q);
+void GenererCasesMarquees(GrilleBonbons *grille, Queue *q);
+void AppliquerSuppressions(GrilleBonbons *grille, Queue *q);
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
 suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
 action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une

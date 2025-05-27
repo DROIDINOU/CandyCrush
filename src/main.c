@@ -98,6 +98,12 @@ int main()
                 Calcul(&q, &maGrille,
                        &action.pion1.x, &action.pion1.y,
                        &action.pion2.x, &action.pion2.y, false);
+                // Ajoute ce bloc :
+                if (!maGrille.estInitialisee)
+                {
+                    printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
+                    AppliquerSuppressions(&maGrille, &q);
+                }
                 break;
 
             case SUPPRESSIONV:
@@ -203,7 +209,7 @@ int main()
 
         // Passe au niveau suivant
 
-        NIVEAUX[0].compteurNiveau += 1;
+        // NIVEAUX[0].compteurNiveau += 1;
     }
     return 0;
 }
