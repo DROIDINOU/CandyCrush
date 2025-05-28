@@ -67,6 +67,7 @@ typedef struct
     int findepartie;
     int coupsepuises;
     int findesniveaux; // verifier si utile
+    int grillePrete;   // ✅ NOUVEAU CHAMP
 } EtatJeu;
 
 typedef struct

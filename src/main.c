@@ -14,71 +14,48 @@
 
 int main()
 {
+    srand(time(NULL));
+    GrilleBonbons maGrille;
+    Queue q;
+    InitialiserQueue(&q);
+    int ligne, colonne, ligne1, colonne1;
 
-    /*
-    ____________________________________________________________________________________________________________________________
-
-                                        **** INITIALISATION
-
-        -> Structures de données : Niveaux - Grille - Queue
-           - Niveaux : structure globale definie dans constante.h contenant les informations sur les niveaux
-           - Grille : structure definie dans constante.h contenant les informations sur la grille
-           - Queue : structure definie dans queue.h contenant les informations sur la queue
-
-        -> Initialisation nombres aleatoires
-        -> Declaration de la structure grille de bonbons
-        -> Declaration et Initialisation de la queue q
-        -> Declaration des variables ligne, colonne, ligne1, colonne1 (variables servant lors de l echange des
-           coordonnees des bonbons)
-    ___________________________________________________________________________________________________________________________
-    */
-
-    srand(time(NULL));                    // Generateur de nombres aleatoires
-    GrilleBonbons maGrille;               // Declaration de la structure grille de bonbons
-    Queue q;                              // Declaration de la queue q
-    InitialiserQueue(&q);                 // Initialisation de la queue q
-    int ligne, colonne, ligne1, colonne1; // Declaration des variables ligne, colonne, ligne1, colonne1
     EtatJeu etatJeu;
-    etatJeu.niveausuivant = 0;
+    etatJeu.niveausuivant = 1;
     etatJeu.findepartie = 0;
     etatJeu.coupsepuises = 0;
-
-    /*____________________________________________________________________________________________________________________________
-
-                                                 BOUCLE DE JEU
-    -> Tant que niveaux est inferieur au niveau final
-        -> Enfiler l'ACTION d'initialisation
-        -> Tant que la queue n'est pas vide
-                       -> Recuperer l'action en debut de la queue
-                              -> Si action est ERREURQUEUEPLEINE
-                                 - Afficher la queue est pleine
-                              -> Si action est ERREURQUEUEVIDE
-                                 - Afficher la queue est vide
-                              -> Si l'action est AFFICHAGE
-                                 - Afficher la grille
-                              -> Si l'action est CALCUL
-                                 - Calculer si trois pions ou plus se suivent en Vertical ou en Horizontal
-                              -> Si l action est SUPPESSIONV
-                                - Supprimer les suites de pions verticaux
-                              -> Si l action est SUPPESSIONH
-                                - Supprimer les suites de pions horizontaux
-                              -> Si l'action est VERIFICATION
-                                - verifier si il reste des gelatines
-                              -> Si l'action est DEPLACEMENT
-                                - Deplacer les pions
-                              -> Si l'action est LECTURE
-                                - Lire les coordonnees des pions a changer
-                              -> Si l'action est INITIALISATION
-                                    - Initialiser la grille
-
-        -> Passer au niveau suivant et increment le compteur de niveau de la structure Niveaux
-    -> Afficher FIN DU JEU
-    ___________________________________________________________________________________________________________________________   */
+    etatJeu.grillePrete = 0; // ✅ La grille n’est pas encore prête
 
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
-        Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
-        Enfiler(&q, &actionInit);
+        printf("[DEBUG] ⏳ Pré-initialisation — compteurNiveau=%d, coupsJoués=%d, niveausuivant=%d\n",
+               NIVEAUX[0].compteurNiveau,
+               NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues,
+               etatJeu.niveausuivant);
+
+        // ✅ Initialiser le niveau si demandé
+        if (etatJeu.niveausuivant == 1)
+        {
+            printf("[DEBUG] 🚀 Initialisation du niveau %d\n", NIVEAUX[0].compteurNiveau);
+            Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
+            Enfiler(&q, &actionInit);
+            etatJeu.niveausuivant = 0;
+            etatJeu.grillePrete = 0; // ✅ La grille n’est pas encore prête
+        }
+
+        // 🛡 Si la queue est vide et qu'on n’a pas fini → relancer une vérification
+        if (q.taille == 0 && !etatJeu.findepartie && !etatJeu.niveausuivant && etatJeu.grillePrete)
+        {
+            printf("[DEBUG] 🔁 Queue vide mais jeu en cours → relance Verification\n");
+            Enfiler(&q, &(Actions){VERIFICATION, {0, 0}, {0, 0}, false});
+        }
+
+        // 🛑 Si plus d'action ET pas de passage de niveau → blocage, on casse
+        if (q.taille == 0 && !etatJeu.niveausuivant && !etatJeu.findepartie)
+        {
+            printf("[ERREUR] ❌ Bloqué sans action et sans passage de niveau. Fin forcée.\n");
+            break;
+        }
 
         while (q.taille > 0)
         {
@@ -87,6 +64,7 @@ int main()
             switch (action.actionName)
             {
             case INITIALISATION:
+                printf("[TRACE] 🚨 Appel à initialiserGrille() depuis [MAIN] ligne %d\n", __LINE__);
                 initialiserGrille(&maGrille, &q, &etatJeu);
                 break;
 
@@ -95,10 +73,8 @@ int main()
                 break;
 
             case CALCUL:
-                Calcul(&q, &maGrille,
-                       &action.pion1.x, &action.pion1.y,
+                Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y,
                        &action.pion2.x, &action.pion2.y, false);
-                // Ajoute ce bloc :
                 if (!maGrille.estInitialisee)
                 {
                     printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
@@ -107,18 +83,15 @@ int main()
                 break;
 
             case SUPPRESSIONV:
-                SuppressionV(&maGrille,
-                             &action.pion1.x, &action.pion1.y,
-                             &action.pion2.x, &action.pion2.y,
-                             &q);
+                SuppressionV(&maGrille, &action.pion1.x, &action.pion1.y,
+                             &action.pion2.x, &action.pion2.y, &q);
                 break;
 
             case SUPPRESSIONH:
-                SuppressionH(&maGrille,
-                             &action.pion1.x, &action.pion1.y, // x1, y1
-                             &action.pion2.y, &action.pion2.x, // y2, x2 — INVERSION ICI
-                             &q);
+                SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y,
+                             &action.pion2.y, &action.pion2.x, &q);
                 break;
+
             case CHUTELIGNEENTIERE:
                 AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
                 PAUSE(100);
@@ -128,46 +101,37 @@ int main()
                 AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q);
                 PAUSE(100);
                 break;
+
             case PREPAREGENERATIONHAUT:
                 afficherGrille(&maGrille, &q, &etatJeu);
                 PAUSE(150);
-                Enfiler(&q, &(Actions){
-                                GENERATIONHAUT,
-                                {action.pion1.x, action.pion1.y},
-                                {0, 0},
-                                false});
+                Enfiler(&q, &(Actions){GENERATIONHAUT, {action.pion1.x, action.pion1.y}, {0, 0}, false});
                 break;
+
             case GENERATIONHAUT:
-                AppliquerGenerationHaut(&maGrille,
-                                        action.pion1.x, // ligne
-                                        action.pion1.y, // colonne
-                                        &q);
+                AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
+
             case LANCERCASCADEV:
                 LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x, action.pion1.y, &q);
                 PAUSE(200);
                 break;
+
             case CHUTEPARTIELLE:
-                AppliquerChuteVerticalePartielle(&maGrille,
-                                                 action.pion1.x, // dest
-                                                 action.pion1.y, // col
-                                                 action.pion2.x, // limite
-                                                 &q);
+                AppliquerChuteVerticalePartielle(&maGrille, action.pion1.x, action.pion1.y,
+                                                 action.pion2.x, &q);
                 PAUSE(300);
                 break;
+
             case CHUTEVERTICALEHORIZONTALE:
-                AppliquerChuteVerticaleDepuisH(&maGrille,
-                                               action.pion1.x, // ligne à remplir
-                                               action.pion1.y, // colonne
-                                               &q);
+                AppliquerChuteVerticaleDepuisH(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
+
             case CHUTEVERTICALE:
-                printf("[DEBUG] CHUTEVERTICALE déclenchée : ligne %d à %d, colonne %d\n", action.pion1.x, action.pion2.x, action.pion1.y);
-                LancerCascadeVerticale(&maGrille,
-                                       action.pion1.x, // ligne début
-                                       action.pion2.x, // ligne fin
-                                       action.pion1.y, // colonne
-                                       &q);
+                printf("[DEBUG] CHUTEVERTICALE déclenchée : ligne %d à %d, colonne %d\n",
+                       action.pion1.x, action.pion2.x, action.pion1.y);
+                LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x,
+                                       action.pion1.y, &q);
                 PAUSE(300);
                 break;
 
@@ -175,6 +139,7 @@ int main()
                 afficherGrille(&maGrille, &q, &etatJeu);
                 PAUSE(300);
                 break;
+
             case RELANCERCALCUL:
                 maGrille.calcX = 0;
                 maGrille.calcY = 0;
@@ -182,23 +147,12 @@ int main()
                 break;
 
             case DEPLACEMENT:
-                Deplacement(&q,
-                            &maGrille,
-                            action.pion1.x, action.pion1.y,
+                Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y,
                             action.pion2.x, action.pion2.y);
                 break;
 
             case LECTURE:
-                LirePionsAChanger(&maGrille,
-                                  &ligne, &colonne,
-                                  &ligne1, &colonne1,
-                                  &q);
-                break;
-            case CHUTEHORIZONTALE:
-                AppliquerChuteHorizontaleParCase(&maGrille,
-                                                 action.pion1.x, // ligne
-                                                 action.pion1.y, // col
-                                                 &q);
+                LirePionsAChanger(&maGrille, &ligne, &colonne, &ligne1, &colonne1, &q);
                 break;
 
             case ERREURACTION:
@@ -206,10 +160,8 @@ int main()
                 break;
             }
         }
-
-        // Passe au niveau suivant
-
-        // NIVEAUX[0].compteurNiveau += 1;
     }
+
+    printf("🎮 FIN DU JEU\n");
     return 0;
 }

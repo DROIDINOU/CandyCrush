@@ -163,7 +163,7 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(200);
-    clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    // clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
     if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises
@@ -181,7 +181,6 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                                   grille->colonnes * 4,
                                   grille->lignes);
         PAUSE(2000);
-        etatJeu->niveausuivant = 0;
         return;
     }
 
@@ -205,7 +204,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
             if (pion == VIDE)
             {
-                emoji = "⬚";
+                emoji = "⬜";
             }
             else
             {
