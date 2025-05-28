@@ -4,11 +4,13 @@
 #include "queue.h"
 #include "erreur.h"
 #include "constante.h"
+#include "etatjeu.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
+// ATTENTION VA CERTAINEMENT FALLOIR AJOUTER QQCHOSE POUR ETATJEUFIN DE PARTIE
 // A FAIRE DEPLACER NIVEAU ET AMELIORER ATTRIBUTION ALEATOIRE
 // REMETTRE LES CASCADES DANS EXPLICATION ET ORDONNE MAIN DANS ORDRE LOGIQUE
 
@@ -33,30 +35,7 @@ int main()
                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues,
                etatJeu.niveausuivant);
 
-        // ✅ Initialiser le niveau si demandé
-        if (etatJeu.niveausuivant == 1)
-        {
-            printf("[DEBUG] 🚀 Initialisation du niveau %d\n", NIVEAUX[0].compteurNiveau);
-            Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
-            Enfiler(&q, &actionInit);
-            etatJeu.niveausuivant = 0;
-            etatJeu.grillePrete = 0; // ✅ La grille n’est pas encore prête
-        }
-
-        // 🛡 Si la queue est vide et qu'on n’a pas fini → relancer une vérification
-        if (q.taille == 0 && !etatJeu.findepartie && !etatJeu.niveausuivant && etatJeu.grillePrete)
-        {
-            printf("[DEBUG] 🔁 Queue vide mais jeu en cours → relance Verification\n");
-            Enfiler(&q, &(Actions){VERIFICATION, {0, 0}, {0, 0}, false});
-        }
-
-        // 🛑 Si plus d'action ET pas de passage de niveau → blocage, on casse
-        if (q.taille == 0 && !etatJeu.niveausuivant && !etatJeu.findepartie)
-        {
-            printf("[ERREUR] ❌ Bloqué sans action et sans passage de niveau. Fin forcée.\n");
-            break;
-        }
-
+        VerifierEtatJeu(&etatJeu, &q);
         while (q.taille > 0)
         {
             Actions action = Defiler(&q);
@@ -78,7 +57,7 @@ int main()
                 if (!maGrille.estInitialisee)
                 {
                     printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
-                    AppliquerSuppressions(&maGrille, &q);
+                    AppliquerSuppressions(&maGrille, &q); // JE DEVRAIS POUVOIR SUPPRIMER CELA
                 }
                 break;
 
@@ -110,11 +89,6 @@ int main()
 
             case GENERATIONHAUT:
                 AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
-                break;
-
-            case LANCERCASCADEV:
-                LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x, action.pion1.y, &q);
-                PAUSE(200);
                 break;
 
             case CHUTEPARTIELLE:
@@ -162,6 +136,6 @@ int main()
         }
     }
 
-    printf("🎮 FIN DU JEU\n");
+    printf("🎮 FIN DU JEU\n"); // faudra afficher cela aussi
     return 0;
 }
