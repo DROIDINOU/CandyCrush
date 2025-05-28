@@ -1,5 +1,5 @@
 // del /p *.exe
-// gcc -o marc affichage.c main.c matrice.c constante.c queue.c erreur.c generationaleatoire.c
+// gcc -o marc affichage.c main.c matrice.c constante.c queue.c erreur.c generationaleatoire.c etatjeu.c
 // cls
 // wt -w 0 cmd /k .\mon_programme.exe
 // a faire ne pas supprimer gelatines a initialisation et

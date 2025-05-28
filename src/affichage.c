@@ -163,7 +163,7 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(200);
-    // clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
     if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises

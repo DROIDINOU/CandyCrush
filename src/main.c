@@ -13,20 +13,23 @@
 // ATTENTION VA CERTAINEMENT FALLOIR AJOUTER QQCHOSE POUR ETATJEUFIN DE PARTIE
 // A FAIRE DEPLACER NIVEAU ET AMELIORER ATTRIBUTION ALEATOIRE
 // REMETTRE LES CASCADES DANS EXPLICATION ET ORDONNE MAIN DANS ORDRE LOGIQUE
+/*------------------------------------------------------------------------------------------------------------------------
+                                        MOTEUR DU JEU BASE SUR QUEUE CIRCULAIRE DE TAILLE FIXE
+--------------------------------------------------------------------------------------------------------------------------/*/
 
 int main()
 {
     srand(time(NULL));
-    GrilleBonbons maGrille;
-    Queue q;
-    InitialiserQueue(&q);
-    int ligne, colonne, ligne1, colonne1;
+    GrilleBonbons maGrille; // Déclaration Grille principale du jeu (tableau de bonbons)
+    Queue q;                // Déclaration file circulaire
+    EtatJeu etatJeu;        // Déclaration état du jeu (initialisation, niveaux, ...)
 
-    EtatJeu etatJeu;
-    etatJeu.niveausuivant = 1;
-    etatJeu.findepartie = 0;
-    etatJeu.coupsepuises = 0;
-    etatJeu.grillePrete = 0; // ✅ La grille n’est pas encore prête
+    InitialiserQueue(&q);                 // Initialisation des elements de la queue (debut, fin et taille)
+    int ligne, colonne, ligne1, colonne1; // Variables de lecture utilisateur
+    etatJeu.niveausuivant = 1;            // Déclenche l'initialisation du premier niveau
+    etatJeu.findepartie = 0;              // fin de partie à 0
+    etatJeu.coupsepuises = 0;             // aucun coup joue
+    etatJeu.grillePrete = 0;              // La grille n’est pas encore prête
 
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
@@ -81,12 +84,6 @@ int main()
                 PAUSE(100);
                 break;
 
-            case PREPAREGENERATIONHAUT:
-                afficherGrille(&maGrille, &q, &etatJeu);
-                PAUSE(150);
-                Enfiler(&q, &(Actions){GENERATIONHAUT, {action.pion1.x, action.pion1.y}, {0, 0}, false});
-                break;
-
             case GENERATIONHAUT:
                 AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
@@ -115,8 +112,8 @@ int main()
                 break;
 
             case RELANCERCALCUL:
-                maGrille.calcX = 0;
-                maGrille.calcY = 0;
+                maGrille.calcX = 0; // A DEPLACER
+                maGrille.calcY = 0; // A DEPLACER
                 Enfiler(&q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
                 break;
 
