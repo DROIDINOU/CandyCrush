@@ -204,7 +204,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
             if (pion == VIDE)
             {
-                emoji = "⬜";
+                emoji = "⬇️";
             }
             else
             {

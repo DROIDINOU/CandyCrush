@@ -797,6 +797,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 }
 
 // pour le moment les gelatines sont effacees par cascade supprimer ca des cascades et ici juste verifier si gelatine alors mettre a faux
+// faut implement la mise a vide de la premiere ligne encore
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Queue *q)
 {
     printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
@@ -852,6 +853,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
         }
     }
 }
+// DEVENU INUTILE
 
 void GenererCasesMarquees(GrilleBonbons *grille, Queue *q)
 {
@@ -877,6 +879,7 @@ void GenererCasesMarquees(GrilleBonbons *grille, Queue *q)
     }
 }
 
+// NECESSAIRE POUR PAS AVOIR H ET V EN MEME TEMPS!!!!!!!!! mais à mon avis on peut s'en passer en supprimant || dans verificationvictoire
 void AppliquerSuppressions(GrilleBonbons *grille, Queue *q)
 {
     bool suppressionEffectuee = false;
