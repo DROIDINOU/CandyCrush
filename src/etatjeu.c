@@ -30,7 +30,7 @@ void VerifierEtatJeu(EtatJeu *etatJeu, Queue *q)
     if (q->taille == 0 && !etatJeu->findepartie && !etatJeu->niveausuivant && etatJeu->grillePrete)
     {
         printf("[DEBUG] 🔁 Queue vide mais jeu en cours → relance Verification\n");
-        Enfiler(q, &(Actions){VERIFICATION, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
     }
 
     if (q->taille == 0 && !etatJeu->niveausuivant && !etatJeu->findepartie)
