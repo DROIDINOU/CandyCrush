@@ -307,6 +307,11 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         Enfiler(q, &verif);
         return; // On ne doit pas calculer
     }
+    if (!grille->estInitialisee)
+    {
+        printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
+        AppliquerSuppressions(grille, q); // JE DEVRAIS POUVOIR SUPPRIMER CELA
+    }
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
     int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements

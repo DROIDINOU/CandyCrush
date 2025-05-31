@@ -58,11 +58,7 @@ int main()
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y,
                        &action.pion2.x, &action.pion2.y, false);
                 // je devrais pouvoir supprimer ca et la derniere fonction de matrice
-                if (!maGrille.estInitialisee)
-                {
-                    printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
-                    AppliquerSuppressions(&maGrille, &q); // JE DEVRAIS POUVOIR SUPPRIMER CELA
-                }
+
                 break;
 
             case SUPPRESSIONV:
