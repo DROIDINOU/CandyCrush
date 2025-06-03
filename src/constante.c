@@ -42,6 +42,6 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 //             - nombre utilisé pour l attribution aléatoire de couleurs
 Niveaux NIVEAUX[FINALNIVEAU] = {
     {{7, 0}, {"Gelatine", 1}, 0, 5},  // Niveau 1
-    {{5, 0}, {"Gelatine", 2}, -1, 6}, // Niveau 2
-    {{4, 0}, {"Gelatine", 4}, -1, 7}  // Niveau 3
+    {{6, 0}, {"Gelatine", 2}, -1, 6}, // Niveau 2
+    {{5, 0}, {"Gelatine", 4}, -1, 7}  // Niveau 3
 };

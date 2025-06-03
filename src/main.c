@@ -38,7 +38,7 @@ int main()
                NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues,
                etatJeu.niveausuivant);
 
-        VerifierEtatJeu(&etatJeu, &q);
+        VerifierEtatJeu(&etatJeu, &q); // lance action initialisation
         while (q.taille > 0)
         {
             Actions action = Defiler(&q);
@@ -57,8 +57,6 @@ int main()
             case CALCUL:
                 Calcul(&q, &maGrille, &action.pion1.x, &action.pion1.y,
                        &action.pion2.x, &action.pion2.y, false);
-                // je devrais pouvoir supprimer ca et la derniere fonction de matrice
-
                 break;
 
             case SUPPRESSIONV:
@@ -70,7 +68,7 @@ int main()
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y,
                              &action.pion2.y, &action.pion2.x, &q);
                 break;
-
+            // ACTIONS RAJOUTEES POUR AFFICHER LES CASCADES EN DIRECT
             case CHUTELIGNEENTIERE:
                 AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
                 PAUSE(100);

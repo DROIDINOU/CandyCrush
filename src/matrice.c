@@ -7,7 +7,7 @@
 #include "affichage.h"
 #include "generationaleatoire.h"
 #include <string.h>
-#define MAX_VICTOIRE 100
+#define MAX_VICTOIRE 100 // plus utilisé?
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
@@ -29,7 +29,9 @@ ________________________________________________________________________________
  */
 
 /*---------Sous fonction d'initialiserBonbons*/
-// Vérifie que les pions deplaces par joueur sont adjacents ou non
+// verifie l existance de lignes de victoires
+// se limite a vérification à gauche et au dessus vu que la grille se voit attribuer des bonbons lors de l initialisation
+// en partant de la case 0,0 jusqu'à la fin
 bool aDeuxPionsAdjacents(GrilleBonbons *grille, int position1, int position2)
 {
     int couleur = grille->tableau[position1][position2].pion;
@@ -110,7 +112,7 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     // Initialisation des éléments de la structure grille
     grille->lignes = TAILLE;
     grille->colonnes = TAILLE;
-    grille->estInitialisee = 0;
+    // grille->estInitialisee = 0;
     grille->estVerifiee = 0;
 
     grille->calcX = 0;
@@ -119,11 +121,11 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     etatJeu->niveausuivant = 0;   // On initialise le niveau suivant à 0
     initialiserBonbons(grille);   // initialise la grille de bonbons
     initialiserGelatines(grille); // initialise la grille de gélatine
-    for (int i = 0; i < TAILLE; i++)
-        grille->casesAGenerer[i] = false;
+    // for (int i = 0; i < TAILLE; i++)
+    //  grille->casesAGenerer[i] = false;
     etatJeu->grillePrete = 1;
     printf("[DEBUG] ✅ Grille prête → grillePrete = 1\n");
-    grille->estInitialisee = 1;                      // VERIFIER SI TOUJOURS UTILE
+    // grille->estInitialisee = 1;                      // VERIFIER SI TOUJOURS UTILE
     Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
 }
 
@@ -142,12 +144,12 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
 
 {
     // Reinitialisation des elements de la grille
-    grille->estVerifiee = 0;    // On doit revérifier la grille après le déplacement
-    grille->estInitialisee = 1; // La grille a été initialisée
-    grille->deplacement = 1;    // on est en déplacement
-    grille->calcX = 0;          // même si possiblement redondant on remet calcX a 0 par securite
-    grille->calcY = 0;          // même si possiblement redondant on remet calcY a 0 par securite
-    grille->affiche = 1;        // apres le deplacement on doit afficher
+    grille->estVerifiee = 0; // On doit revérifier la grille après le déplacement
+    // grille->estInitialisee = 1; // La grille a été initialisée
+    grille->deplacement = 1; // on est en déplacement
+    grille->calcX = 0;       // même si possiblement redondant on remet calcX a 0 par securite
+    grille->calcY = 0;       // même si possiblement redondant on remet calcY a 0 par securite
+    grille->affiche = 1;     // apres le deplacement on doit afficher
 
     // Echange des pions
     char temp = grille->tableau[xPion1][yPion1].pion;                            // echange des pions via variable temporaire qui stocke le pion 1
@@ -251,9 +253,13 @@ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
 //
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 {
-    bool victoireVerticale = VerifierVerticale(x, y, grille, q);
-    bool victoireHorizontale = VerifierHorizontale(x, y, grille, q);
-    return victoireVerticale || victoireHorizontale;
+    if (VerifierVerticale(x, y, grille, q))
+        return true;
+
+    if (VerifierHorizontale(x, y, grille, q))
+        return true;
+
+    return false;
 }
 
 /***************************************************************************************************************************
@@ -307,51 +313,10 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         Enfiler(q, &verif);
         return; // On ne doit pas calculer
     }
-    if (!grille->estInitialisee)
-    {
-        printf("[DEBUG] AppliquerSuppressions() déclenché après Calcul\n");
-        AppliquerSuppressions(grille, q); // JE DEVRAIS POUVOIR SUPPRIMER CELA
-    }
+
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
     int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements
-
-    // Action affichage si on est pas en deplacement
-    // if (grille->affiche && !grille->deplacement)
-    //{
-    // Actions aff = {AFFICHAGE, {0, 0}, {0, 0}}; // on utilise pas les coordonnees de l action
-    // Enfiler(q, &aff);
-    // grille->affiche = 0;
-    // return;
-    //}
-
-    // Si deplacement on verifie si il y a des alignements. Si pas d alignement la grille est verifiee
-    // on met estverifiee a 1, affiche a 1 et on reinitialise deplacement a 0 -> ACTION AFFICHAGE
-    // AFFICHAGE relance CALCUL qui lance VERIFICATION
-    // Si alignements, VerifierAlignements declenche une ACTION DE SUPPRESSION qui relance calcul a partir de 0
-    // if (grille->deplacement)
-    //{
-    // if (!VerifierAlignements(x1, y1, grille, q) && !VerifierAlignements(x2, y2, grille, q))
-    //{
-
-    // grille->estVerifiee = 1;
-    // grille->deplacement = 0;
-    // Actions action = {AFFICHAGE, {0, 0}, {0, 0}};
-    // Enfiler(q, &action);
-
-    // return;
-    //}
-    // return;
-    //}
-
-    // Si la grille est verifiee on lance l action VERIFICATION
-    // if (grille->estVerifiee == 1)
-    //{
-    // grille->estVerifiee = 0;
-    // Actions verification = {VERIFICATION, {0, 0}, {0, 0}};
-    // Enfiler(q, &verification);
-    // return;
-    //};
 
     // SI LORS DE LA VERIFICATION DES VARIABLES INTERNE DE CALCUL ON TROUVE UN ALIGNEMENT UNE ACTION DE
     //  SUPPRESSION EST LANCEE ET CETTE ACTION RELANCERA UNE ACTION DE CALCUL AVEC calcx et y remis a 0
@@ -385,7 +350,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return;
     }
     // debug
-    printf("on est ici????????????????????");
     // printf("DEBUG - calcX: %d, calcY: %d, deplacement: %d, estVerifiee: %d, affiche: %d\n",
     // grille->calcX, grille->calcY, grille->deplacement, grille->estVerifiee, grille->affiche);
     // Si on arrive ici on relance calcul (coordonnees ont été incrementees)
@@ -464,9 +428,10 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     printf("[DEBUG] ✅ Plus de gélatines\n");
 
     // 🏁 Dernier niveau ?
-    if (NIVEAUX[0].compteurNiveau >= FINALNIVEAU)
+    if (NIVEAUX[0].compteurNiveau >= FINALNIVEAU - 1)
     {
         printf("[DEBUG] 🏁 Dernier niveau atteint → fin de partie\n");
+        NIVEAUX[0].compteurNiveau += 1;
         etatJeu->findepartie = 1;
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         return;
@@ -564,10 +529,10 @@ void AppliquerChuteColonne(GrilleBonbons *grille, int row, int col, Queue *q)
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false});
 
-    if (row == 0)
-    {
-        Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
-    }
+    // if (row == 0)
+    //{
+    // Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
+    //}
 }
 
 //-------- CASCADES LIGNES
@@ -577,8 +542,8 @@ void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
     for (int col = 0; col < grille->colonnes; col++)
     {
         grille->tableau[row][col].pion = VIDE;
-        if (grille->estInitialisee)
-            grille->tableau[row][col].gelatine = false;
+        // if (grille->estInitialisee)
+        // grille->tableau[row][col].gelatine = false;
     }
 
     //  Affiche la ligne vide AVANT toute chute
@@ -611,7 +576,7 @@ void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q)
 --------------------------------------------------------------------------------------------------------------------------/*/
 void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queue *q)
 {
-    int match = x2 - x1 + 1;
+    int match = x2 - x1 + 1; // on pourrait mettre match egal trois mais plus propre comme cela)
     printf("[DEBUG] Cascade VERTICALE x1=%d x2=%d col=%d (nb=%d)\n", x1, x2, col, match);
 
     // Étape 1 : faire descendre les pions du haut vers le bas
@@ -622,12 +587,12 @@ void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queu
             continue; // sécurité
 
         grille->tableau[ligneDest][col].pion = grille->tableau[ligne][col].pion;
-        grille->tableau[ligneDest][col].gelatine = false; // toujours faux
+        // grille->tableau[ligneDest][col].gelatine = false; // toujours faux
 
         // grille->tableau[ligneDest][col].gelatine = grille->tableau[ligne][col].gelatine;
 
         grille->tableau[ligne][col].pion = VIDE;
-        grille->tableau[ligne][col].gelatine = false;
+        // grille->tableau[ligne][col].gelatine = false;
 
         printf("[ChutePartielle] 📦 Copie de [%d][%d] → [%d][%d] = %d\n",
                ligne, col, ligneDest, col, grille->tableau[ligneDest][col].pion);
@@ -681,10 +646,10 @@ void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int co
 
     // Copier le pion trouvé
     grille->tableau[destRow][col].pion = grille->tableau[searchRow][col].pion;
-    grille->tableau[destRow][col].gelatine = false;
+    // grille->tableau[destRow][col].gelatine = false;
 
     grille->tableau[searchRow][col].pion = VIDE;
-    grille->tableau[searchRow][col].gelatine = false;
+    // grille->tableau[searchRow][col].gelatine = false;
 
     printf("[DEBUG] 📦 Copie de [%d][%d] → [%d][%d] = %d\n", searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
 
@@ -741,9 +706,9 @@ void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col,
 
     // Effectuer la chute
     grille->tableau[destRow][col].pion = grille->tableau[searchRow][col].pion;
-    grille->tableau[destRow][col].gelatine = false; // ✅ on écrase toute propagation de gélatine
+    // grille->tableau[destRow][col].gelatine = false; // ✅ on écrase toute propagation de gélatine
     grille->tableau[searchRow][col].pion = VIDE;
-    grille->tableau[searchRow][col].gelatine = false;
+    // grille->tableau[searchRow][col].gelatine = false;
 
     printf("[ChuteDepuisH] 📦 %d,%d → %d,%d : %d\n", searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
 
@@ -780,7 +745,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 {
     printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
-    if (QuatreALaSuiteVerticale(grille, x1, x2) && grille->estInitialisee)
+    if (QuatreALaSuiteVerticale(grille, x1, x2)) //&& grille->estInitialisee)
     {
         SupprimerColonne(grille, *y1, q);
         return;
@@ -788,11 +753,11 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     for (int i = *x1; i <= *x2; i++)
     {
-        grille->tableau[i][*y1].pion = -1; // ✅ Marquage temporaire pour ne pas re-détecter
+        grille->tableau[i][*y1].pion = VIDE; // ✅ Marquage temporaire pour ne pas re-détecter
         grille->tableau[i][*y1].gelatine = false;
 
-        if (i == 0)
-            grille->casesAGenerer[*y1] = true;
+        // if (i == 0)
+        // grille->casesAGenerer[*y1] = true;
 
         printf("[DEBUG] Suppression manuelle [%d][%d]\n", i, *y1);
     }
@@ -808,7 +773,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
     printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
     // Cas Match-4 ou +
-    if (QuatreALaSuiteHorizontale(grille, y1, y2) && grille->estInitialisee)
+    if (QuatreALaSuiteHorizontale(grille, y1, y2)) //&& grille->estInitialisee)
     {
         SupprimerLigne(grille, *x1, q);
         return;
@@ -821,7 +786,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
     // Étape 1 : Marquer les bonbons supprimés
     for (int y = y_start; y <= y_end; y++)
     {
-        grille->tableau[x][y].pion = -1;
+        grille->tableau[x][y].pion = VIDE; // verifier si on doit mettre vide ou autre chose qui est a moins un comme videtemporaire
         grille->tableau[x][y].gelatine = false;
         printf("[DEBUG] Suppression Match-3 [%d][%d]\n", x, y);
     }
@@ -843,12 +808,12 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
                            false});
 
             // Anticipation génération ligne 1 après chute
-            grille->casesAGenerer[y] = true;
+            // grille->casesAGenerer[y] = true;
         }
         else
         {
             // Ligne 0 ou 1 : demande génération immédiate
-            grille->casesAGenerer[y] = true;
+            // grille->casesAGenerer[y] = true;
 
             Enfiler(q, &(Actions){
                            GENERATIONHAUT,
@@ -856,110 +821,5 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
                            {0, 0},
                            false});
         }
-    }
-}
-// DEVENU INUTILE
-
-void GenererCasesMarquees(GrilleBonbons *grille, Queue *q)
-{
-    for (int col = 0; col < grille->colonnes; col++)
-    {
-        if (grille->casesAGenerer[col])
-        {
-            grille->casesAGenerer[col] = false;
-            printf("[DEBUG] ✅ Génération déclenchée pour [0][%d]\n", col);
-
-            // 🔍 Vérifie si une gélatine est encore présente en haut (bug potentiel)
-            if (grille->tableau[0][col].gelatine)
-            {
-                printf("[BUG] ❌ Gelatine encore présente en [0][%d] lors de la génération !\n", col);
-            }
-
-            Enfiler(q, &(Actions){
-                           GENERATIONHAUT,
-                           {0, col},
-                           {0, 0},
-                           false});
-        }
-    }
-}
-
-// NECESSAIRE POUR PAS AVOIR H ET V EN MEME TEMPS!!!!!!!!! mais à mon avis on peut s'en passer en supprimant || dans verificationvictoire
-void AppliquerSuppressions(GrilleBonbons *grille, Queue *q)
-{
-    bool suppressionEffectuee = false;
-
-    for (int i = 0; i < grille->lignes; i++)
-    {
-        for (int j = 0; j < grille->colonnes; j++)
-        {
-            int couleur = grille->tableau[i][j].pion;
-
-            if (couleur == VIDE || couleur == -1) // ⛔️ Ne détecte pas sur cases vides ou déjà marquées
-                continue;
-
-            // 🔍 Détection VERTICALE 3+
-            int x1 = i, x2 = i;
-            while (x2 + 1 < grille->lignes && grille->tableau[x2 + 1][j].pion == couleur)
-                x2++;
-
-            if ((x2 - x1 + 1) >= 3)
-            {
-                printf("[DEBUG] ✅ Victoire VERTICALE [%d][%d] → [%d][%d], couleur=%d\n", x1, j, x2, j, couleur);
-                SuppressionV(grille, &x1, &j, &x2, &j, q);
-                suppressionEffectuee = true;
-                i = x2; // saute les lignes déjà modifiées
-                continue;
-            }
-
-            // 🔍 Détection HORIZONTALE 3+
-            int y1 = j, y2 = j;
-            while (y2 + 1 < grille->colonnes && grille->tableau[i][y2 + 1].pion == couleur)
-                y2++;
-
-            if ((y2 - y1 + 1) >= 3)
-            {
-                printf("[DEBUG] ✅ Victoire HORIZONTALE [%d][%d] → [%d][%d], couleur=%d\n", i, y1, i, y2, couleur);
-                SuppressionH(grille, &i, &y1, &y2, &i, q);
-                suppressionEffectuee = true;
-                j = y2;   // saute les colonnes déjà modifiées
-                continue; // 🔥 AJOUTÉ : empêche les bugs liés au j++ trop tôt
-            }
-        }
-    }
-
-    // ✅ Nettoyage global de tous les marqueurs -1
-    for (int i = 0; i < grille->lignes; i++)
-    {
-        for (int j = 0; j < grille->colonnes; j++)
-        {
-            if (grille->tableau[i][j].pion == -1)
-                grille->tableau[i][j].pion = VIDE;
-            grille->tableau[i][j].gelatine = false; // nettoie systématiquement
-        }
-    }
-
-    // ✅ Génère les bonbons nécessaires (ligne 0)
-    GenererCasesMarquees(grille, q);
-
-    // ✅ Vérifie s’il reste des cases vides pour relancer
-    bool casesVides = false;
-    for (int i = 0; i < grille->lignes; i++)
-    {
-        for (int j = 0; j < grille->colonnes; j++)
-        {
-            if (grille->tableau[i][j].pion == VIDE)
-                casesVides = true;
-        }
-    }
-
-    if (casesVides || suppressionEffectuee)
-    {
-        Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
-    }
-    else
-    {
-        // Aucun calcul → affichage final forcé
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     }
 }

@@ -86,10 +86,10 @@ typedef struct
     int calcX; // Coordonnée X utilisee parcourir la grille
     int calcY; // Coordonnée Y utilisee pour parcourir la grille
     int estVerifiee;
-    int estInitialisee; // Indique si la grille a déjà été vérifiée
-    int affiche;        // element utilise pour afficher la grille
+    // int estInitialisee; // Indique si la grille a déjà été vérifiée
+    int affiche; // element utilise pour afficher la grille
     int deplacement;
-    bool casesAGenerer[TAILLE];
+    // bool casesAGenerer[TAILLE];
 
 } GrilleBonbons;
 
