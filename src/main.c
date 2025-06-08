@@ -66,7 +66,7 @@ int main()
 
             case SUPPRESSIONH:
                 SuppressionH(&maGrille, &action.pion1.x, &action.pion1.y,
-                             &action.pion2.y, &action.pion2.x, &q);
+                             &action.pion2.x, &action.pion2.y, &q);
                 break;
             // ACTIONS RAJOUTEES POUR AFFICHER LES CASCADES EN DIRECT
             case CHUTELIGNEENTIERE:
