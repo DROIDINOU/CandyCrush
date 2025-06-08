@@ -798,7 +798,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *y2, int *x2, Que
     // Étape 3 : Chute ou génération
     for (int y = y_start; y <= y_end; y++)
     {
-        if (x > 1)
+        if (x > 0)
         {
             // Chute vers ligne 1
             Enfiler(q, &(Actions){
