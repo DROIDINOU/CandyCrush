@@ -64,7 +64,7 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q);
 // Queue *q);
 // void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
-void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col, Queue *q);
+void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int col, Queue *q);
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q);
 
 /*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se

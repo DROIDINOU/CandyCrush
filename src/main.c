@@ -89,8 +89,8 @@ int main()
                 // PAUSE(300);
                 // break;
 
-            case CHUTEVERTICALEHORIZONTALE:
-                AppliquerChuteVerticaleDepuisH(&maGrille, action.pion1.x, action.pion1.y, &q);
+            case CHUTEHORIZONTALEPARTIELLE:
+                AppliquerChuteHorizontalePartielle(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
 
             case CHUTECOLONNEPARTIELLE:

@@ -642,15 +642,16 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
     }
 }
 
-void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col, Queue *q)
+void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int col, Queue *q)
 {
+    // Vérification des bornes
     if (destRow < 0 || col < 0 || col >= grille->colonnes)
         return;
 
     if (grille->tableau[destRow][col].pion != VIDE)
         return;
 
-    // Ligne 0 vide → génération directe
+    // Ligne 0 vide → génération directe et enfile action
     if (destRow == 0)
     {
         printf("[DEBUG] Ligne 0 vide → Enfiler GENERATIONHAUT [%d][%d]\n", 0, col);
@@ -662,7 +663,7 @@ void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col,
         return;
     }
 
-    // Chercher un pion au-dessus
+    // Chercher le premier pion au-dessus de la ligne de destination
     int searchRow = destRow - 1;
     while (searchRow >= 0 && grille->tableau[searchRow][col].pion == VIDE)
         searchRow--;
@@ -690,7 +691,7 @@ void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col,
     PAUSE(50);
 
     Enfiler(q, &(Actions){
-                   CHUTEVERTICALEHORIZONTALE,
+                   CHUTEHORIZONTALEPARTIELLE,
                    {searchRow, col},
                    {0, 0},
                    false});
@@ -702,7 +703,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     grille->tableau[row][col].pion = couleur;
     grille->tableau[row][col].gelatine = false;
 
-    printf("[GENERATIONHAUT] 🎁 [%d][%d] = %d\n", row, col, couleur);
+    printf("[GENERATIONHAUT] [%d][%d] = %d\n", row, col, couleur);
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(100);
@@ -782,7 +783,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         {
             // On fait tomber les pions au-dessus de la ligne supprimée
             Enfiler(q, &(Actions){
-                           CHUTEVERTICALEHORIZONTALE,
+                           CHUTEHORIZONTALEPARTIELLE,
                            {ligne, coordonneeColonneCible},
                            {0, 0},
                            false});
