@@ -70,12 +70,12 @@ int main()
                 break;
             // ACTIONS RAJOUTEES POUR AFFICHER LES CASCADES EN DIRECT
             case CHUTELIGNEENTIERE:
-                AppliquerChuteLigne(&maGrille, action.pion1.y, &q);
+                AppliquerChuteLigneEntiere(&maGrille, action.pion1.y, &q);
                 PAUSE(100);
                 break;
 
             case CHUTECOLONNEENTIERE:
-                AppliquerChuteColonne(&maGrille, action.pion1.x, action.pion1.y, &q);
+                AppliquerChuteColonneEntiere(&maGrille, action.pion1.x, action.pion1.y, &q);
                 PAUSE(100);
                 break;
 
@@ -104,12 +104,6 @@ int main()
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
                 PAUSE(300);
-                break;
-
-            case RELANCERCALCUL:
-                maGrille.calcX = 0; // A DEPLACER
-                maGrille.calcY = 0; // A DEPLACER
-                Enfiler(&q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
                 break;
 
             case DEPLACEMENT:

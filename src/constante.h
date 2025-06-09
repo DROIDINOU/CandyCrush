@@ -89,6 +89,7 @@ typedef struct
     // int estInitialisee; // Indique si la grille a déjà été vérifiée
     int affiche; // element utilise pour afficher la grille
     int deplacement;
+    bool relancerDepuisDebut; // 🆕
     // bool casesAGenerer[TAILLE];
 
 } GrilleBonbons;

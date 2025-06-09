@@ -53,9 +53,9 @@ ________________________________________________________________________________
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2);
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2);
 void SupprimerColonne(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChuteColonne(GrilleBonbons *grille, int row, int col, Queue *q);
+void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue *q);
 void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
-void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q);
+void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q);
 // void AppliquerChutePartielle(GrilleBonbons *grille, int row, int col, Queue *q);
 void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int col, int limite, Queue *q);
 // void SuppressionH(GrilleBonbons *grille,

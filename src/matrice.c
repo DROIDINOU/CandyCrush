@@ -118,6 +118,7 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
+    grille->relancerDepuisDebut = false;
     etatJeu->niveausuivant = 0;   // On initialise le niveau suivant à 0
     initialiserBonbons(grille);   // initialise la grille de bonbons
     initialiserGelatines(grille); // initialise la grille de gélatine
@@ -314,6 +315,13 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return; // On ne doit pas calculer
     }
 
+    if (grille->relancerDepuisDebut)
+    {
+        grille->calcX = 0;
+        grille->calcY = 0;
+        grille->relancerDepuisDebut = false;
+    }
+
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
     int y = grille->calcY; // // Variable interne utilisee pour verifier les alignements
@@ -501,33 +509,40 @@ bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2)
                                         Sous fonctions de cascades pour victoires 4+
 --------------------------------------------------------------------------------------------------------------------------/*/
 
-//-------- CASCADES COLONNES
+/*------------------------
+CASCACADES LIGNE MATCH4
+--------------------------*/
+
+// suppression de la ligne entière
 void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
 {
     for (int row = 0; row < grille->lignes; row++)
     {
-        grille->tableau[row][col].pion = VIDE;
-        grille->tableau[row][col].gelatine = false;
+        grille->tableau[row][col].pion = VIDE;      // suppression du pion
+        grille->tableau[row][col].gelatine = false; // suppression de la gelatine
     }
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false}); // Affiche la colonne vide avant chute
 
     // Lancer la cascade pion par pion en partant du bas
     Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {grille->lignes - 1, col}, {0, 0}, false});
+    // On relance le calcul depuis le début avec calcx et calcy remis à 0
+    grille->relancerDepuisDebut = true;
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
 
 // remplace les bonbons par d 'autres bonbons (sens pas important vu que tout est affiché d'un coup)
-void AppliquerChuteColonne(GrilleBonbons *grille, int row, int col, Queue *q)
+void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue *q)
 {
     if (row < 0)
         return; // fin de la cascade
 
-    int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1);
-    grille->tableau[row][col].pion = COULEURS[indiceCouleur];
-    grille->tableau[row][col].gelatine = false;
+    int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1); // Génération aléatoire d'une couleur
+    grille->tableau[row][col].pion = COULEURS[indiceCouleur];     // Remplacement du pion par un nouveau bonbon
+    grille->tableau[row][col].gelatine = false;                   // pas de gelatine pour les nouveaux bonbons
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});                   // Affiche la grille après le remplacement
+    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false}); // relance la chute de la colonne pour ligne précédente
 
     // if (row == 0)
     //{
@@ -535,33 +550,40 @@ void AppliquerChuteColonne(GrilleBonbons *grille, int row, int col, Queue *q)
     //}
 }
 
-//-------- CASCADES LIGNES
-
+/*------------------------
+CASCACADES COLONNE MATCH4
+--------------------------*/
+// suppression de la colonne entière
 void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
 {
+
     for (int col = 0; col < grille->colonnes; col++)
     {
-        grille->tableau[row][col].pion = VIDE;
-        // if (grille->estInitialisee)
-        // grille->tableau[row][col].gelatine = false;
+        grille->tableau[row][col].pion = VIDE;      //  Suppression du pion
+        grille->tableau[row][col].gelatine = false; // Suppression de la gelatine
     }
 
     //  Affiche la ligne vide AVANT toute chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 
-    //  Nouvelle action : déclenche la chute ensuite
+    // déclenche la chute des pions superieurs en un seul coup
     Enfiler(q, &(Actions){CHUTELIGNEENTIERE, {0, row}, {0, 0}, false});
+    // On relance le calcul depuis le début avec calcx et calcy remis à 0
+    grille->relancerDepuisDebut = true;
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
 
-// remplace la ligne d'un coup
-void AppliquerChuteLigne(GrilleBonbons *grille, int row, Queue *q)
+// fait tomber les bonbons du dessus d un coup et remplace la premiere ligne par des nouveaux bonbons
+void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
 {
+    // itere sur les lignes superieures et fait tomber pions sur ligne inferieur
     for (int col = 0; col < grille->colonnes; col++)
     {
         for (int i = row - 1; i >= 0; i--)
         {
             grille->tableau[i + 1][col].pion = grille->tableau[i][col].pion;
         }
+        // attribue de nouveaux bonbons sur la premiere ligne
         int indiceCouleur = GenerationAleatoire(COULEURALEATOIRE, 1);
         grille->tableau[0][col].pion = COULEURS[indiceCouleur];
         grille->tableau[0][col].gelatine = false;
@@ -633,7 +655,7 @@ void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int co
 
     if (searchRow < 0)
     {
-        // Rien trouvé, génération
+        // Rien trouvé, on génère un nouveau bonbon
         int couleur = COULEURS[GenerationAleatoire(COULEURALEATOIRE, 1)];
         grille->tableau[destRow][col].pion = couleur;
         grille->tableau[destRow][col].gelatine = false;
@@ -641,23 +663,40 @@ void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int co
         printf("[DEBUG] 🆕 Génération en haut [%d][%d] = %d\n", destRow, col, couleur);
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         PAUSE(100);
+
+        // On NE relance une chute QUE si la case du dessus est encore valide
+        if (destRow - 1 >= 0)
+        {
+            printf("[DEBUG] 🔁 Enchaînement chute après génération pour [%d][%d]\n", destRow - 1, col);
+            Enfiler(q, &(Actions){CHUTEPARTIELLE, {destRow - 1, col}, {limite, 0}, false});
+        }
+        else
+        {
+            printf("[DEBUG] 🚫 Aucune chute supplémentaire nécessaire après génération\n");
+        }
+
         return;
     }
 
-    // Copier le pion trouvé
+    // ⚠️ Empêche de recopier une case qui a été générée juste avant (donc ligne 0)
+    if (searchRow == 0 && grille->tableau[searchRow][col].pion != VIDE && destRow == 1)
+    {
+        printf("[DEBUG] 🚫 Empêche recopie de [0][%d] vers [1][%d] après génération\n", col, col);
+        return;
+    }
+
+    // Copie du pion trouvé
     grille->tableau[destRow][col].pion = grille->tableau[searchRow][col].pion;
-    // grille->tableau[destRow][col].gelatine = false;
-
     grille->tableau[searchRow][col].pion = VIDE;
-    // grille->tableau[searchRow][col].gelatine = false;
 
-    printf("[DEBUG] 📦 Copie de [%d][%d] → [%d][%d] = %d\n", searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
+    printf("[DEBUG] 📦 Copie de [%d][%d] → [%d][%d] = %d\n",
+           searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(100);
 
-    // Si on peut, on prépare une chute partielle en-dessous
-    if (searchRow >= limite && searchRow > 0)
+    // Préparer la chute suivante
+    if (searchRow > 0 && searchRow >= limite)
     {
         printf("[DEBUG] 🔁 Nouvelle chute partielle en [%d][%d] (limite=%d)\n", destRow - 1, col, limite);
         Enfiler(q, &(Actions){CHUTEPARTIELLE, {destRow - 1, col}, {limite, 0}, false});
@@ -764,6 +803,8 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     Enfiler(q, &(Actions){CHUTEVERTICALE, {*x1, *y1}, {*x2, *y2}, false});
+    grille->relancerDepuisDebut = true;
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
 
 // pour le moment les gelatines sont effacees par cascade supprimer ca des cascades et ici juste verifier si gelatine alors mettre a faux
@@ -779,31 +820,31 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         return;
     }
 
-    int x = *x1;
-    int y_start = *y1;
-    int y_end = *y2;
+    int ligne = *x1;
+    int colonneDebut = *y1;
+    int colonneFin = *y2;
 
-    // Étape 1 : Marquer les bonbons supprimés
-    for (int y = y_start; y <= y_end; y++)
+    // supprime les bonbons de la ligne et met a VIDE et supprime la gelatine
+    for (int y = colonneDebut; y <= colonneFin; y++)
     {
-        grille->tableau[x][y].pion = VIDE; // verifier si on doit mettre vide ou autre chose qui est a moins un comme videtemporaire
-        grille->tableau[x][y].gelatine = false;
-        printf("[DEBUG] Suppression Match-3 [%d][%d]\n", x, y);
+        grille->tableau[ligne][y].pion = VIDE;
+        grille->tableau[ligne][y].gelatine = false;
+        printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, y);
     }
 
-    // Étape 2 : Affichage
+    // Affiche la ligne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(50);
 
-    // Étape 3 : Chute ou génération
-    for (int y = y_start; y <= y_end; y++)
+    // Fait tomber les pions supérieurs
+    for (int y = colonneDebut; y <= colonneFin; y++)
     {
-        if (x > 0)
+        if (ligne > 0)
         {
             // Chute vers ligne 1
             Enfiler(q, &(Actions){
                            CHUTEVERTICALEHORIZONTALE,
-                           {x, y},
+                           {ligne, y},
                            {0, 0},
                            false});
 
@@ -817,9 +858,12 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 
             Enfiler(q, &(Actions){
                            GENERATIONHAUT,
-                           {x, y},
+                           {ligne, y},
                            {0, 0},
                            false});
         }
     }
+    // On relance le calcul depuis le début avec calcx et calcy remis à 0
+    grille->relancerDepuisDebut = true;
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
