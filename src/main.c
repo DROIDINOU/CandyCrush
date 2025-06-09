@@ -93,7 +93,7 @@ int main()
                 AppliquerChuteVerticaleDepuisH(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
 
-            case CHUTEVERTICALE:
+            case CHUTECOLONNEPARTIELLE:
                 printf("[DEBUG] CHUTEVERTICALE déclenchée : ligne %d à %d, colonne %d\n",
                        action.pion1.x, action.pion2.x, action.pion1.y);
                 LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x,

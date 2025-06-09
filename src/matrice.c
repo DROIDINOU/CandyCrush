@@ -779,86 +779,84 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
 *****************************************************************************************************************************/
 
 // suppression des victoires verticales (3 et 4+)
-
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
-
-    if (QuatreALaSuiteVerticale(grille, x1, x2)) //&& grille->estInitialisee)
-    {
+    // Cas Match4 ou +
+    if (QuatreALaSuiteVerticale(grille, x1, x2))
+    { // supprime la colonne entiere et fais appel aux sous fonctions de cascades
         SupprimerColonne(grille, *y1, q);
         return;
     }
-
-    for (int i = *x1; i <= *x2; i++)
+    // Cas Match3
+    // coordonnees colonne victoire et ligne de debut et fin
+    int colonne = *y1;
+    int ligneDebut = *x1;
+    int ligneFin = *x2;
+    // supprime les bonbons de la partie de colonne et met a VIDE et supprime la gelatine
+    for (int ligne = ligneDebut; ligne <= ligneFin; ligne++)
     {
-        grille->tableau[i][*y1].pion = VIDE; // ✅ Marquage temporaire pour ne pas re-détecter
-        grille->tableau[i][*y1].gelatine = false;
-
-        // if (i == 0)
-        // grille->casesAGenerer[*y1] = true;
-
-        printf("[DEBUG] Suppression manuelle [%d][%d]\n", i, *y1);
+        grille->tableau[ligne][colonne].pion = VIDE;
+        grille->tableau[ligne][colonne].gelatine = false;
+        printf("[DEBUG] Suppression manuelle [%d][%d]\n", ligne, colonne);
     }
-
+    // Affiche la partie de colonne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    Enfiler(q, &(Actions){CHUTEVERTICALE, {*x1, *y1}, {*x2, *y2}, false});
+    // Fait tomber les trois pions au dessus de la partie de colonne supprimee
+    Enfiler(q, &(Actions){CHUTECOLONNEPARTIELLE, {ligneDebut, colonne}, {ligneFin, colonne}, false});
+    // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
     Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
 
-// pour le moment les gelatines sont effacees par cascade supprimer ca des cascades et ici juste verifier si gelatine alors mettre a faux
-// faut implement la mise a vide de la premiere ligne encore
+// suppression des victoires horizontales (3 et 4+)
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
-    // Cas Match-4 ou +
+    // Cas Match4 ou +
     if (QuatreALaSuiteHorizontale(grille, y1, y2)) //&& grille->estInitialisee)
     {
+        // supprime la ligne entiere et fais appel aux sous fonctions de cascades
         SupprimerLigne(grille, *x1, q);
         return;
     }
-
+    // Cas Match3
+    // coordonnees ligne victoire et colonnes de debut et fin
     int ligne = *x1;
     int colonneDebut = *y1;
     int colonneFin = *y2;
 
-    // supprime les bonbons de la ligne et met a VIDE et supprime la gelatine
-    for (int y = colonneDebut; y <= colonneFin; y++)
+    // supprime les bonbons de la partie de ligne et met a VIDE et supprime la gelatine
+    for (int coordonneeColonneCible = colonneDebut; coordonneeColonneCible <= colonneFin; coordonneeColonneCible++)
     {
-        grille->tableau[ligne][y].pion = VIDE;
-        grille->tableau[ligne][y].gelatine = false;
-        printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, y);
+        grille->tableau[ligne][coordonneeColonneCible].pion = VIDE;
+        grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
+        printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, coordonneeColonneCible);
     }
 
-    // Affiche la ligne vide avant la chute
+    // Affiche la partie de ligne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(50);
 
     // Fait tomber les pions supérieurs
-    for (int y = colonneDebut; y <= colonneFin; y++)
+    for (int coordonneeColonneCible = colonneDebut; coordonneeColonneCible <= colonneFin; coordonneeColonneCible++)
     {
         if (ligne > 0)
         {
-            // Chute vers ligne 1
+            // On fait tomber les pions au-dessus de la ligne supprimée
             Enfiler(q, &(Actions){
                            CHUTEVERTICALEHORIZONTALE,
-                           {ligne, y},
+                           {ligne, coordonneeColonneCible},
                            {0, 0},
                            false});
-
-            // Anticipation génération ligne 1 après chute
-            // grille->casesAGenerer[y] = true;
         }
         else
         {
-            // Ligne 0 ou 1 : demande génération immédiate
-            // grille->casesAGenerer[y] = true;
-
+            // Si on est sur la première ligne, on génère de nouveaux bonbons en haut
             Enfiler(q, &(Actions){
                            GENERATIONHAUT,
-                           {ligne, y},
+                           {ligne, coordonneeColonneCible},
                            {0, 0},
                            false});
         }
