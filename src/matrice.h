@@ -57,13 +57,13 @@ void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue
 void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q);
 // void AppliquerChutePartielle(GrilleBonbons *grille, int row, int col, Queue *q);
-void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int col, int limite, Queue *q);
+// void AppliquerDeuxiemeChuteColonnePartielle(GrilleBonbons *grille, int destRow, int col, int limite, Queue *q);
 // void SuppressionH(GrilleBonbons *grille,
 // int *x1, int *y1, // début
 // int *y2, int *x2, // fin
 // Queue *q);
 // void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
-void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
+void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
 void AppliquerChuteVerticaleDepuisH(GrilleBonbons *grille, int destRow, int col, Queue *q);
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q);
 

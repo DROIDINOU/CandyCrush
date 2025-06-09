@@ -83,11 +83,11 @@ int main()
                 AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
                 break;
 
-            case CHUTEPARTIELLE:
-                AppliquerChuteVerticalePartielle(&maGrille, action.pion1.x, action.pion1.y,
-                                                 action.pion2.x, &q);
-                PAUSE(300);
-                break;
+                // case DEUXIEMECHUTECOLONNEPARTIELLE:
+                // AppliquerDeuxiemeChuteColonnePartielle(&maGrille, action.pion1.x, action.pion1.y,
+                // action.pion2.x, &q);
+                // PAUSE(300);
+                // break;
 
             case CHUTEVERTICALEHORIZONTALE:
                 AppliquerChuteVerticaleDepuisH(&maGrille, action.pion1.x, action.pion1.y, &q);
@@ -96,8 +96,8 @@ int main()
             case CHUTECOLONNEPARTIELLE:
                 printf("[DEBUG] CHUTEVERTICALE déclenchée : ligne %d à %d, colonne %d\n",
                        action.pion1.x, action.pion2.x, action.pion1.y);
-                LancerCascadeVerticale(&maGrille, action.pion1.x, action.pion2.x,
-                                       action.pion1.y, &q);
+                AppliquerChuteColonnePartielle(&maGrille, action.pion1.x, action.pion2.x,
+                                               action.pion1.y, &q);
                 PAUSE(300);
                 break;
 

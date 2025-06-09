@@ -7,7 +7,7 @@
 #include "affichage.h"
 #include "generationaleatoire.h"
 #include <string.h>
-#define MAX_VICTOIRE 100 // plus utilisé?
+// #define MAX_VICTOIRE 100 // plus utilisé?
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
@@ -596,114 +596,49 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
 /*------------------------------------------------------------------------------------------------------------------------
                                         Sous fonctions de cascades pour victoires 3
 --------------------------------------------------------------------------------------------------------------------------/*/
-void LancerCascadeVerticale(GrilleBonbons *grille, int x1, int x2, int col, Queue *q)
-{
-    int match = x2 - x1 + 1; // on pourrait mettre match egal trois mais plus propre comme cela)
-    printf("[DEBUG] Cascade VERTICALE x1=%d x2=%d col=%d (nb=%d)\n", x1, x2, col, match);
 
-    // Étape 1 : faire descendre les pions du haut vers le bas
-    for (int ligne = x1 - 1; ligne >= 0; ligne--)
+void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, int ligneFinMatch, int colonne, Queue *q)
+{
+    int hauteurMatch = ligneFinMatch - ligneDebutMatch + 1; // Taille du match
+    printf("[DEBUG] Cascade VERTICALE ligneDebut=%d ligneFin=%d col=%d (taille=%d)\n",
+           ligneDebutMatch, ligneFinMatch, colonne, hauteurMatch);
+
+    // Vérification des bornes et de la taille du match
+    if (hauteurMatch < 3 || ligneDebutMatch < 0 || ligneFinMatch >= grille->lignes || colonne < 0 || colonne >= grille->colonnes)
     {
-        int ligneDest = ligne + match;
+        printf("[ERREUR] Paramètres invalides : ligneDebut=%d, ligneFin=%d, col=%d\n", ligneDebutMatch, ligneFinMatch, colonne);
+        GererErreurFatale(TYPEINCONNU);
+    }
+
+    // 🔽 Faire tomber les pions du dessus
+    for (int ligne = ligneDebutMatch - 1; ligne >= 0; ligne--)
+    {
+        int ligneDest = ligne + hauteurMatch;
         if (ligneDest >= grille->lignes)
-            continue; // sécurité
+            continue;
 
-        grille->tableau[ligneDest][col].pion = grille->tableau[ligne][col].pion;
-        // grille->tableau[ligneDest][col].gelatine = false; // toujours faux
+        grille->tableau[ligneDest][colonne].pion = grille->tableau[ligne][colonne].pion;
+        grille->tableau[ligne][colonne].pion = VIDE;
 
-        // grille->tableau[ligneDest][col].gelatine = grille->tableau[ligne][col].gelatine;
-
-        grille->tableau[ligne][col].pion = VIDE;
-        // grille->tableau[ligne][col].gelatine = false;
-
-        printf("[ChutePartielle] 📦 Copie de [%d][%d] → [%d][%d] = %d\n",
-               ligne, col, ligneDest, col, grille->tableau[ligneDest][col].pion);
+        printf("[ChutePartielle]  Copie de [%d][%d] → [%d][%d] = %d\n",
+               ligne, colonne, ligneDest, colonne, grille->tableau[ligneDest][colonne].pion);
 
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         PAUSE(100);
     }
 
-    // générer les nouveaux pions en haut dans l espace libéré
-    for (int i = match - 1; i >= 0; i--)
+    // Générer les nouveaux pions en haut
+    for (int i = hauteurMatch - 1; i >= 0; i--)
     {
-        int ligne_cible = i; // ligne cible pour le nouveau bonbon
-
-        // On enfile une action CHUTEPARTIELLE avec une source "virtuelle" au-dessus (ligne -1)
-        Enfiler(q, &(Actions){
-                       CHUTEPARTIELLE,
-                       {ligne_cible, col},
-                       {-1, 0}, // -1 → signal que c’est une génération (inutilisé dans la fonction on va supprimer ca)
-                       false});
-    }
-}
-
-void AppliquerChuteVerticalePartielle(GrilleBonbons *grille, int destRow, int col, int limite, Queue *q)
-{
-    if (destRow < limite)
-    {
-        printf("[DEBUG] ❌ destRow=%d < limite=%d → on stoppe la chute\n", destRow, limite);
-        return;
-    }
-
-    int searchRow = destRow - 1;
-
-    // Cherche un pion au-dessus
-    while (searchRow >= 0 && grille->tableau[searchRow][col].pion == VIDE)
-    {
-        searchRow--;
-    }
-
-    if (searchRow < 0)
-    {
-        // Rien trouvé, on génère un nouveau bonbon
+        int ligneCible = i;
         int couleur = COULEURS[GenerationAleatoire(COULEURALEATOIRE, 1)];
-        grille->tableau[destRow][col].pion = couleur;
-        grille->tableau[destRow][col].gelatine = false;
+        grille->tableau[ligneCible][colonne].pion = couleur;
+        grille->tableau[ligneCible][colonne].gelatine = false;
 
-        printf("[DEBUG] 🆕 Génération en haut [%d][%d] = %d\n", destRow, col, couleur);
+        printf("[Génération] Nouveau bonbon en [%d][%d] = %d\n", ligneCible, colonne, couleur);
+
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         PAUSE(100);
-
-        // On NE relance une chute QUE si la case du dessus est encore valide
-        if (destRow - 1 >= 0)
-        {
-            printf("[DEBUG] 🔁 Enchaînement chute après génération pour [%d][%d]\n", destRow - 1, col);
-            Enfiler(q, &(Actions){CHUTEPARTIELLE, {destRow - 1, col}, {limite, 0}, false});
-        }
-        else
-        {
-            printf("[DEBUG] 🚫 Aucune chute supplémentaire nécessaire après génération\n");
-        }
-
-        return;
-    }
-
-    // ⚠️ Empêche de recopier une case qui a été générée juste avant (donc ligne 0)
-    if (searchRow == 0 && grille->tableau[searchRow][col].pion != VIDE && destRow == 1)
-    {
-        printf("[DEBUG] 🚫 Empêche recopie de [0][%d] vers [1][%d] après génération\n", col, col);
-        return;
-    }
-
-    // Copie du pion trouvé
-    grille->tableau[destRow][col].pion = grille->tableau[searchRow][col].pion;
-    grille->tableau[searchRow][col].pion = VIDE;
-
-    printf("[DEBUG] 📦 Copie de [%d][%d] → [%d][%d] = %d\n",
-           searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
-
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    PAUSE(100);
-
-    // Préparer la chute suivante
-    if (searchRow > 0 && searchRow >= limite)
-    {
-        printf("[DEBUG] 🔁 Nouvelle chute partielle en [%d][%d] (limite=%d)\n", destRow - 1, col, limite);
-        Enfiler(q, &(Actions){CHUTEPARTIELLE, {destRow - 1, col}, {limite, 0}, false});
-    }
-    else
-    {
-        printf("[DEBUG] ✅ Chute arrêtée : searchRow=%d, limite=%d\n", searchRow, limite);
     }
 }
 
@@ -773,6 +708,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     PAUSE(100);
     // Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
 }
+
 /*****************************************************************************************************************************
                    FONCTIONS CENTRALES DE SUPPRESSION VERTICALES ET HORIZONTALE DES LIGNES DE VICTOIRE 3 ET 4+
 
