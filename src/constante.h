@@ -9,6 +9,8 @@
 #define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu
 #define MAXCOULEUR 9
 #define VIDE -1
+#define NOMBREMUSIQUES 3     // Nombre de musiques disponibles
+#define MAXCHEMINMUSIQUE 100 // Longueur maximale du chemin de la musique
 
 /*________________________________________________________________________________________________________________
 
@@ -128,6 +130,7 @@ typedef struct
                      -> COULEURS : tableau de couleurs
                      -> MESSAGEETATJEU : tableau de messages d'état du jeu
                      -> MESSAGESECHANGEBONBONS : tableau de messages d'échange de bonbons
+                     -> CHEMINSMUSIQUES : tableau de chemins des musiques
 _________________________________________________________________________________________
  */
 
@@ -135,5 +138,6 @@ extern Niveaux NIVEAUX[FINALNIVEAU];                                  // Tableau
 extern const CouleurBonbons COULEURS[MAXCOULEUR];                     // Tableau des couleurs des bonbons
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];     // Tableau des messages d'état du jeu
 extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau des messages d'échange de bonbons
+extern const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];  // Tableau des chemins des musiques
 
 #endif

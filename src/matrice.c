@@ -1,13 +1,20 @@
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib") // lien vers la bibliothèque pour PlaySound
 #include <stdio.h>
 #include "constante.h"
 #include "matrice.h"
 #include "queue.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "affichage.h"
 #include "generationaleatoire.h"
 #include <string.h>
-// #define MAX_VICTOIRE 100 // plus utilisé?
+
+// grilleestverifiee toujours utile??
+// grilleaffiche toujours utile??
+// grilleprete a commenter
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
@@ -32,20 +39,20 @@ ________________________________________________________________________________
 // verifie l existance de lignes de victoires
 // se limite a vérification à gauche et au dessus vu que la grille se voit attribuer des bonbons lors de l initialisation
 // en partant de la case 0,0 jusqu'à la fin
-bool aDeuxPionsAdjacents(GrilleBonbons *grille, int position1, int position2)
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int lignePion1, int lignePion2)
 {
-    int couleur = grille->tableau[position1][position2].pion;
+    int couleur = grille->tableau[lignePion1][lignePion2].pion;
     //  deux pions directement à gauche
-    if (position2 >= 2 &&
-        grille->tableau[position1][position2 - 1].pion == couleur &&
-        grille->tableau[position1][position2 - 2].pion == couleur)
+    if (lignePion2 >= 2 &&
+        grille->tableau[lignePion1][lignePion2 - 1].pion == couleur &&
+        grille->tableau[lignePion1][lignePion2 - 2].pion == couleur)
     {
         return true;
     }
     //  deux pions directement au-dessus
-    if (position1 >= 2 &&
-        grille->tableau[position1 - 1][position2].pion == couleur &&
-        grille->tableau[position1 - 2][position2].pion == couleur)
+    if (lignePion1 >= 2 &&
+        grille->tableau[lignePion1 - 1][lignePion2].pion == couleur &&
+        grille->tableau[lignePion1 - 2][lignePion2].pion == couleur)
     {
         return true;
     }
@@ -77,7 +84,7 @@ void initialiserBonbons(GrilleBonbons *grille)
 
 void initialiserGelatines(GrilleBonbons *grille)
 {
-    printf("[BUGTRACK] 🎯 initialiserGelatines appelée\n");
+    // printf("[BUGTRACK] initialiserGelatines appelée\n");
     int nombreGelatine = GenerationAleatoire(OBSTACLEALEATOIRE, 1); // Nombre aléatoire de gelatines à placer
     while (nombreGelatine > 0)                                      // Tant qu'il reste des gelatines à placer
     {
@@ -100,33 +107,28 @@ void initialiserGelatines(GrilleBonbons *grille)
 -> place les bonbons aléatoirement dans la grille (appel de la fonction initialiserBonbons)
 -> place aleatoirement les gelatines dans la grille (appel de la fonction initialiserGelatines)
 -> appel à la fonction calcul (remarque :on passe par calcul qui est la fonction centrale
-   même si on pourrait très bien directement passer à lecture. Calcul enverra directement à verification)
+   même si on pourrait très bien directement passer à lecture. Calcul enverra directement à
+   verification lors de l'initialisation de la grille)
 
  ****************************************************************************************************************************/
 
 void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    printf("[TRACE] initialiserGrille() appelée — compteurNiveau=%d, coupsJoués=%d\n",
-           NIVEAUX[0].compteurNiveau,
-           NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues);
+    // printf("[TRACE] initialiserGrille() appelée — compteurNiveau=%d, coupsJoués=%d\n",
+    // NIVEAUX[0].compteurNiveau,
+    // NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues);
     // Initialisation des éléments de la structure grille
     grille->lignes = TAILLE;
     grille->colonnes = TAILLE;
-    // grille->estInitialisee = 0;
     grille->estVerifiee = 0;
-
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
     grille->relancerDepuisDebut = false;
-    etatJeu->niveausuivant = 0;   // On initialise le niveau suivant à 0
-    initialiserBonbons(grille);   // initialise la grille de bonbons
-    initialiserGelatines(grille); // initialise la grille de gélatine
-    // for (int i = 0; i < TAILLE; i++)
-    //  grille->casesAGenerer[i] = false;
+    etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
     etatJeu->grillePrete = 1;
-    printf("[DEBUG] ✅ Grille prête → grillePrete = 1\n");
-    // grille->estInitialisee = 1;                      // VERIFIER SI TOUJOURS UTILE
+    initialiserBonbons(grille);                      // initialise la grille de bonbons
+    initialiserGelatines(grille);                    // initialise la grille de gélatine
     Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
 }
 
@@ -146,7 +148,6 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
 {
     // Reinitialisation des elements de la grille
     grille->estVerifiee = 0; // On doit revérifier la grille après le déplacement
-    // grille->estInitialisee = 1; // La grille a été initialisée
     grille->deplacement = 1; // on est en déplacement
     grille->calcX = 0;       // même si possiblement redondant on remet calcX a 0 par securite
     grille->calcY = 0;       // même si possiblement redondant on remet calcY a 0 par securite
@@ -201,8 +202,7 @@ bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q)
         // Si victoire verticale détectée
         if (compteur >= 3)
         {
-            printf("[DEBUG] ✅ Victoire verticale détectée à (%d,%d) → [%d][%d] à [%d][%d], couleur = %d, compteur = %d\n",
-                   *x, *y, *x, xDebut, *x, xFin, pion, compteur);
+            // ajoute une action de suppression verticale à la queue
             Actions supV = {SUPPRESSIONV, {xDebut, *y}, {xFin, *y}};
             Enfiler(q, &supV);
             return true;
@@ -237,12 +237,10 @@ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
             j--;
         }
 
-        // ✅ Affichage uniquement en cas de vraie victoire
+        // Si victoire horizontale détectée
         if (compteur >= 3)
         {
-            printf("[DEBUG] ✅ Victoire horizontale détectée à (%d,%d) → [%d][%d] à [%d][%d], couleur = %d, compteur = %d\n",
-                   *x, *y, *x, yDebut, *x, yFin, pion, compteur);
-
+            // ajoute une action de suppression horizontale à la queue
             Actions supH = {SUPPRESSIONH, {*x, yDebut}, {*x, yFin}};
             Enfiler(q, &supH);
             return true;
@@ -251,7 +249,7 @@ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
     return false;
 }
 
-//
+// verifie si il y a une victoire horizontale ou verticale (pas les deuc en même temps)
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 {
     if (VerifierVerticale(x, y, grille, q))
@@ -306,7 +304,6 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     //  toujours présente) On passe néanmoins par vérification pour respecter flux logique
     if (initialisation)
     {
-        printf("initilialisation dans calcul");
         Actions aff = {AFFICHAGE, {0, 0}, {0, 0}};
         Enfiler(q, &aff);
 
@@ -315,6 +312,7 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         return; // On ne doit pas calculer
     }
 
+    // permet de relancer calcul manuellement depuis le debut de la grille
     if (grille->relancerDepuisDebut)
     {
         grille->calcX = 0;
@@ -328,14 +326,14 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 
     // SI LORS DE LA VERIFICATION DES VARIABLES INTERNE DE CALCUL ON TROUVE UN ALIGNEMENT UNE ACTION DE
     //  SUPPRESSION EST LANCEE ET CETTE ACTION RELANCERA UNE ACTION DE CALCUL AVEC calcx et y remis a 0
-    // D OU LA RAISON DU RETURN ICI
+    // d ou l importance du return ici
     if (VerifierAlignements(&x, &y, grille, q))
     {
         return;
     };
 
     // ─────────────────────────────────────────────────
-    // Aucune suppression => On passe à la cellule suivante
+    // Aucune suppression => On passe à la cellule suivante si on a pas fini la grille
     // ─────────────────────────────────────────────────
     grille->calcY++;
     if (grille->calcY >= TAILLE)
@@ -349,21 +347,16 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     {
         Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}};
         Actions verif = {VERIFICATION, {0, 0}, {0, 0}};
-        grille->calcX = 0;
-        grille->calcY = 0;
-        // Enfiler(q, &aff1);
+        grille->calcX = 0; // Réinitialisation des coordonnées de calcul
+        grille->calcY = 0; // Réinitialisation des coordonnées de calcul
         Enfiler(q, &affiche);
-
         Enfiler(q, &verif);
         return;
     }
-    // debug
-    // printf("DEBUG - calcX: %d, calcY: %d, deplacement: %d, estVerifiee: %d, affiche: %d\n",
-    // grille->calcX, grille->calcY, grille->deplacement, grille->estVerifiee, grille->affiche);
+
     // Si on arrive ici on relance calcul (coordonnees ont été incrementees)
     Actions nextCalc = {CALCUL, {0, 0}, {0, 0}, false};
     Enfiler(q, &nextCalc);
-
     return;
 }
 
@@ -380,44 +373,43 @@ void Calcul(Queue *q, GrilleBonbons *grille,
 ____________________________________________________________________________________________________________________*/
 void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    printf("[DEBUG] 📍 Verification() appelée — compteurNiveau=%d, coupsJoués=%d\n",
-           NIVEAUX[0].compteurNiveau,
-           NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues);
+
     if (!etatJeu->grillePrete)
     {
-        printf("[DEBUG] 🛑 Verification ignorée : grillePrete = 0\n");
+        // printf("[DEBUG] 🛑 Verification ignorée : grillePrete = 0\n");
         return;
     }
 
     int gelatinePresente = 0;
 
-    // 🔍 Vérifie toute la grille
+    // Vérifier toute la grille
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
         {
+            // Vérifier si la case contient de la gélatine
             if (grille->tableau[i][j].gelatine)
+            {
                 gelatinePresente = 1;
-
+            }
+            // verifie si la case est vide
             if (grille->tableau[i][j].pion == VIDE)
             {
-                printf("[DEBUG] ⚠️ Case vide [%d][%d] → relance LECTURE\n", i, j);
                 Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false});
                 return;
             }
         }
     }
 
-    // 🧊 Gélatine encore présente
+    // Si  Gélatine encore présente
     if (gelatinePresente)
     {
-        printf("[DEBUG] 🧊 Gélatine encore présente\n");
 
-        // ❌ Plus de coups disponibles
+        //  mais que plus de coups disponibles
         if (NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues >=
             NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer)
         {
-            printf("[DEBUG] ❌ Coups épuisés → fin de partie\n");
+            // on met à jour l etat de jeu et on affiche le message de fin de partie
             NIVEAUX[0].compteurNiveau = FINALNIVEAU;
             etatJeu->findepartie = 1;
             etatJeu->coupsepuises = 1;
@@ -425,32 +417,29 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             return;
         }
 
-        // Partie encore en cours
-        printf("[DEBUG] 🔁 Partie en cours — pas de changement de niveau\n");
+        // si on arrive ici, il reste des coups a jouer et de la gelatine on continue la partie
         etatJeu->niveausuivant = 0;
         Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false});
         return;
     }
 
-    // ✅ Plus de gélatines : niveau réussi
-    printf("[DEBUG] ✅ Plus de gélatines\n");
+    // Plus de gélatines : le niveau est réussi
 
-    // 🏁 Dernier niveau ?
+    // Si on est au dernier niveau
     if (NIVEAUX[0].compteurNiveau >= FINALNIVEAU - 1)
     {
-        printf("[DEBUG] 🏁 Dernier niveau atteint → fin de partie\n");
+        // indicateur de fin de partie et niveau mis à jour et on affiche le message de fin de partie
         NIVEAUX[0].compteurNiveau += 1;
         etatJeu->findepartie = 1;
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         return;
     }
 
-    // 🎉 Passage au niveau suivant
+    // Si on n'est pas au dernier niveau, on passe au niveau suivant
     NIVEAUX[0].compteurNiveau += 1;
     etatJeu->niveausuivant = 1;
-    etatJeu->grillePrete = 0; // 🛑 empêche la vérif prématurée
+    etatJeu->grillePrete = 0; // empêche la vérif prématurée
 
-    printf("[DEBUG] 🚀 Passage au niveau %d\n", NIVEAUX[0].compteurNiveau);
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
 }
 
@@ -543,11 +532,6 @@ void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});                   // Affiche la grille après le remplacement
     Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false}); // relance la chute de la colonne pour ligne précédente
-
-    // if (row == 0)
-    //{
-    // Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
-    //}
 }
 
 /*------------------------
@@ -600,8 +584,8 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
 void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, int ligneFinMatch, int colonne, Queue *q)
 {
     int hauteurMatch = ligneFinMatch - ligneDebutMatch + 1; // Taille du match
-    printf("[DEBUG] Cascade VERTICALE ligneDebut=%d ligneFin=%d col=%d (taille=%d)\n",
-           ligneDebutMatch, ligneFinMatch, colonne, hauteurMatch);
+    // printf("[DEBUG] Cascade VERTICALE ligneDebut=%d ligneFin=%d col=%d (taille=%d)\n",
+    // ligneDebutMatch, ligneFinMatch, colonne, hauteurMatch);
 
     // Vérification des bornes et de la taille du match
     if (hauteurMatch < 3 || ligneDebutMatch < 0 || ligneFinMatch >= grille->lignes || colonne < 0 || colonne >= grille->colonnes)
@@ -654,7 +638,7 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
     // Ligne 0 vide → génération directe et enfile action
     if (destRow == 0)
     {
-        printf("[DEBUG] Ligne 0 vide → Enfiler GENERATIONHAUT [%d][%d]\n", 0, col);
+        // printf("[DEBUG] Ligne 0 vide → Enfiler GENERATIONHAUT [%d][%d]\n", 0, col);
         Enfiler(q, &(Actions){
                        GENERATIONHAUT,
                        {0, col},
@@ -670,7 +654,7 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
 
     if (searchRow < 0)
     {
-        printf("[DEBUG] Aucun pion à copier pour [%d][%d] → Enfiler GENERATIONHAUT\n", destRow, col);
+        // printf("[DEBUG] Aucun pion à copier pour [%d][%d] → Enfiler GENERATIONHAUT\n", destRow, col);
         Enfiler(q, &(Actions){
                        GENERATIONHAUT,
                        {0, col},
@@ -687,14 +671,13 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
 
     printf("[ChuteDepuisH] 📦 %d,%d → %d,%d : %d\n", searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    PAUSE(50);
-
     Enfiler(q, &(Actions){
                    CHUTEHORIZONTALEPARTIELLE,
                    {searchRow, col},
                    {0, 0},
                    false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    PAUSE(50);
 }
 
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
@@ -718,8 +701,11 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
 // suppression des victoires verticales (3 et 4+)
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
-    // Cas Match4 ou +
+    PlaySound("item-pick-up-38258.wav", NULL, SND_FILENAME | SND_ASYNC);
+    Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
+    PlaySound("play.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    // printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
+    //  Cas Match4 ou +
     if (QuatreALaSuiteVerticale(grille, x1, x2))
     { // supprime la colonne entiere et fais appel aux sous fonctions de cascades
         SupprimerColonne(grille, *y1, q);
@@ -735,7 +721,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     {
         grille->tableau[ligne][colonne].pion = VIDE;
         grille->tableau[ligne][colonne].gelatine = false;
-        printf("[DEBUG] Suppression manuelle [%d][%d]\n", ligne, colonne);
+        // printf("[DEBUG] Suppression manuelle [%d][%d]\n", ligne, colonne);
     }
     // Affiche la partie de colonne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
@@ -749,7 +735,10 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 // suppression des victoires horizontales (3 et 4+)
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
+    PlaySound("item-pick-up-38258.wav", NULL, SND_FILENAME | SND_ASYNC);
+    Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
+    PlaySound("play.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    // printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
     // Cas Match4 ou +
     if (QuatreALaSuiteHorizontale(grille, y1, y2)) //&& grille->estInitialisee)
@@ -769,7 +758,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     {
         grille->tableau[ligne][coordonneeColonneCible].pion = VIDE;
         grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
-        printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, coordonneeColonneCible);
+        // printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, coordonneeColonneCible);
     }
 
     // Affiche la partie de ligne vide avant la chute

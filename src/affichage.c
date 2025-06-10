@@ -52,14 +52,14 @@ int ObtenirReponseAuMessage(int index)
                MESSAGESECHANGEBONBONS[index].message,
                MESSAGESECHANGEBONBONS[index].nombreLigneOuColonne);
 
-        // 1) Lecture de l'entier
+        // Lecture de l'entier
         result = scanf("%d", &choixUtilisateur);
 
-        // 2) Vider le reste de la ligne (jusqu'au '\n' ou EOF)
+        //  Vider le reste de la ligne (jusqu'au '\n' ou EOF)
         while ((caractereLu = getchar()) != '\n' && caractereLu != EOF)
             ;
 
-        // 3) Contrôle de la conversion et de la plage
+        //  Contrôle de la conversion et de la plage
         if (result != 1)
         {
             GererErreurNonFatale(ERREURENTREEINVALIDE);
@@ -163,7 +163,7 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     PAUSE(200);
-    // clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
     if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises
@@ -200,7 +200,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             int pion = grille->tableau[row][col].pion;
             bool gelatine = grille->tableau[row][col].gelatine;
 
-            char *emoji;
+            const char *emoji;
 
             if (pion == VIDE)
             {
@@ -211,47 +211,59 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                 switch (pion)
                 {
                 case JAUNE:
-                    emoji = "🟡";
-                    break;
+                    emoji = "🍋";
+                    break; // citron
                 case VERT:
-                    emoji = "🟢";
-                    break;
+                    emoji = "🍏";
+                    break; // pomme verte
                 case BLEU:
-                    emoji = "🔵";
-                    break;
+                    emoji = "💎";
+                    break; // diamant
                 case ROUGE:
-                    emoji = "🔴";
-                    break;
+                    emoji = "🍒";
+                    break; // cerise
                 case MAUVE:
-                    emoji = "🟣";
-                    break;
+                    emoji = "🍇";
+                    break; // raisin
                 case BLANC:
-                    emoji = "⚪";
-                    break;
+                    emoji = "🧊";
+                    break; // glace
                 case GRIS:
-                    emoji = "⚫";
-                    break;
+                    emoji = "🪨";
+                    break; // roche
                 case JAUNE_CLAIR:
-                    emoji = "🟨";
-                    break;
+                    emoji = "🧁";
+                    break; // cupcake
                 case ROSE:
-                    emoji = "🌸";
-                    break;
+                    emoji = "🍓";
+                    break; // fraise
                 default:
                     emoji = "❓";
                     break;
                 }
             }
 
-            // 🛠 DEBUG : pour voir les valeurs numériques, décommente ici :
-            // printf("[%2d]", pion);
-
             if (gelatine)
-                printf("\033[48;5;208m %s \033[0m", emoji); // fond orange vif
+                printf("\033[48;5;225m %s \033[0m", emoji); // fond rose clair
             else
                 printf(" %s ", emoji);
         }
 
         printf("\n");
     }
+    // === HUD + Barre de progression ===
+    int coupsJoues = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues;
+    int coupsMax = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer;
+    int pourcentage = (coupsJoues * 100) / coupsMax;
+    int barres = pourcentage / 5; // 20 segments (chaque = 5%)
+
+    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+    printf("🎯 Niveau : %d     💥 Coups joués : %d/%d\n",
+           NIVEAUX[0].compteurNiveau + 1, coupsJoues, coupsMax);
+
+    printf("📊 Progression : [");
+    for (int i = 0; i < 20; i++)
+        printf("%s", i < barres ? "█" : "▁");
+    printf("] %d%%\n", pourcentage);
+    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 }

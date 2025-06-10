@@ -1,5 +1,6 @@
 #include "constante.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 // ****************************             CONSTANTES GLOBALES                     **************************** //
 
 // Definition des couleurs des bonbons (on va en rajouter)
@@ -26,8 +27,8 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
 //            - message (tableau de characteres): message d'affichage pour l'utilisateur.
 //            - nombreLigneOuColonne(int): valeur attendue pour l'entrée utilisateur.
 MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
-    {"Veuillez entrer la colonne 1 a", TAILLE},
-    {"Veuillez entrer la ligne 1 a", TAILLE}};
+    {"🎮 Veuillez entrer la colonne 1 a", TAILLE},
+    {"🎮 Veuillez entrer la ligne 1 a", TAILLE}};
 
 // Définition des niveaux du jeu sous forme d'un tableau de structures.
 // Type : tableau de Niveaux (structure définie dans constante.h).
@@ -44,4 +45,11 @@ Niveaux NIVEAUX[FINALNIVEAU] = {
     {{7, 0}, {"Gelatine", 1}, 0, 5},  // Niveau 1
     {{6, 0}, {"Gelatine", 2}, -1, 6}, // Niveau 2
     {{5, 0}, {"Gelatine", 4}, -1, 7}  // Niveau 3
+};
+
+const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
+    "play.wav",
+    "stranger-things-124008.wav",
+    "kim-lightyear-legends-109307.wav",
+
 };

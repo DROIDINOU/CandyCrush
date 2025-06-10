@@ -13,7 +13,7 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
                                  **** SOUS FONCTION DE Initialiser grille
 ___________________________________________________________________________________________________________________
  */
-bool aDeuxPionsAdjacents(GrilleBonbons *grille, int position1, int position2);
+bool aDeuxPionsAdjacents(GrilleBonbons *grille, int lignePion1, int lignePion2);
 int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);

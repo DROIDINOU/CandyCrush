@@ -2,6 +2,7 @@
 #include "constante.h"
 #include "queue.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 /***************************************************************************************************************************
                                                    ETAT DU JEU
@@ -16,7 +17,7 @@
 
 void VerifierEtatJeu(EtatJeu *etatJeu, Queue *q)
 {
-    // Si niveau suivant : initialiser et attendre que la grille soit stable
+    // Si niveaU SUIVANT est actif on initialise la grille
     if (etatJeu->niveausuivant == 1)
     {
         printf("[DEBUG] 🚀 Initialisation du niveau %d\n", NIVEAUX[0].compteurNiveau);
@@ -26,16 +27,18 @@ void VerifierEtatJeu(EtatJeu *etatJeu, Queue *q)
         etatJeu->grillePrete = 0; // La grille sera prête après l'init complète
     }
 
-    // garde fous liés aux risques de la queue circulaire (essentiellement debug)
+    // garde fous liés aux risques de la queue circulaire, des sleep ou du programmeur... (essentiellement pour eviter de bloquer de
+    // le jeu et pour debbugger)
+
     if (q->taille == 0 && !etatJeu->findepartie && !etatJeu->niveausuivant && etatJeu->grillePrete)
     {
         printf("[DEBUG] 🔁 Queue vide mais jeu en cours → relance Verification\n");
-        Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
     }
-
+    // Si la queue est vide et qu'on n'est pas en fin de partie ou niveau suivant, il y a un probleme
+    // de conception du jeu
     if (q->taille == 0 && !etatJeu->niveausuivant && !etatJeu->findepartie)
     {
-        printf("[ERREUR] ❌ Bloqué sans action et sans passage de niveau. Fin forcée.\n");
-        exit(EXIT_FAILURE);
+        GererErreurFatale(TYPEINCONNU);
     }
 }
