@@ -319,6 +319,31 @@ void Calcul(Queue *q, GrilleBonbons *grille,
         grille->calcY = 0;
         grille->relancerDepuisDebut = false;
     }
+    // en cas de deplacement, on utilise les coordonnées des pions échangés
+    // si rien n est trouvé pas besoin de relancer calcul on passe a vérification (optimisation)
+    // si non les chutes relanceront le calcul depuis le debut de la grille
+    if (grille->deplacement)
+    {
+        grille->deplacement = 0; // On traite ce déplacement une seule fois
+
+        bool alignementPion1 = VerifierAlignements(x1, y1, grille, q);
+
+        if (!alignementPion1)
+        {
+            bool alignementPion2 = VerifierAlignements(x2, y2, grille, q);
+            if (!alignementPion2)
+            {
+                Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}};
+                Actions verif = {VERIFICATION, {0, 0}, {0, 0}};
+                grille->calcX = 0; // Réinitialisation des coordonnées de calcul
+                grille->calcY = 0; // Réinitialisation des coordonnées de calcul
+                Enfiler(q, &affiche);
+                Enfiler(q, &verif);
+            }
+        }
+
+        return; // On sort de la fonction car soit pas d alignement et on vérifie soit trouvé et calcul est relancé apres suppression
+    }
 
     // Récupère la cellule en cours
     int x = grille->calcX; // Variable interne utilisee pour verifier les alignements
@@ -701,9 +726,9 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
 // suppression des victoires verticales (3 et 4+)
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    PlaySound("item-pick-up-38258.wav", NULL, SND_FILENAME | SND_ASYNC);
+    PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
     Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
-    PlaySound("play.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     // printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
     //  Cas Match4 ou +
     if (QuatreALaSuiteVerticale(grille, x1, x2))
@@ -735,9 +760,9 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 // suppression des victoires horizontales (3 et 4+)
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
-    PlaySound("item-pick-up-38258.wav", NULL, SND_FILENAME | SND_ASYNC);
+    PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
     Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
-    PlaySound("play.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     // printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
     // Cas Match4 ou +

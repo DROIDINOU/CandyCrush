@@ -139,5 +139,6 @@ extern const CouleurBonbons COULEURS[MAXCOULEUR];                     // Tableau
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR];     // Tableau des messages d'état du jeu
 extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau des messages d'échange de bonbons
 extern const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];  // Tableau des chemins des musiques
+extern const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];
 
 #endif

@@ -53,3 +53,9 @@ const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
     "kim-lightyear-legends-109307.wav",
 
 };
+
+const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
+    "item-pick-up-38258.wav",
+    "jellysplash_56f256e05113918.wav",
+    "male_death.wav",
+};

@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib") // pour PlaySound
-
+#include <time.h>
 #include "matrice.h"
 #include "main.h"
 #include "affichage.h"
@@ -17,7 +17,7 @@
 
 int main(int argc, char *argv[])
 {
-    // Initialisation
+
     srand(time(NULL));
     // Démarre la musique de fond en boucle
 
@@ -35,8 +35,10 @@ int main(int argc, char *argv[])
     // Moteur de jeu
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
+
         VerifierEtatJeu(&etatJeu, &q); // initialise la grille et vérifie l'état du jeu
         PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
         while (q.taille > 0) // Tant que la queue n'est pas vide on defile les actions
         {
             Actions action = Defiler(&q);
@@ -98,7 +100,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    printf("🎮 FIN DU JEU\n");
     PlaySound(NULL, NULL, 0); // stop son
 
     return 0;
