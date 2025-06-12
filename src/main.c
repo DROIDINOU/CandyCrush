@@ -15,7 +15,7 @@
 #include <time.h>
 #include <string.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) // obligatoire pour playsound
 {
 
     srand(time(NULL));
@@ -27,12 +27,14 @@ int main(int argc, char *argv[])
 
     InitialiserQueue(&q);
     int ligne, colonne, ligne1, colonne1;
-    etatJeu.niveausuivant = 1;
+    etatJeu.niveausuivant = 0;
     etatJeu.findepartie = 0;
     etatJeu.coupsepuises = 0;
     etatJeu.grillePrete = 0;
-
+    etatJeu.introduction = 1;                // pour l'affichage de la grille d'introduction
+    afficherGrille(&maGrille, &q, &etatJeu); // Affiche la grille d'introduction
     // Moteur de jeu
+    etatJeu.niveausuivant = 1;
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
 
@@ -65,11 +67,11 @@ int main(int argc, char *argv[])
                 break;
             case CHUTELIGNEENTIERE:
                 AppliquerChuteLigneEntiere(&maGrille, action.pion1.y, &q);
-                PAUSE(100);
+                // PAUSE(100);
                 break;
             case CHUTECOLONNEENTIERE:
                 AppliquerChuteColonneEntiere(&maGrille, action.pion1.x, action.pion1.y, &q);
-                PAUSE(100);
+                // PAUSE(100);
                 break;
             case GENERATIONHAUT:
                 AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
@@ -80,7 +82,7 @@ int main(int argc, char *argv[])
             case CHUTECOLONNEPARTIELLE:
                 AppliquerChuteColonnePartielle(&maGrille, action.pion1.x, action.pion2.x,
                                                action.pion1.y, &q);
-                PAUSE(200);
+                // PAUSE(200);
                 break;
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);

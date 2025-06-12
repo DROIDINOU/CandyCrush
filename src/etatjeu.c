@@ -20,7 +20,6 @@ void VerifierEtatJeu(EtatJeu *etatJeu, Queue *q)
     // Si niveaU SUIVANT est actif on initialise la grille
     if (etatJeu->niveausuivant == 1)
     {
-        printf("[DEBUG] 🚀 Initialisation du niveau %d\n", NIVEAUX[0].compteurNiveau);
         Actions actionInit = {INITIALISATION, {0, 0}, {0, 0}};
         Enfiler(q, &actionInit);
         etatJeu->niveausuivant = 0;

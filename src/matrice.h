@@ -17,6 +17,7 @@ bool aDeuxPionsAdjacents(GrilleBonbons *grille, int lignePion1, int lignePion2);
 int GenerationAleatoire(TypeElementRandom type, int maxTentatives);
 void initialiserGelatines(GrilleBonbons *grille);
 void initialiserBonbons(GrilleBonbons *grille);
+void GenererJoker(GrilleBonbons *grille);
 
 /***************************************************************************************************************************
                                                   DEPLACEMENT
@@ -46,6 +47,8 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 
+// CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, * int *colonne1, int *colonne2);
+// void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q);
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTION DE SUPPRESSION H ET V (cascades)
 ___________________________________________________________________________________________________________________

@@ -59,6 +59,21 @@ bool aDeuxPionsAdjacents(GrilleBonbons *grille, int lignePion1, int lignePion2)
     return false;
 }
 
+void GenererJoker(GrilleBonbons *grille)
+{
+    // printf("[BUGTRACK] GenererJoker appelée\n");
+    int nombreJoker = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons; // Nombre aléatoire de gelatines à placer
+
+    while (nombreJoker > 0) // Tant qu'il reste des gelatines à placer
+    {
+        int x = rand() % TAILLE; // Coordonnées aléatoires
+        int y = rand() % TAILLE; // Coordonnées aléatoires
+
+        grille->tableau[x][y].pion = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.superBonbon; // Placement de la gelatine
+        nombreJoker--;                                                                     // decrementer le nombre aleatoire de gelatines restantes
+    }
+}
+
 // Initialise les bonbons dans la grille
 // Remplissage aléatoire des cases avec des couleurs
 // Vérifie que les bonbons ne sont pas adjacents (pas de lignes de victoire)
@@ -127,8 +142,12 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     grille->relancerDepuisDebut = false;
     etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
     etatJeu->grillePrete = 1;
-    initialiserBonbons(grille);                      // initialise la grille de bonbons
-    initialiserGelatines(grille);                    // initialise la grille de gélatine
+    initialiserBonbons(grille);   // initialise la grille de bonbons
+    initialiserGelatines(grille); // initialise la grille de gélatine
+    if (NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons)
+    {
+        GenererJoker(grille);
+    };
     Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
 }
 
@@ -325,12 +344,13 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     if (grille->deplacement)
     {
         grille->deplacement = 0; // On traite ce déplacement une seule fois
-
+        // verification d'un pion
         bool alignementPion1 = VerifierAlignements(x1, y1, grille, q);
-
+        // si pas d alignement sur le premier pion on verifie le deuxieme
         if (!alignementPion1)
         {
             bool alignementPion2 = VerifierAlignements(x2, y2, grille, q);
+            // si rien de trouvé on passe a la vérification
             if (!alignementPion2)
             {
                 Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}};
@@ -401,7 +421,6 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
     if (!etatJeu->grillePrete)
     {
-        // printf("[DEBUG] 🛑 Verification ignorée : grillePrete = 0\n");
         return;
     }
 
@@ -456,6 +475,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         // indicateur de fin de partie et niveau mis à jour et on affiche le message de fin de partie
         NIVEAUX[0].compteurNiveau += 1;
         etatJeu->findepartie = 1;
+        etatJeu->niveausuivant = FINALNIVEAU;
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         return;
     }
@@ -502,6 +522,58 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
      • Enfilement d’une action CALCUL dans la file q.
 
  ____________________________________________________________________________________*/
+
+/*------------------------------------------------------------------------------------------------------------------------
+                                       Sous fonctions de détection des Joker
+--------------------------------------------------------------------------------------------------------------------------/*/
+CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2)
+{
+    int ligneAJoker = *ligne;
+    int colonneDebutAJoker = *colonne1;
+    int colonneFinAJoker = *colonne2;
+
+    // On suppose que la ligne est toujours valide, sinon à tester ici
+    // if (ligneAJoker < 0 || ligneAJoker >= grille->lignes) return PASDESUPERBONBON;
+
+    // ✅ Vérifie la case à gauche (colonneDebut - 1)
+    if (colonneDebutAJoker > 0)
+    {
+        int pionGauche = grille->tableau[ligneAJoker][colonneDebutAJoker - 1].pion;
+        if (pionGauche >= 1000 && pionGauche < 2000)
+            return pionGauche;
+    }
+
+    // ✅ Vérifie la case à droite (colonneFin + 1)
+    if (colonneFinAJoker + 1 < grille->colonnes)
+    {
+        int pionDroite = grille->tableau[ligneAJoker][colonneFinAJoker + 1].pion;
+        if (pionDroite >= 1000 && pionDroite < 2000)
+            return pionDroite;
+    }
+
+    return PASDESUPERBONBON;
+}
+
+void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q)
+{
+    if (joker == PASDESUPERBONBON)
+        return;
+
+    CouleurBonbons bonbonRemplacement = joker + 1000;
+
+    for (int row = 0; row < grille->lignes; row++)
+    {
+        for (int col = 0; col < grille->colonnes; col++)
+        {
+            grille->tableau[row][col].pion = bonbonRemplacement;
+            grille->tableau[row][col].gelatine = false;
+        }
+    }
+
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    grille->relancerDepuisDebut = true;
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
+}
 
 /*------------------------------------------------------------------------------------------------------------------------
                                         Sous fonctions de détection des victoires 4+
@@ -609,17 +681,14 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
 void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, int ligneFinMatch, int colonne, Queue *q)
 {
     int hauteurMatch = ligneFinMatch - ligneDebutMatch + 1; // Taille du match
-    // printf("[DEBUG] Cascade VERTICALE ligneDebut=%d ligneFin=%d col=%d (taille=%d)\n",
-    // ligneDebutMatch, ligneFinMatch, colonne, hauteurMatch);
 
     // Vérification des bornes et de la taille du match
     if (hauteurMatch < 3 || ligneDebutMatch < 0 || ligneFinMatch >= grille->lignes || colonne < 0 || colonne >= grille->colonnes)
     {
-        printf("[ERREUR] Paramètres invalides : ligneDebut=%d, ligneFin=%d, col=%d\n", ligneDebutMatch, ligneFinMatch, colonne);
         GererErreurFatale(TYPEINCONNU);
     }
 
-    // 🔽 Faire tomber les pions du dessus
+    //  Faire tomber les pions du dessus
     for (int ligne = ligneDebutMatch - 1; ligne >= 0; ligne--)
     {
         int ligneDest = ligne + hauteurMatch;
@@ -629,11 +698,7 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
         grille->tableau[ligneDest][colonne].pion = grille->tableau[ligne][colonne].pion;
         grille->tableau[ligne][colonne].pion = VIDE;
 
-        printf("[ChutePartielle]  Copie de [%d][%d] → [%d][%d] = %d\n",
-               ligne, colonne, ligneDest, colonne, grille->tableau[ligneDest][colonne].pion);
-
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-        PAUSE(100);
     }
 
     // Générer les nouveaux pions en haut
@@ -643,9 +708,6 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
         int couleur = COULEURS[GenerationAleatoire(COULEURALEATOIRE, 1)];
         grille->tableau[ligneCible][colonne].pion = couleur;
         grille->tableau[ligneCible][colonne].gelatine = false;
-
-        printf("[Génération] Nouveau bonbon en [%d][%d] = %d\n", ligneCible, colonne, couleur);
-
         Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
         PAUSE(100);
     }
@@ -690,11 +752,8 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
 
     // Effectuer la chute
     grille->tableau[destRow][col].pion = grille->tableau[searchRow][col].pion;
-    // grille->tableau[destRow][col].gelatine = false; // ✅ on écrase toute propagation de gélatine
     grille->tableau[searchRow][col].pion = VIDE;
     // grille->tableau[searchRow][col].gelatine = false;
-
-    printf("[ChuteDepuisH] 📦 %d,%d → %d,%d : %d\n", searchRow, col, destRow, col, grille->tableau[destRow][col].pion);
 
     Enfiler(q, &(Actions){
                    CHUTEHORIZONTALEPARTIELLE,
@@ -711,11 +770,8 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     grille->tableau[row][col].pion = couleur;
     grille->tableau[row][col].gelatine = false;
 
-    printf("[GENERATIONHAUT] [%d][%d] = %d\n", row, col, couleur);
-
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     PAUSE(100);
-    // Enfiler(q, &(Actions){RELANCERCALCUL, {0, 0}, {0, 0}, false});
 }
 
 /*****************************************************************************************************************************
@@ -729,7 +785,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
     Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
     PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-    // printf("[DEBUG] SuppressionV de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
     //  Cas Match4 ou +
     if (QuatreALaSuiteVerticale(grille, x1, x2))
     { // supprime la colonne entiere et fais appel aux sous fonctions de cascades
@@ -746,7 +801,6 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     {
         grille->tableau[ligne][colonne].pion = VIDE;
         grille->tableau[ligne][colonne].gelatine = false;
-        // printf("[DEBUG] Suppression manuelle [%d][%d]\n", ligne, colonne);
     }
     // Affiche la partie de colonne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
@@ -761,10 +815,15 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
-    Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
+    Sleep(200); // attendre que le son soit entendu
     PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-    // printf("[DEBUG] SuppressionH de [%d][%d] à [%d][%d]\n", *x1, *y1, *x2, *y2);
 
+    CouleurBonbons joker = VictoireHorizontaleAJoker(grille, x1, y1, y2); // tu peux passer les adresses
+    if (joker != PASDESUPERBONBON)
+    {
+        ActiverJokerHorizontalVictoire(grille, joker, q);
+        return; // ⚠️ on sort ici car le joker a déjà géré l'effet
+    }
     // Cas Match4 ou +
     if (QuatreALaSuiteHorizontale(grille, y1, y2)) //&& grille->estInitialisee)
     {
@@ -783,7 +842,6 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     {
         grille->tableau[ligne][coordonneeColonneCible].pion = VIDE;
         grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
-        // printf("[DEBUG] Suppression Match-3 [%d][%d]\n", ligne, coordonneeColonneCible);
     }
 
     // Affiche la partie de ligne vide avant la chute

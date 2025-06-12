@@ -162,8 +162,27 @@ void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur)
 
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
-    PAUSE(200);
+    if (etatJeu->introduction == 1)
+    {
+        const char *texte = "Bienvenue dans le jeu des Bonbons !\n"
+                            "Utilisez les flèches pour déplacer les pions.\n"
+                            "Essayez de former des lignes de 3 ou plus pour gagner !\n"
+                            "Appuyez sur une touche pour commencer.";
+
+        afficherMessagePleinEcran(texte, 20, 20);
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+        {
+            // on vide les caractères tapés avant le '\n'
+        }
+        // vide les caractères jusqu’à '\n'
+        etatJeu->introduction = 0; // pour ne plus l’afficher ensuite
+        return;
+    }
+
+    PAUSE(100);
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    /*if (etatJeu->findepartie == 1) Affichage de la grille */
     if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises
@@ -177,6 +196,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
     if (etatJeu->niveausuivant == 1)
     {
+        PAUSE(400);
         afficherMessagePleinEcran(MESSAGEETATJEU[MESSAGEFELICITATIONS],
                                   grille->colonnes * 4,
                                   grille->lignes);
@@ -237,6 +257,13 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                 case ROSE:
                     emoji = "🍓";
                     break; // fraise
+                case SUPPRIMERGRILLE:
+                    emoji = "💣";
+                    break;
+                case BONBONVICTOIRESUPPRIMERGRILLE:
+                    emoji = "🏅"; // bonbon W or
+                    break;
+
                 default:
                     emoji = "❓";
                     break;
@@ -252,18 +279,22 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         printf("\n");
     }
     // === HUD + Barre de progression ===
+    // Affichage de la barre de progression et des informations du niveau (niveau,coups joués, jockers et explications)
     int coupsJoues = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues;
     int coupsMax = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupAJouer;
     int pourcentage = (coupsJoues * 100) / coupsMax;
     int barres = pourcentage / 5; // 20 segments (chaque = 5%)
 
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+    // Affichage des informations du niveau
     printf("🎯 Niveau : %d     💥 Coups joués : %d/%d\n",
            NIVEAUX[0].compteurNiveau + 1, coupsJoues, coupsMax);
-
+    // adjustement de la barre de progression (coups joues/coups max)
     printf("📊 Progression : [");
     for (int i = 0; i < 20; i++)
         printf("%s", i < barres ? "█" : "▁");
     printf("] %d%%\n", pourcentage);
+    // Affichage des jokers et explications si djoker disponible
+    printf("🃏 Djokers : %s\n", EXPLICATIONJOCKER[NIVEAUX[0].compteurNiveau]);
     printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 }

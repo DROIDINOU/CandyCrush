@@ -21,6 +21,13 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "les pions doivent etre adjacents\n",
 }; // Message d'erreur si les pions ne sont pas adjacents
 
+const char EXPLICATIONJOCKER[NOMBREMAXJOCKER][MAXLONGUEUREXPLICATIONJOCKER] = {
+    "Pas de joker disponible",
+    "Pas de jocker disponible",
+    "Bombe explose la grille si\nadjacente a victoire horizontale",
+    "Explication du joker 4",
+    "Explication du joker 5"};
+
 // Tableau contenant les messages addressés à l'utilisateur et le type de reponse attendue
 // Type : tableau de MessagesReponses (structure définie dans constante.h).
 //        -élément de MessagesReponses:
@@ -42,20 +49,26 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 //             - compteurNiveau (int) : numéro du niveau actuel.
 //             - nombre utilisé pour l attribution aléatoire de couleurs
 Niveaux NIVEAUX[FINALNIVEAU] = {
-    {{7, 0}, {"Gelatine", 1}, 0, 5},  // Niveau 1
-    {{6, 0}, {"Gelatine", 2}, -1, 6}, // Niveau 2
-    {{5, 0}, {"Gelatine", 4}, -1, 7}  // Niveau 3
+    {
+        {7, 0},
+        {"Gelatine", 1},
+        0,
+        5,
+        {false, 0, PASDESUPERBONBON},
+    },                                                              // Niveau 1
+    {{6, 0}, {"Gelatine", 2}, -1, 6, {false, 0, PASDESUPERBONBON}}, // Niveau 2
+    {{5, 0}, {"Gelatine", 4}, -1, 7, {true, 1, SUPPRIMERGRILLE}}    // Niveau 3
 };
 
 const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
-    "play.wav",
-    "stranger-things-124008.wav",
-    "kim-lightyear-legends-109307.wav",
+    "assets/play.wav",
+    "assets/stranger-things-124008.wav",
+    "assets/kim-lightyear-legends-109307.wav",
 
 };
 
 const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
-    "item-pick-up-38258.wav",
-    "jellysplash_56f256e05113918.wav",
-    "male_death.wav",
+    "assets/item-pick-up-38258.wav",
+    "assets/jellysplash_56f256e05113918.wav",
+    "assets/male_death.wav",
 };
