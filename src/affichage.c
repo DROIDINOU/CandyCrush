@@ -164,10 +164,12 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
     if (etatJeu->introduction == 1)
     {
-        const char *texte = "Bienvenue dans le jeu des Bonbons !\n"
-                            "Utilisez les flèches pour déplacer les pions.\n"
+        const char *texte = "Bienvenue dans CRUSHLOSSON !\n"
+                            "Deplacez les pions adjacents.\n"
                             "Essayez de former des lignes de 3 ou plus pour gagner !\n"
-                            "Appuyez sur une touche pour commencer.";
+                            "but du jeu : supprimer les gelatines\n"
+                            "Des djokers sont disponibles pour vous aider !\n"
+                            "Pressez ENTER pour commencer !\n";
 
         afficherMessagePleinEcran(texte, 20, 20);
         int c;
@@ -278,6 +280,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
         printf("\n");
     }
+    // MODIFIER HUD COUP DISPONIBLES BARRE PROGRESSION COUPS RESTANT PLUS BARE PROGRESSION GELATINES
     // === HUD + Barre de progression ===
     // Affichage de la barre de progression et des informations du niveau (niveau,coups joués, jockers et explications)
     int coupsJoues = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues;

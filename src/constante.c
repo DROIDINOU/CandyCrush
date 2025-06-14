@@ -24,7 +24,7 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
 const char EXPLICATIONJOCKER[NOMBREMAXJOCKER][MAXLONGUEUREXPLICATIONJOCKER] = {
     "Pas de joker disponible",
     "Pas de jocker disponible",
-    "Bombe explose la grille si\nadjacente a victoire horizontale",
+    "Bombe explose la grille si\n   adjacente a victoire horizontale",
     "Explication du joker 4",
     "Explication du joker 5"};
 
