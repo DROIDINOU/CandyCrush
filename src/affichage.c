@@ -112,7 +112,8 @@ void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
     {
         GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents (pas gere via
         // affichage mais directement dans le prompt)
-        LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
+        Actions retry = {LECTURE, {0, 0}, {0, 0}, PASDERREUR, PASDESUPERBONBON};
+        Enfiler(q, &retry);
     }
 }
 

@@ -55,10 +55,10 @@ void GererErreurNonFatale(CodeErreur codeErreur)
         printf(MESSAGEETATJEU[MESSAGEPIONSNONADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
         break;
     case ERREURENTREEINVALIDE:
-        printf("Entrée invalide. Veuillez entrer un entier.\n");
+        printf("Entrée invalide. Veuillez entrer un entier.\n"); // entree utilisateur attendue incorrecte
         break;
     case ERREURNOMBREENTREEINCORRECTE:
-        printf("Erreur : veuillez entrer un nombre entre 1 et %d.\n", TAILLE);
+        printf("Erreur : veuillez entrer un nombre entre 1 et %d.\n", TAILLE); // entree utilisateur attendue incorrecte
         break;
     default:
         printf("Erreur inconnue ... \n");
