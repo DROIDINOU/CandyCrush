@@ -12,7 +12,7 @@
 #include "constante.h"
 #include "erreur.h"
 #include "queue.h"
-
+void clearScreenWithColor();
 int ObtenirReponseAuMessage(int index);
 void afficherMessagePleinEcran(const char *texte, int largeur, int hauteur);
 void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);

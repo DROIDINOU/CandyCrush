@@ -82,7 +82,10 @@ int main(int argc, char *argv[]) // obligatoire pour playsound
             case CHUTECOLONNEPARTIELLE:
                 AppliquerChuteColonnePartielle(&maGrille, action.pion1.x, action.pion2.x,
                                                action.pion1.y, &q);
-                // PAUSE(200);
+            case HORIZONTALDJOKER:
+                ActiverJokerHorizontalVictoire(&maGrille, action.joker, &q);
+
+                PAUSE(200);
                 break;
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);

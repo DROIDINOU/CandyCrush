@@ -35,7 +35,8 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2,
                                  **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
 ___________________________________________________________________________________________________________________
  */
-
+CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2);
+void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q);
 bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);

@@ -3,6 +3,7 @@
 
 typedef enum
 {
+    PASDERREUR = 0,
     ERREURQUEUEPLEINE, // 0 : Aucun problème
     ERREURQUEUEVIDE,   // 1 : Erreur liée à la mémoire
     ERREURDEPLACEMENT, // 2 : Erreur liée au déplacement des pions par l'utilisateur

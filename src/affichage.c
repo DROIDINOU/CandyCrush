@@ -167,7 +167,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         const char *texte = "Bienvenue dans CRUSHLOSSON !\n"
                             "Deplacez les pions adjacents.\n"
                             "Essayez de former des lignes de 3 ou plus pour gagner !\n"
-                            "but du jeu : supprimer les gelatines\n"
+                            "But du jeu : supprimer les gelatines\n"
                             "Des djokers sont disponibles pour vous aider !\n"
                             "Pressez ENTER pour commencer !\n";
 
@@ -182,7 +182,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         return;
     }
 
-    PAUSE(100);
+    PAUSE(50);
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
     /*if (etatJeu->findepartie == 1) Affichage de la grille */
     if (etatJeu->findepartie == 1)
@@ -205,18 +205,28 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         PAUSE(2000);
         return;
     }
-
+    const char *emojiColonnes[20] = {
+        "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
+        "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"};
     // En-tête colonnes
     printf("  ");
     for (int col = 0; col < grille->colonnes; col++)
-        printf("  %2d", col + 1);
+        printf("  %s ", emojiColonnes[col]);
     printf("\n");
-
+    const char *emojiLignes[20] = {
+        "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
+        "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"};
     // Affichage des lignes
     for (int row = 0; row < grille->lignes; row++)
     {
-        printf("%2d ", row + 1);
-
+        if (row < 9)
+        {
+            printf("%s  ", emojiLignes[row]);
+        }
+        else
+        {
+            printf("%s  ", emojiLignes[row]);
+        }
         for (int col = 0; col < grille->colonnes; col++)
         {
             int pion = grille->tableau[row][col].pion;
@@ -263,7 +273,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                     emoji = "💣";
                     break;
                 case BONBONVICTOIRESUPPRIMERGRILLE:
-                    emoji = "🏅"; // bonbon W or
+                    emoji = "🔱";
                     break;
 
                 default:
@@ -292,10 +302,12 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     // Affichage des informations du niveau
     printf("🎯 Niveau : %d     💥 Coups joués : %d/%d\n",
            NIVEAUX[0].compteurNiveau + 1, coupsJoues, coupsMax);
+    printf("🧼  Gelatines a supprimer : %d/%d\n",
+           grille->nombreGelatinesRestantes, grille->nombreGelatineDuNiveau);
     // adjustement de la barre de progression (coups joues/coups max)
     printf("📊 Progression : [");
     for (int i = 0; i < 20; i++)
-        printf("%s", i < barres ? "█" : "▁");
+        printf("%s", i < barres ? "\033[38;5;82m█\033[0m" : "▁"); // Vert pour la progression
     printf("] %d%%\n", pourcentage);
     // Affichage des jokers et explications si djoker disponible
     printf("🃏 Djokers : %s\n", EXPLICATIONJOCKER[NIVEAUX[0].compteurNiveau]);

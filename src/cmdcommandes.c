@@ -7,4 +7,4 @@
 // dans deplacement creer fonction de verification pour pion deplacement voisin avec abs
 // gcc -o marc affichage.c main.c matrice.c constante.c queue.c erreur.c generationaleatoire.c etatjeu.c -lwinmm
 // chcp 65001
-// gcc -o marclosson affichage.c main.c matrice.c constante.c queue.c erreur.c generationaleatoire.c etatjeu.c -lwinmm
+// gcc -o yo affichage.c main.c matrice.c constante.c queue.c erreur.c generationaleatoire.c etatjeu.c -lwinmm

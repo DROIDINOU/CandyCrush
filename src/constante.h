@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 #include <stdbool.h>
-#define TAILLE 10 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
+#define TAILLE 12 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
 #define NOMBREMESSAGES 2
 #define MAXLONGUEUR 100
 #define LONGUEURMESSAGEETREPONSE 40
@@ -111,6 +111,8 @@ typedef struct
     int deplacement;
     bool relancerDepuisDebut; // 🆕
     // bool casesAGenerer[TAILLE];
+    int nombreGelatineDuNiveau;
+    int nombreGelatinesRestantes; // Nombre de gelatines à générer
 
 } GrilleBonbons;
 

@@ -34,6 +34,7 @@ typedef enum
     CHUTECOLONNEPARTIELLE,
     CHUTEHORIZONTALEPARTIELLE,
     GENERATIONHAUT,
+    HORIZONTALDJOKER,
 
     // CHUTE_COLONNE_UNITAIRE,
 } ActionType;
@@ -45,6 +46,7 @@ typedef struct
     Coordonnees pion1;
     Coordonnees pion2;
     CodeErreur erreur;
+    CouleurBonbons joker; // 🆕 Ajout pour transmettre un joker via la queue
 
 } Actions;
 

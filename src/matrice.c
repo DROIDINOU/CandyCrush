@@ -101,6 +101,8 @@ void initialiserGelatines(GrilleBonbons *grille)
 {
     // printf("[BUGTRACK] initialiserGelatines appelée\n");
     int nombreGelatine = GenerationAleatoire(OBSTACLEALEATOIRE, 1); // Nombre aléatoire de gelatines à placer
+    grille->nombreGelatineDuNiveau = nombreGelatine;                // Stocke le nombre de gelatines du niveau
+    grille->nombreGelatinesRestantes = nombreGelatine;              // Stocke le nombre de gelatines restantes
     while (nombreGelatine > 0)                                      // Tant qu'il reste des gelatines à placer
     {
         int x = rand() % TAILLE;             // Coordonnées aléatoires
@@ -146,6 +148,7 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     initialiserGelatines(grille); // initialise la grille de gélatine
     if (NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons)
     {
+        printf("le problemeserait ici?????");
         GenererJoker(grille);
     };
     Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
@@ -177,8 +180,8 @@ void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
     grille->tableau[xPion1][yPion1].pion = grille->tableau[xPion2][yPion2].pion; // pion 1 devient pion 2
     grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
 
-    NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;           // Incremente le nombre de coups joues
-    Actions actionDeplacement = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}}; // On ajoute une action CALCUL avec les nouvelles coordonnées
+    NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;                                    // Incremente le nombre de coups joues
+    Actions actionDeplacement = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}, false, PASDESUPERBONBON}; // On ajoute une action CALCUL avec les nouvelles coordonnées
     Enfiler(q, &actionDeplacement);
 }
 
@@ -222,7 +225,7 @@ bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q)
         if (compteur >= 3)
         {
             // ajoute une action de suppression verticale à la queue
-            Actions supV = {SUPPRESSIONV, {xDebut, *y}, {xFin, *y}};
+            Actions supV = {SUPPRESSIONV, {xDebut, *y}, {xFin, *y}, false, PASDESUPERBONBON};
             Enfiler(q, &supV);
             return true;
         }
@@ -260,7 +263,7 @@ bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q)
         if (compteur >= 3)
         {
             // ajoute une action de suppression horizontale à la queue
-            Actions supH = {SUPPRESSIONH, {*x, yDebut}, {*x, yFin}};
+            Actions supH = {SUPPRESSIONH, {*x, yDebut}, {*x, yFin}, false, PASDESUPERBONBON};
             Enfiler(q, &supH);
             return true;
         }
@@ -323,10 +326,10 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     //  toujours présente) On passe néanmoins par vérification pour respecter flux logique
     if (initialisation)
     {
-        Actions aff = {AFFICHAGE, {0, 0}, {0, 0}};
+        Actions aff = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
         Enfiler(q, &aff);
 
-        Actions verif = {VERIFICATION, {0, 0}, {0, 0}};
+        Actions verif = {VERIFICATION, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
         Enfiler(q, &verif);
         return; // On ne doit pas calculer
     }
@@ -353,10 +356,10 @@ void Calcul(Queue *q, GrilleBonbons *grille,
             // si rien de trouvé on passe a la vérification
             if (!alignementPion2)
             {
-                Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}};
-                Actions verif = {VERIFICATION, {0, 0}, {0, 0}};
-                grille->calcX = 0; // Réinitialisation des coordonnées de calcul
-                grille->calcY = 0; // Réinitialisation des coordonnées de calcul
+                Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};  //
+                Actions verif = {VERIFICATION, {0, 0}, {0, 0}, false, PASDESUPERBONBON}; // verifier si on fait comme cela
+                grille->calcX = 0;                                                       // Réinitialisation des coordonnées de calcul
+                grille->calcY = 0;                                                       // Réinitialisation des coordonnées de calcul
                 Enfiler(q, &affiche);
                 Enfiler(q, &verif);
             }
@@ -390,17 +393,17 @@ void Calcul(Queue *q, GrilleBonbons *grille,
     // Si on a atteint la fin, on peut enchaîner AFFICHAGE et verification
     if (grille->calcX >= TAILLE)
     {
-        Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}};
-        Actions verif = {VERIFICATION, {0, 0}, {0, 0}};
-        grille->calcX = 0; // Réinitialisation des coordonnées de calcul
-        grille->calcY = 0; // Réinitialisation des coordonnées de calcul
+        Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};  // Action d'affichage
+        Actions verif = {VERIFICATION, {0, 0}, {0, 0}, false, PASDESUPERBONBON}; // Action de vérification
+        grille->calcX = 0;                                                       // Réinitialisation des coordonnées de calcul
+        grille->calcY = 0;                                                       // Réinitialisation des coordonnées de calcul
         Enfiler(q, &affiche);
         Enfiler(q, &verif);
         return;
     }
 
     // Si on arrive ici on relance calcul (coordonnees ont été incrementees)
-    Actions nextCalc = {CALCUL, {0, 0}, {0, 0}, false};
+    Actions nextCalc = {CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &nextCalc);
     return;
 }
@@ -439,7 +442,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             // verifie si la case est vide
             if (grille->tableau[i][j].pion == VIDE)
             {
-                Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false});
+                Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
                 return;
             }
         }
@@ -457,13 +460,13 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
             NIVEAUX[0].compteurNiveau = FINALNIVEAU;
             etatJeu->findepartie = 1;
             etatJeu->coupsepuises = 1;
-            Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+            Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
             return;
         }
 
         // si on arrive ici, il reste des coups a jouer et de la gelatine on continue la partie
         etatJeu->niveausuivant = 0;
-        Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){LECTURE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
         return;
     }
 
@@ -476,7 +479,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         NIVEAUX[0].compteurNiveau += 1;
         etatJeu->findepartie = 1;
         etatJeu->niveausuivant = FINALNIVEAU;
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
         return;
     }
 
@@ -485,7 +488,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     etatJeu->niveausuivant = 1;
     etatJeu->grillePrete = 0; // empêche la vérif prématurée
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
 
 /*________________________________________________________________________________________________________________
@@ -528,10 +531,15 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 --------------------------------------------------------------------------------------------------------------------------/*/
 CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2)
 {
+
+    if (NIVEAUX[NIVEAUX[0].compteurNiveau].joker.superBonbon == PASDESUPERBONBON)
+    {
+        return PASDESUPERBONBON;
+    }
     int ligneAJoker = *ligne;
     int colonneDebutAJoker = *colonne1;
     int colonneFinAJoker = *colonne2;
-
+    printf("11111111111111111111111111111111111111111111111111");
     // On suppose que la ligne est toujours valide, sinon à tester ici
     // if (ligneAJoker < 0 || ligneAJoker >= grille->lignes) return PASDESUPERBONBON;
 
@@ -556,11 +564,12 @@ CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int 
 
 void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q)
 {
-    if (joker == PASDESUPERBONBON)
+    if (joker < 1000 || joker >= 2000) // plage joker classique : [1000, 2000[
         return;
+    printf("voila le joker: %d\n", joker);
 
     CouleurBonbons bonbonRemplacement = joker + 1000;
-
+    printf("bonbonRemplacement = %d\n", bonbonRemplacement);
     for (int row = 0; row < grille->lignes; row++)
     {
         for (int col = 0; col < grille->colonnes; col++)
@@ -570,9 +579,9 @@ void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker,
         }
     }
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
     grille->relancerDepuisDebut = true;
-    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
 
 /*------------------------------------------------------------------------------------------------------------------------
@@ -604,7 +613,11 @@ void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
 {
     for (int row = 0; row < grille->lignes; row++)
     {
-        grille->tableau[row][col].pion = VIDE;      // suppression du pion
+        grille->tableau[row][col].pion = VIDE; // suppression du pion
+        if (grille->tableau[row][col].gelatine == true)
+        {
+            grille->nombreGelatinesRestantes--; // On décrémente le nombre de gélatines restantes
+        }
         grille->tableau[row][col].gelatine = false; // suppression de la gelatine
     }
 
@@ -627,8 +640,8 @@ void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue
     grille->tableau[row][col].pion = COULEURS[indiceCouleur];     // Remplacement du pion par un nouveau bonbon
     grille->tableau[row][col].gelatine = false;                   // pas de gelatine pour les nouveaux bonbons
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});                   // Affiche la grille après le remplacement
-    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false}); // relance la chute de la colonne pour ligne précédente
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});                                     // Affiche la grille après le remplacement
+    Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false, PASDESUPERBONBON}); // relance la chute de la colonne pour ligne précédente
 }
 
 /*------------------------
@@ -640,18 +653,22 @@ void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
 
     for (int col = 0; col < grille->colonnes; col++)
     {
-        grille->tableau[row][col].pion = VIDE;      //  Suppression du pion
+        grille->tableau[row][col].pion = VIDE; //  Suppression du pion
+        if (grille->tableau[row][col].gelatine == true)
+        {
+            grille->nombreGelatinesRestantes--; // On décrémente le nombre de gélatines restantes
+        }
         grille->tableau[row][col].gelatine = false; // Suppression de la gelatine
     }
 
     //  Affiche la ligne vide AVANT toute chute
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 
     // déclenche la chute des pions superieurs en un seul coup
-    Enfiler(q, &(Actions){CHUTELIGNEENTIERE, {0, row}, {0, 0}, false});
+    Enfiler(q, &(Actions){CHUTELIGNEENTIERE, {0, row}, {0, 0}, false, PASDESUPERBONBON});
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
-    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
 
 // fait tomber les bonbons du dessus d un coup et remplace la premiere ligne par des nouveaux bonbons
@@ -671,7 +688,7 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
     }
 
     // Affiche la grille après que tout soit tombé
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
 
 /*------------------------------------------------------------------------------------------------------------------------
@@ -698,7 +715,7 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
         grille->tableau[ligneDest][colonne].pion = grille->tableau[ligne][colonne].pion;
         grille->tableau[ligne][colonne].pion = VIDE;
 
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
     }
 
     // Générer les nouveaux pions en haut
@@ -708,7 +725,7 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
         int couleur = COULEURS[GenerationAleatoire(COULEURALEATOIRE, 1)];
         grille->tableau[ligneCible][colonne].pion = couleur;
         grille->tableau[ligneCible][colonne].gelatine = false;
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
         PAUSE(100);
     }
 }
@@ -730,7 +747,8 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
                        GENERATIONHAUT,
                        {0, col},
                        {0, 0},
-                       false});
+                       false,
+                       PASDESUPERBONBON});
         return;
     }
 
@@ -770,7 +788,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     grille->tableau[row][col].pion = couleur;
     grille->tableau[row][col].gelatine = false;
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
     PAUSE(100);
 }
 
@@ -800,12 +818,16 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int ligne = ligneDebut; ligne <= ligneFin; ligne++)
     {
         grille->tableau[ligne][colonne].pion = VIDE;
+        if (grille->tableau[ligne][colonne].gelatine == true)
+        {
+            grille->nombreGelatinesRestantes--; // On décrémente le nombre de gélatines restantes
+        }
         grille->tableau[ligne][colonne].gelatine = false;
     }
     // Affiche la partie de colonne vide avant la chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
     // Fait tomber les trois pions au dessus de la partie de colonne supprimee
-    Enfiler(q, &(Actions){CHUTECOLONNEPARTIELLE, {ligneDebut, colonne}, {ligneFin, colonne}, false});
+    Enfiler(q, &(Actions){CHUTECOLONNEPARTIELLE, {ligneDebut, colonne}, {ligneFin, colonne}, false, PASDESUPERBONBON});
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
     Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
@@ -819,9 +841,31 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     CouleurBonbons joker = VictoireHorizontaleAJoker(grille, x1, y1, y2); // tu peux passer les adresses
+
+    printf("voila le %d: ", joker);
     if (joker != PASDESUPERBONBON)
     {
-        ActiverJokerHorizontalVictoire(grille, joker, q);
+        printf("debuggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
+        int ligne = *x1;
+        int colonneDebut = *y1;
+        int colonneFin = *y2;
+
+        // supprime les bonbons de la partie de ligne et met a VIDE et supprime la gelatine
+        for (int coordonneeColonneCible = colonneDebut; coordonneeColonneCible <= colonneFin; coordonneeColonneCible++)
+        {
+            grille->tableau[ligne][coordonneeColonneCible].pion = VIDE;
+            if (grille->tableau[ligne][coordonneeColonneCible].gelatine == true)
+            {
+                grille->nombreGelatinesRestantes--; // On décrémente le nombre de gélatines restantes
+            }
+            grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
+        }
+
+        // Affiche la partie de ligne vide avant la chute
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, SUPPRIMERGRILLE});
+        PAUSE(50);
+        Enfiler(q, &(Actions){HORIZONTALDJOKER, {0, 0}, {0, 0}, false, SUPPRIMERGRILLE});
+
         return; // ⚠️ on sort ici car le joker a déjà géré l'effet
     }
     // Cas Match4 ou +
@@ -841,11 +885,15 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     for (int coordonneeColonneCible = colonneDebut; coordonneeColonneCible <= colonneFin; coordonneeColonneCible++)
     {
         grille->tableau[ligne][coordonneeColonneCible].pion = VIDE;
+        if (grille->tableau[ligne][coordonneeColonneCible].gelatine == true)
+        {
+            grille->nombreGelatinesRestantes--; // On décrémente le nombre de gélatines restantes
+        }
         grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
     }
 
     // Affiche la partie de ligne vide avant la chute
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
     PAUSE(50);
 
     // Fait tomber les pions supérieurs
@@ -858,7 +906,8 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
                            CHUTEHORIZONTALEPARTIELLE,
                            {ligne, coordonneeColonneCible},
                            {0, 0},
-                           false});
+                           false,
+                           PASDESUPERBONBON});
         }
         else
         {
@@ -867,10 +916,11 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
                            GENERATIONHAUT,
                            {ligne, coordonneeColonneCible},
                            {0, 0},
-                           false});
+                           false,
+                           PASDESUPERBONBON});
         }
     }
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
-    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
+    Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
