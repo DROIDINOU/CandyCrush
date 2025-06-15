@@ -181,9 +181,8 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         etatJeu->introduction = 0; // pour ne plus l’afficher ensuite
         return;
     }
-
-    PAUSE(50);
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
+    PAUSE(50);     // donne au terminal le temps d'afficher
     /*if (etatJeu->findepartie == 1) Affichage de la grille */
     if (etatJeu->findepartie == 1)
     {

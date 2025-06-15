@@ -36,17 +36,16 @@ typedef enum
     GENERATIONHAUT,
     HORIZONTALDJOKER,
 
-    // CHUTE_COLONNE_UNITAIRE,
 } ActionType;
 
 // structure Actions
 typedef struct
 {
-    ActionType actionName;
+    ActionType actionName; // type d'action
     Coordonnees pion1;
     Coordonnees pion2;
     CodeErreur erreur;
-    CouleurBonbons joker; // 🆕 Ajout pour transmettre un joker via la queue
+    CouleurBonbons joker; //  Ajout pour transmettre un joker via la queue
 
 } Actions;
 

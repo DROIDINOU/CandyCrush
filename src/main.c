@@ -1,8 +1,12 @@
 #define SDL_MAIN_HANDLED
 #include <windows.h>
 #include <mmsystem.h>
-#pragma comment(lib, "winmm.lib") // pour PlaySound
+// #pragma comment(lib, "winmm.lib") // pour PlaySound
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
 #include "matrice.h"
 #include "main.h"
 #include "affichage.h"
@@ -10,36 +14,36 @@
 #include "erreur.h"
 #include "constante.h"
 #include "etatjeu.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
 
 int main(int argc, char *argv[]) // obligatoire pour playsound
 {
 
+    // DECLARATIONS ET INITIALISATIONS
     srand(time(NULL));
-    // Démarre la musique de fond en boucle
 
-    GrilleBonbons maGrille;
-    Queue q;
-    EtatJeu etatJeu;
+    GrilleBonbons maGrille; // declaration de la structure maGrille
+    Queue q;                // declarationde la structure Queue
+    EtatJeu etatJeu;        // declarationde la structure etatJeu
 
-    InitialiserQueue(&q);
-    int ligne, colonne, ligne1, colonne1;
+    int ligne, colonne, ligne1, colonne1; // declaration des parametres a encoder par utilisateur
+
+    InitialiserQueue(&q); // initialisation des elements de la structure Queue
+    // initialisation des elements de la structure etatJeu
     etatJeu.niveausuivant = 0;
     etatJeu.findepartie = 0;
     etatJeu.coupsepuises = 0;
     etatJeu.grillePrete = 0;
-    etatJeu.introduction = 1;                // pour l'affichage de la grille d'introduction
-    afficherGrille(&maGrille, &q, &etatJeu); // Affiche la grille d'introduction
+    etatJeu.introduction = 1;                // on affiche la grille d'intodution
+    afficherGrille(&maGrille, &q, &etatJeu); // lance affichage introduction
+    etatJeu.niveausuivant = 1;               // on passe au niveau suivant apres l intro
+
     // Moteur de jeu
-    etatJeu.niveausuivant = 1;
+    // tant que le niveau est un niveau du jeu
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
 
-        VerifierEtatJeu(&etatJeu, &q); // initialise la grille et vérifie l'état du jeu
-        PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        VerifierEtatJeu(&etatJeu, &q);                                                                    // initialise la grille et vérifie l'état du jeu(calcul est relance si la grille n est pas prete)
+        PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP); // jouer musique de fond en arriere plan
 
         while (q.taille > 0) // Tant que la queue n'est pas vide on defile les actions
         {
@@ -105,7 +109,7 @@ int main(int argc, char *argv[]) // obligatoire pour playsound
         }
     }
 
-    PlaySound(NULL, NULL, 0); // stop son
+    PlaySound(NULL, NULL, 0); // stop musique de fond
 
     return 0;
 }

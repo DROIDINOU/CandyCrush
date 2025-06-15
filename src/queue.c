@@ -83,7 +83,8 @@ Actions Defiler(Queue *q)
     return action;
 }
 
-void ImprimerQueue(Queue *q)
+// DEBUG
+/*void ImprimerQueue(Queue *q)
 {
     if (EstVide(q))
     {
@@ -108,3 +109,4 @@ void ImprimerQueue(Queue *q)
         index = (index + 1) % LONGUEURQ;
     }
 }
+*/

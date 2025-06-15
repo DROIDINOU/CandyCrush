@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <mmsystem.h>
-#pragma comment(lib, "winmm.lib") // lien vers la bibliothèque pour PlaySound
-#include <stdio.h>
+// #pragma comment(lib, "winmm.lib") // lien vers la bibliothèque pour PlaySound
 #include "constante.h"
 #include "matrice.h"
 #include "queue.h"
@@ -12,15 +11,13 @@
 #include "generationaleatoire.h"
 #include <string.h>
 
-// grilleestverifiee toujours utile??
-// grilleaffiche toujours utile??
 // grilleprete a commenter
 
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTIONS D INITIALISER GRILLE
 
-  *** Fonctions : initialiserBonbons - initialiserGelatines - aDeuxPionsAdjacents
-  **  Sous fonctions d' initialiserGrille : initialiserBonbons - initialiserGelatines
+  *** Fonctions : initialiserBonbons - initialiserGelatines - aDeuxPionsAdjacents - GenererJoker
+  **  Sous fonctions d' initialiserGrille : initialiserBonbons - initialiserGelatines - GenererJoker
   *   Sous fonction d' initialiserBonbons : aDeuxPionsAdjacents
 
   - > aDeuxPionsAdjacents : Verifie si les pions que l'utilisateur souhaite déplacer sont adjacents ou non
@@ -30,6 +27,8 @@
                           (trois pions ou plus alignés horizontalement ou verticalement)
   -> initialiserGelatines : place aleatoirement les gelatines dans la grille en utilisant fonction de génération aléatoire
                             definie dans generationaleatoire.c
+
+  -> GenererJoker : genere le ou les djoker specifies dans NIVEAU
 
 
 ___________________________________________________________________________________________________________________
@@ -59,18 +58,18 @@ bool aDeuxPionsAdjacents(GrilleBonbons *grille, int lignePion1, int lignePion2)
     return false;
 }
 
+// GENERE E OU LES JOKER
 void GenererJoker(GrilleBonbons *grille)
 {
-    // printf("[BUGTRACK] GenererJoker appelée\n");
-    int nombreJoker = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons; // Nombre aléatoire de gelatines à placer
+    int nombreJoker = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons; // Nombre de jokers à placer prevus dans NIVEAU
 
-    while (nombreJoker > 0) // Tant qu'il reste des gelatines à placer
+    while (nombreJoker > 0) // Tant qu'il reste des Joker à placer
     {
         int x = rand() % TAILLE; // Coordonnées aléatoires
         int y = rand() % TAILLE; // Coordonnées aléatoires
 
-        grille->tableau[x][y].pion = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.superBonbon; // Placement de la gelatine
-        nombreJoker--;                                                                     // decrementer le nombre aleatoire de gelatines restantes
+        grille->tableau[x][y].pion = NIVEAUX[NIVEAUX[0].compteurNiveau].joker.superBonbon; // Placement d'un joker
+        nombreJoker--;                                                                     // decrementer le nombre aleatoire de jokers restant
     }
 }
 
@@ -137,21 +136,21 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     // Initialisation des éléments de la structure grille
     grille->lignes = TAILLE;
     grille->colonnes = TAILLE;
-    grille->estVerifiee = 0;
     grille->calcX = 0;
     grille->calcY = 0;
     grille->deplacement = 0;
     grille->relancerDepuisDebut = false;
-    etatJeu->niveausuivant = 0; // On initialise le niveau suivant à 0
-    etatJeu->grillePrete = 1;
+    etatJeu->niveausuivant = 0;   // On remet niveau suivant à 0
+    etatJeu->grillePrete = 1;     //
     initialiserBonbons(grille);   // initialise la grille de bonbons
     initialiserGelatines(grille); // initialise la grille de gélatine
+    // si le niveau prevoit des joker on les genere
     if (NIVEAUX[NIVEAUX[0].compteurNiveau].joker.nombreSuperBonbons)
     {
-        printf("le problemeserait ici?????");
         GenererJoker(grille);
     };
-    Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true
+    Calcul(q, grille, NULL, NULL, NULL, NULL, true); // Appel à calcul avec flag initialisation à true (passage direct a verification
+    // la grille est nettoyee de victoires)
 }
 
 /*_______________________________________________________________________________________________________________
@@ -163,25 +162,42 @@ void initialiserGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
    -> Echange des pions entre les deux coordonnees
 _______________________________________________________________________________________________________________*/
 
-void Deplacement(Queue *q, GrilleBonbons *grille, int xPion1,
-                 int yPion1, int xPion2,
-                 int yPion2)
-
+void Deplacement(Queue *q, GrilleBonbons *grille,
+                 int xPion1, int yPion1,
+                 int xPion2, int yPion2)
 {
-    // Reinitialisation des elements de la grille
-    grille->estVerifiee = 0; // On doit revérifier la grille après le déplacement
-    grille->deplacement = 1; // on est en déplacement
-    grille->calcX = 0;       // même si possiblement redondant on remet calcX a 0 par securite
-    grille->calcY = 0;       // même si possiblement redondant on remet calcY a 0 par securite
-    grille->affiche = 1;     // apres le deplacement on doit afficher
+    // Reinitialisation des éléments de la grille
+    grille->deplacement = 1;
+    grille->calcX = 0;
+    grille->calcY = 0;
 
-    // Echange des pions
-    char temp = grille->tableau[xPion1][yPion1].pion;                            // echange des pions via variable temporaire qui stocke le pion 1
-    grille->tableau[xPion1][yPion1].pion = grille->tableau[xPion2][yPion2].pion; // pion 1 devient pion 2
-    grille->tableau[xPion2][yPion2].pion = temp;                                 // pion 2 devient pion 1
+    // Récupérer les pions avant l’échange
+    CouleurBonbons pion1 = grille->tableau[xPion1][yPion1].pion;
+    CouleurBonbons pion2 = grille->tableau[xPion2][yPion2].pion;
 
-    NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues += 1;                                    // Incremente le nombre de coups joues
-    Actions actionDeplacement = {CALCUL, {xPion1, yPion1}, {xPion2, yPion2}, false, PASDESUPERBONBON}; // On ajoute une action CALCUL avec les nouvelles coordonnées
+    // Détection d’un joker impliqué
+    CouleurBonbons joker = PASDESUPERBONBON;
+    if (pion1 >= PLAGEJOCKERINF && pion1 < PLAGEJOCKERSUP)
+        joker = pion1;
+    else if (pion2 >= PLAGEJOCKERINF && pion2 < PLAGEJOCKERSUP)
+        joker = pion2;
+
+    // Échange des pions
+    CouleurBonbons temp = pion1;
+    grille->tableau[xPion1][yPion1].pion = pion2;
+    grille->tableau[xPion2][yPion2].pion = temp;
+
+    // Mise à jour du nombre de coups joués
+    NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues++;
+
+    // Création et enfilage de l’action CALCUL avec le joker
+    Actions actionDeplacement = {
+        .actionName = CALCUL,
+        .pion1 = {xPion1, yPion1},
+        .pion2 = {xPion2, yPion2},
+        .erreur = false,
+        .joker = joker};
+
     Enfiler(q, &actionDeplacement);
 }
 
@@ -285,38 +301,27 @@ bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q)
 
 /***************************************************************************************************************************
                          **** FONCTION CENTRALE DE CALCUL DES SUPPRESSIONS ET DES CASCADES
+/***************************************************************************************************************************
 
-   - LOGIQUE GÉNÉRALE -
+   Cette fonction est le moteur de détection des alignements (horizontaux ou verticaux)
+    Elle gère plusieurs cas :
+     1. Si la grille vient d’être initialisée → affiche uniquement, sans chercher de victoires.
+     2. Si un flag de "relancerDepuisDebut" est actif → recommence le calcul depuis (0,0).
+     3. Si un déplacement a eu lieu → vérifie seulement les deux pions concernés.
+     4. Sinon, analyse cellule par cellule toute la grille pour détecter les alignements.
 
-   1) Initialisation :
-       - Si la fonction est appelée lors de l'initialisation (sans coordonnées spécifiques de pions en paramètre),
-        une variable interne est utilisée pour parcourir la grille, de la première à la dernière case.
-       - Si aucun alignement n'est détecté sur une case, la fonction passe à la suivante.
-       - Si un alignement est trouvé, le parcours recommence à zéro.
+   Si un alignement est détecté :
+     - Une action de suppression est enfilée (SUPPRESSIONV ou SUPPRESSIONH)
+     - La relance du calcul sera gérée par la suite (après chutes/cascades).
 
-   2) Déplacement :
-       - Lorsque la fonction est appelée suite à un déplacement, elle utilise les coordonnées des pions échangés.
-       - Si aucun alignement n'est détecté à ces coordonnées, cela signifie qu'aucun alignement nouveau n'a été créé
-         (puisque la grille était déjà vérifiée avant le déplacement).
-       - Si un alignement est trouvé, la vérification recommence depuis la première case.
+    Si aucun alignement n’est trouvé :
+     - La fonction passe à la cellule suivante.
+     - Une fois toute la grille parcourue sans victoire → on affiche et on vérifie l'état du jeu.
 
-   - FLUX DE TRAITEMENT -
+   Chaque étape peut enfiler d'autres actions dans la Queue pour construire le flot logique :
+     SUPPRESSION, AFFICHAGE, CHUTE, CALCUL, etc.
 
-  -> Paramètres : Pointeur structure Queue -pointeur structure GrilleBonbons
-                  - pointeurs vers les coordonnées des pions échangés (x1, y1, x2, y2)
 
-  -> Traitement :
-      1) Si `affiche` est activé et qu'on n'est pas en déplacement, une action `AFFICHAGE` est ajoutée à la file.
-      2) Si la grille a déjà été vérifiée, une action `VERIFICATION` est ajoutée à la file.
-      3) Si la fonction est appelée suite à un déplacement, elle vérifie les alignements créés par l'échange :
-         Si aucun alignement n'est trouvé, affiche est désactivé et estVerifiee est activé.
-      4) Si un alignement est détecté, une action `SUPPRESSIONH` ou `SUPPRESSIONV` est ajoutée à la file,
-         entraînant un recalcul depuis le début.
-      5) Si aucun alignement n'est trouvé, on passe à la cellule suivante.
-      6) Une fois la grille entièrement parcourue :
-          - Une action `AFFICHAGE` est ajoutée à la file.
-          - Les coordonnées de calcul sont réinitialisées.
-          - La grille est marquée comme vérifiée (estVerifiee = 1).
  ***************************************************************************************************************************/
 
 void Calcul(Queue *q, GrilleBonbons *grille,
@@ -356,10 +361,10 @@ void Calcul(Queue *q, GrilleBonbons *grille,
             // si rien de trouvé on passe a la vérification
             if (!alignementPion2)
             {
-                Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};  //
-                Actions verif = {VERIFICATION, {0, 0}, {0, 0}, false, PASDESUPERBONBON}; // verifier si on fait comme cela
-                grille->calcX = 0;                                                       // Réinitialisation des coordonnées de calcul
-                grille->calcY = 0;                                                       // Réinitialisation des coordonnées de calcul
+                Actions affiche = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
+                Actions verif = {VERIFICATION, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
+                grille->calcX = 0; // Réinitialisation des coordonnées de calcul
+                grille->calcY = 0; // Réinitialisation des coordonnées de calcul
                 Enfiler(q, &affiche);
                 Enfiler(q, &verif);
             }
@@ -422,6 +427,7 @@ ________________________________________________________________________________
 void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 {
 
+    // si la grille n est pas prete verifier etat jeu relance calcul pour permettre la stabilisation de la grille
     if (!etatJeu->grillePrete)
     {
         return;
@@ -429,7 +435,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
     int gelatinePresente = 0;
 
-    // Vérifier toute la grille
+    // Vérifier toute la grille pour detecter gelatine
     for (int i = 0; i < grille->lignes; i++)
     {
         for (int j = 0; j < grille->colonnes; j++)
@@ -529,6 +535,7 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 /*------------------------------------------------------------------------------------------------------------------------
                                        Sous fonctions de détection des Joker
 --------------------------------------------------------------------------------------------------------------------------/*/
+// fonction de detection du joker de supperssion de la grille (djoker adjacent a victoire horizontale permet la suppression de la grille)
 CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2)
 {
 
@@ -539,11 +546,10 @@ CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int 
     int ligneAJoker = *ligne;
     int colonneDebutAJoker = *colonne1;
     int colonneFinAJoker = *colonne2;
-    printf("11111111111111111111111111111111111111111111111111");
     // On suppose que la ligne est toujours valide, sinon à tester ici
     // if (ligneAJoker < 0 || ligneAJoker >= grille->lignes) return PASDESUPERBONBON;
 
-    // ✅ Vérifie la case à gauche (colonneDebut - 1)
+    //  Vérifie la case à gauche (colonneDebut - 1) de la victoire horizontale
     if (colonneDebutAJoker > 0)
     {
         int pionGauche = grille->tableau[ligneAJoker][colonneDebutAJoker - 1].pion;
@@ -551,7 +557,7 @@ CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int 
             return pionGauche;
     }
 
-    // ✅ Vérifie la case à droite (colonneFin + 1)
+    // ✅ Vérifie la case à droite (colonneFin + 1) de la victoire horizontale
     if (colonneFinAJoker + 1 < grille->colonnes)
     {
         int pionDroite = grille->tableau[ligneAJoker][colonneFinAJoker + 1].pion;
@@ -564,12 +570,12 @@ CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int 
 
 void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q)
 {
-    if (joker < 1000 || joker >= 2000) // plage joker classique : [1000, 2000[
+    // PAS STRICTEMENT NECESSAIRE vu que l on a verifier avant mais gardé pour securiser la fonction
+    if (joker < PLAGEJOCKERINF || joker >= PLAGEJOCKERSUP) // plage joker 1000 - 2000
         return;
-    printf("voila le joker: %d\n", joker);
 
-    CouleurBonbons bonbonRemplacement = joker + 1000;
-    printf("bonbonRemplacement = %d\n", bonbonRemplacement);
+    CouleurBonbons bonbonRemplacement = joker + 1000; // valeur de remplacement du djoker effecer grille
+    // remplace la grille par la valeur de remplacement
     for (int row = 0; row < grille->lignes; row++)
     {
         for (int col = 0; col < grille->colonnes; col++)
@@ -580,6 +586,9 @@ void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker,
     }
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
+    PAUSE(400);
+    // On relance le calcul depuis le début avec calcx et calcy remis à 0
+    // pas strictement necessaire mais respecte la logique des fonctions de suppression
     grille->relancerDepuisDebut = true;
     Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
@@ -627,6 +636,7 @@ void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
     Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {grille->lignes - 1, col}, {0, 0}, false});
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
+    PAUSE(100);
     Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false});
 }
 
@@ -640,7 +650,9 @@ void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue
     grille->tableau[row][col].pion = COULEURS[indiceCouleur];     // Remplacement du pion par un nouveau bonbon
     grille->tableau[row][col].gelatine = false;                   // pas de gelatine pour les nouveaux bonbons
 
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});                                     // Affiche la grille après le remplacement
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
+    PAUSE(200);
+    // Affiche la grille après le remplacement
     Enfiler(q, &(Actions){CHUTECOLONNEENTIERE, {row - 1, col}, {0, 0}, false, PASDESUPERBONBON}); // relance la chute de la colonne pour ligne précédente
 }
 
@@ -663,11 +675,13 @@ void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
 
     //  Affiche la ligne vide AVANT toute chute
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
+    PAUSE(50);
 
     // déclenche la chute des pions superieurs en un seul coup
     Enfiler(q, &(Actions){CHUTELIGNEENTIERE, {0, row}, {0, 0}, false, PASDESUPERBONBON});
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     grille->relancerDepuisDebut = true;
+    PAUSE(100);
     Enfiler(q, &(Actions){CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
 }
 
@@ -689,6 +703,7 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
 
     // Affiche la grille après que tout soit tombé
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
+    PAUSE(50);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------
@@ -777,9 +792,10 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
                    CHUTEHORIZONTALEPARTIELLE,
                    {searchRow, col},
                    {0, 0},
-                   false});
-    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false});
-    PAUSE(50);
+                   false,
+                   PASDESUPERBONBON});
+    Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
+    PAUSE(100);
 }
 
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
@@ -789,7 +805,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     grille->tableau[row][col].gelatine = false;
 
     Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON});
-    PAUSE(100);
+    PAUSE(150);
 }
 
 /*****************************************************************************************************************************
@@ -845,7 +861,6 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     printf("voila le %d: ", joker);
     if (joker != PASDESUPERBONBON)
     {
-        printf("debuggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
         int ligne = *x1;
         int colonneDebut = *y1;
         int colonneFin = *y2;
@@ -860,11 +875,11 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
             }
             grille->tableau[ligne][coordonneeColonneCible].gelatine = false;
         }
-
+        printf("[DEBUG] Action HORIZONTALDJOKER avec joker = %d\n", joker);
         // Affiche la partie de ligne vide avant la chute
-        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, SUPPRIMERGRILLE});
+        Enfiler(q, &(Actions){AFFICHAGE, {0, 0}, {0, 0}, false, joker + DECALAGEAFFICHAGEJOKER});
         PAUSE(50);
-        Enfiler(q, &(Actions){HORIZONTALDJOKER, {0, 0}, {0, 0}, false, SUPPRIMERGRILLE});
+        Enfiler(q, &(Actions){HORIZONTALDJOKER, {0, 0}, {0, 0}, false, joker});
 
         return; // ⚠️ on sort ici car le joker a déjà géré l'effet
     }

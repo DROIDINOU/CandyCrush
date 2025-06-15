@@ -4,13 +4,12 @@
 // ****************************             CONSTANTES GLOBALES                     **************************** //
 
 // Definition des couleurs des bonbons (on va en rajouter)
-// Type : tableau de char representant les differentes couleurs (plus tard ce sera des images de bonbons)
+// Type : tableau de char representant les differentes couleurs (dans bibliotheque jeu on utilisera des images)
 const CouleurBonbons COULEURS[MAXCOULEUR] = {
     JAUNE, VERT, BLEU, ROUGE, MAUVE, BLANC, GRIS, JAUNE_CLAIR, ROSE};
 
 // Définition des messages d'état du jeu.
 // Type : tableau de characteres
-// rmq peut etre mettre const char*
 const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Vous avez epuise tous vos coups.\n",
     "Felicitations! Vous accedez au niveau suivant!\n",
@@ -19,8 +18,9 @@ const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR] = {
     "Fin du jeu\n",
     " Chargement de la grille... \n",
     "les pions doivent etre adjacents\n",
-}; // Message d'erreur si les pions ne sont pas adjacents
+};
 
+// explication des jokers disponibles par niveau
 const char EXPLICATIONJOCKER[NOMBREMAXJOCKER][MAXLONGUEUREXPLICATIONJOCKER] = {
     "Pas de joker disponible",
     "Pas de jocker disponible",
@@ -46,8 +46,12 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 //             - obstacles : sous-structure contenant :
 //                  - typeObstacle (char[MAX_LONGUEUR]) : type d'obstacle.
 //                  - randomObstacles (int) : quantité d'obstacles à éliminer.
-//             - compteurNiveau (int) : numéro du niveau actuel.
-//             - nombre utilisé pour l attribution aléatoire de couleurs
+//             - compteurNiveau (int) : numéro du niveau actuel. (utilise dans niveau 1 -> -1 ailleurs)
+//             - randomColorModulo (int) : nombre utilisé pour l attribution aléatoire de couleurs
+//             - joker : sous-structure contenant :
+//                  - aSuperBonbon (bool) : indique si un super bonbon est disponible.
+//                  - nombreSuperBonbons (int) : nombre de super bonbons disponibles.
+//                  - superBonbon (CouleurBonbons) : couleur du super bonbon.
 Niveaux NIVEAUX[FINALNIVEAU] = {
     {
         {7, 0},
@@ -60,6 +64,7 @@ Niveaux NIVEAUX[FINALNIVEAU] = {
     {{5, 0}, {"Gelatine", 4}, -1, 7, {true, 1, SUPPRIMERGRILLE}}    // Niveau 3
 };
 
+// tableau des chemins fichiers audio musique niveau
 const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
     "assets/play.wav",
     "assets/stranger-things-124008.wav",
@@ -67,6 +72,7 @@ const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
 
 };
 
+// tableau des chemins audio musiques chute du niveau
 const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE] = {
     "assets/item-pick-up-38258.wav",
     "assets/jellysplash_56f256e05113918.wav",

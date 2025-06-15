@@ -1,30 +1,40 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 #include <stdbool.h>
-#define TAILLE 12 // MISE A 10 POUR TESTING MAIS AU FINAL METTRE A 20 (devrait rien changer)
-#define NOMBREMESSAGES 2
-#define MAXLONGUEUR 100
-#define LONGUEURMESSAGEETREPONSE 40
+
+// GRILLE
+#define TAILLE 10    // Taille de la grille (10x10)
+#define MAXCOULEUR 9 // Maximum de couleurs de bonbons (jokers exclus)
+#define VIDE -1      // Valeur pour une case vide dans la grille
+
+// MESSAGES UTILISATEUR (messages état jeu et échange de bonbons)
+#define NOMBREMESSAGES 2            // Nombre de messages pir l echange de bonbons
+#define MAXLONGUEUR 100             // Longueur maximale des messages d'état du jeu
+#define LONGUEURMESSAGEETREPONSE 40 // Longueur maximale des messages d'échange de bonbons
+#define NOMBREMESSAGESJEU 7         // Nombre de messages concernant l'état du jeu
+
+// NIVEAUX
 #define FINALNIVEAU 3
-#define NOMBREMESSAGESJEU 7 // Nombre de messages concernant l'état du jeu
-#define MAXCOULEUR 9        // Maximum de couleurs de bonbons (jokers exclus)
-#define VIDE -1
+
+// MUSIQUE
 #define NOMBREMUSIQUES 3     // Nombre de musiques disponibles
 #define MAXCHEMINMUSIQUE 100 // Longueur maximale du chemin de la musique
-#define PLAGEJOCKERINF 1000
-#define PLAGEJOCKERSUP 1100          // Plage supérieure pour les jokers fixéé arbitrairement a 1100
-#define PLAGEINFBONBONSDEJOCKER 2000 // Plage inférieure pour les bonbons de joker
-#define PLAGESUPBONBONSDEJOCKER 2100 // Plage supérieure pour les bonbons de joker
-#define NOMBREMAXJOCKER 100
-#define MAXLONGUEUREXPLICATIONJOCKER 100
+
+// JOKERS
+#define PLAGEJOCKERINF 1000              // Plage inférieure pour les jokers fixéé arbitrairement a 1000 (type de joker)
+#define PLAGEJOCKERSUP 2000              // Plage supérieure pour les jokers fixéé arbitrairement a 1100 (type de joker)
+#define DECALAGEAFFICHAGEJOKER 1000      // Décalage pour l'affichage des jokers
+#define NOMBREMAXJOCKER 1000             // Nombre maximum de jokers (on voit large!!)
+#define MAXLONGUEUREXPLICATIONJOCKER 100 // Longueur maximale de l'explication des jokers
 
 /*________________________________________________________________________________________________________________
 
                                                 **** ENUMERATIONS
 
                     -> TypeMessage : type de messages
-                    -> CouleurBonbons : couleurs des bonbons
-                    -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle)
+                    -> CouleurBonbons : couleurs des bonbons et jokers
+                    -> TypeElementRandom : type d'élément aléatoire (couleur ou obstacle) (on pourrait l'utiliser pour les jokers mais
+                    pour le nombre de jocker est fixe)
 ___________________________________________________________________________________________________________________
  */
 typedef enum
@@ -53,6 +63,7 @@ typedef enum
     JAUNE_CLAIR = 8,
     ROSE = 9,
     // bonbons spéciaux (jokers) - sans effet de chute (1000-1999)
+    // si chute definir une plage pour les chutes
     PASDESUPERBONBON = -1000,
     SUPPRIMERGRILLE = 1000,
     SUPPRIMERMOITIEGRILLE = 1001,
@@ -60,9 +71,13 @@ typedef enum
     REDUIREGRILLEDEMOITIE = 1003,
 
     // bonbons effets des joker sans effet de chute (2000-2999)
+    // si chute definir une plage pour les chutes
     BONBONVICTOIRESUPPRIMERGRILLE = 2000,
 } CouleurBonbons; // renommer
 
+// enum pour les types d'éléments aléatoires
+//  (couleurs ou obstacles) pour la génération aléatoire
+//  on pourrait l'utiliser pour les jokers mais pour le nombre de jocker est fixe
 typedef enum
 {
     COULEURALEATOIRE,
@@ -72,6 +87,7 @@ typedef enum
 /*________________________________________________________________________________________________________________
 
                                                           **** STRUCTURES
+                                            -> EtatJeu : structure de l'état du jeu
                                             -> GrilleBonbons : structure de la grille de bonbons
                                             -> Coups : structure des coups
                                             -> Obstacles : structure des obstacles
@@ -80,43 +96,48 @@ typedef enum
 ___________________________________________________________________________________________________________________
 */
 
+// *** Structure de l'état du jeu
 typedef struct
 {
-    int niveausuivant;
-    int findepartie;
-    int coupsepuises;
-    int findesniveaux; // verifier si utile
-    int grillePrete;
-    int introduction;
+    int introduction;  // Indique si l'introduction a été affichée
+    int coupsepuises;  // Indique si les coups sont épuisés
+    int niveausuivant; // Indique si le niveau suivant est prêt à être joué
+    int findepartie;   // Indique si la partie est terminée
+    int grillePrete;   // Indique si la grille est prête
+
 } EtatJeu;
 
+/*________________________________________________________________________________________________________________
+                                                           GRILLE
+_________________________________________________________________________________________________________________
+*/
+
+// *** Structure de la case de la grille de bonbons
 typedef struct
 {
-    CouleurBonbons pion;
-    bool gelatine;
+    CouleurBonbons pion; // Couleur du pion
+    bool gelatine;       // Indique si la case contient de la gélatine
 } Case;
 
-// *** Structures de la grille de bonbons
-// supprimer ce qui n est pas utilise
+// *** Structure de la grille de bonbons
 typedef struct
 {
-    int lignes;
-    int colonnes;
-    Case tableau[TAILLE][TAILLE];
-    int calcX; // Coordonnée X utilisee parcourir la grille
-    int calcY; // Coordonnée Y utilisee pour parcourir la grille
-    int estVerifiee;
-    // int estInitialisee; // Indique si la grille a déjà été vérifiée
-    int affiche; // element utilise pour afficher la grille
-    int deplacement;
-    bool relancerDepuisDebut; // 🆕
-    // bool casesAGenerer[TAILLE];
-    int nombreGelatineDuNiveau;
+    int lignes;                   // Nombre de lignes de la grille
+    int colonnes;                 // Nombre de colonnes de la grille
+    Case tableau[TAILLE][TAILLE]; // Tableau de cases représentant la grille de bonbons
+    int calcX;                    // Coordonnée X utilisee parcourir la grille
+    int calcY;                    // Coordonnée Y utilisee pour parcourir la grille
+    int deplacement;              // Indique si un déplacement a été effectué
+    bool relancerDepuisDebut;     // Indique si la grille doit être relancée depuis le début
+    int nombreGelatineDuNiveau;   // Nombre de gelatines à générer pour le niveau
     int nombreGelatinesRestantes; // Nombre de gelatines à générer
 
 } GrilleBonbons;
 
-// *** Structures pour les niveaux
+/*________________________________________________________________________________________________________________
+                                                           NIVEAUX
+_________________________________________________________________________________________________________________
+*/
 typedef struct
 {
     int coupAJouer; // Le nombre de coups à jouer
@@ -131,25 +152,29 @@ typedef struct
 
 typedef struct
 {
-    bool aSuperBonbon;
-    int nombreSuperBonbons;
-    CouleurBonbons superBonbon; // EXEMPLE GELATINES MAIS ON VA EN METTRE D 'AUTRES PAR LA SUITE
+    bool aSuperBonbon;          // Indique si un super bonbon est disponible
+    int nombreSuperBonbons;     // Nombre de super bonbons disponibles
+    CouleurBonbons superBonbon; // Couleur du super bonbon
 } JokerBonbons;
 
 // STRUCTURE IMBRIQUEE NIVEAU
 typedef struct
 {
-    Coups coupsNiveau;
-    Obstacles obstacleNiveau;
-    int compteurNiveau; // Niveau actuel
-    int randomColorModulo;
-    JokerBonbons joker; // A voir si on en a besoin
+    Coups coupsNiveau;        // Structure des coups pour le niveau
+    Obstacles obstacleNiveau; // Structure des obstacles pour le niveau
+    int compteurNiveau;       // Niveau actuel
+    int randomColorModulo;    // Modulo pour la génération de couleurs aléatoires
+    JokerBonbons joker;       // Structure des jokers pour le niveau
 } Niveaux;
 
+/*________________________________________________________________________________________________________________
+                                                           MESSAGE DEPLACEMENT
+_________________________________________________________________________________________________________________
+*/
 typedef struct
 {
     char message[LONGUEURMESSAGEETREPONSE];
-    int nombreLigneOuColonne;
+    int nombreLigneOuColonne; // Valeur attendue pour l'entrée utilisateur (colonne ou ligne)
 } MessagesEchangeBonbons;
 
 /*________________________________________________________________________________________________________________
@@ -166,8 +191,8 @@ extern Niveaux NIVEAUX[FINALNIVEAU];                              // Tableau des
 extern const CouleurBonbons COULEURS[MAXCOULEUR];                 // Tableau des couleurs des bonbons
 extern const char MESSAGEETATJEU[NOMBREMESSAGESJEU][MAXLONGUEUR]; // Tableau des messages d'état du jeu
 extern const char EXPLICATIONJOCKER[NOMBREMAXJOCKER][MAXLONGUEUREXPLICATIONJOCKER];
-extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES]; // Tableau des messages d'échange de bonbons
-extern const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];  // Tableau des chemins des musiques
-extern const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];
+extern MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES];      // Tableau des messages d'échange de bonbons
+extern const char CHEMINSMUSIQUES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE];       // Tableau des chemins des musiques
+extern const char CHEMINSMUSIQUESCHUTES[NOMBREMUSIQUES][MAXCHEMINMUSIQUE]; // Tableau des chemins des musiques de chute
 
 #endif

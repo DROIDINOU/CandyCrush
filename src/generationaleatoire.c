@@ -22,7 +22,7 @@
 
 int GenerationAleatoire(TypeElementRandom type, int maxRandom)
 {
-    // A CHANGER CE SERA PAS UNE ERREUR FATALE
+    // si maxRandom < 0 erreur d'encodage au niveau des fichiers constante
     if (maxRandom <= 0)
     {
         GererErreurFatale(ECHECGENERATIONTENTATIVES);
@@ -32,11 +32,12 @@ int GenerationAleatoire(TypeElementRandom type, int maxRandom)
     {
     case COULEURALEATOIRE:
     {
+        // nombre aléatoire determine par le niveau
         int couleurAleatoire = rand() % NIVEAUX[NIVEAUX[0].compteurNiveau].randomColorModulo;
 
         if (couleurAleatoire < MAXCOULEUR) // Vérifie si la couleur est valide
         {
-            // Si la couleur est valide, on retourne la valeur
+            // Si la couleur est valide, on retourne la valeur apres avoir verifie qu'il
             if (couleurAleatoire == 0)
             {
                 couleurAleatoire = 1; // Jamais 0 couleur PAS UN PEU INUTILE CA ??
