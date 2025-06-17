@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "erreur.h"
-#include "constante.h"
+#include <stdio.h>     //Fonctions d’entrée/sortie (printf, scanf, etc.)
+#include <stdlib.h>    // utilise pour EXIT_FAILURE
+#include "erreur.h"    // erreurs
+#include "constante.h" // constantes globales
 
 // ****************************             GESTION DES ERREURS                    **************************** //
 
@@ -52,7 +52,7 @@ void GererErreurNonFatale(CodeErreur codeErreur)
     switch (codeErreur)
     {
     case ERREURDEPLACEMENT:
-        printf(MESSAGEETATJEU[MESSAGEPIONSNONADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
+        printf("%s\n", MESSAGEETATJEU[MESSAGEPIONSNONADJACENTS]); // Message d'erreur si les pions ne sont pas adjacents
         break;
     case ERREURENTREEINVALIDE:
         printf("Entrée invalide. Veuillez entrer un entier.\n");

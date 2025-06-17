@@ -35,8 +35,7 @@ void Calcul(Queue *q, GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2,
                                  **** SOUS FONCTION DE CALCUL - VERIFIER ALIGNEMENTS
 ___________________________________________________________________________________________________________________
  */
-CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2);
-void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q);
+
 bool VerifierVerticale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierHorizontale(int *x, int *y, GrilleBonbons *grille, Queue *q);
 bool VerifierAlignements(int *x, int *y, GrilleBonbons *grille, Queue *q);
@@ -48,42 +47,25 @@ void Verification(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu);
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 
-// CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, * int *colonne1, int *colonne2);
-// void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q);
 /*________________________________________________________________________________________________________________
                                  **** SOUS FONCTION DE SUPPRESSION H ET V (cascades)
 ___________________________________________________________________________________________________________________
  */
+
 bool QuatreALaSuiteHorizontale(GrilleBonbons *grille, int *y1, int *y2);
 bool QuatreALaSuiteVerticale(GrilleBonbons *grille, int *x1, int *x2);
 void SupprimerColonne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue *q);
 void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q);
 void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q);
-// void AppliquerChutePartielle(GrilleBonbons *grille, int row, int col, Queue *q);
-// void AppliquerDeuxiemeChuteColonnePartielle(GrilleBonbons *grille, int destRow, int col, int limite, Queue *q);
-// void SuppressionH(GrilleBonbons *grille,
-// int *x1, int *y1, // début
-// int *y2, int *x2, // fin
-// Queue *q);
-// void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q);
 void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int x1, int x2, int col, Queue *q);
 void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int col, Queue *q);
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q);
 
-/*Calcul : action générée lorsque l’utilisateur à intervertit deux cases. Il s’agit de calculer si trois pions se
-suivent en Vertical ou en Horizontal. Si trois pions se suivent en vertical, la fonction devra ajouter une
-action « Suppression V » sur la Queue. Si trois pions se suivent en horizontal, alors il faut ajouter une
-action « Suppression H » sur la Queue. Si la Queue est pleine, il faut afficher un message d’erreur et
-arrêter le programme*/
-
-// faut retourner pion sup et inf !!
-// prevoir une verification des victoires deja presentes
+// JOKERS
+CouleurBonbons VictoireHorizontaleAJoker(GrilleBonbons *grille, int *ligne, int *colonne1, int *colonne2);
+void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker, Queue *q);
 
 /*_____________________________________________________________________________________________________________________________*/
-
-/***************************************************************************************************************************
-                                                  MAIN
- ****************************************************************************************************************************/
 
 #endif // QUEUE_H

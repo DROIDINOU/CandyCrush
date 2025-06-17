@@ -1,19 +1,14 @@
-#define SDL_MAIN_HANDLED
-#include <windows.h>
-#include <mmsystem.h>
-// #pragma comment(lib, "winmm.lib") // pour PlaySound
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
-#include "matrice.h"
-#include "main.h"
-#include "affichage.h"
-#include "queue.h"
-#include "erreur.h"
-#include "constante.h"
-#include "etatjeu.h"
+#include <stdio.h>     // Fonctions d’entrée/sortie (printf, scanf, etc.)
+#include <stdlib.h>    // Fonctions utilitaires (rand, etc.)
+#include <time.h>      // Pour la génération de nombres aléatoires (srand, time)
+#include <windows.h>   // API Windows (Sleep, etc.)
+#include <mmsystem.h>  // Pour PlaySound et autres fonctions multimédia
+#include "constante.h" // Constantes globales
+#include "matrice.h"   // Structures et fonctions liées à la grille
+#include "queue.h"     // queue
+#include "affichage.h" // Affichage de la grille et messages
+#include "erreur.h"    // Gestion des erreurs fatales et non fatales
+#include "etatjeu.h"   // État global du jeu
 
 int main(int argc, char *argv[]) // obligatoire pour playsound
 {
@@ -42,7 +37,7 @@ int main(int argc, char *argv[]) // obligatoire pour playsound
     while (NIVEAUX[0].compteurNiveau < FINALNIVEAU)
     {
 
-        VerifierEtatJeu(&etatJeu, &q);                                                                    // initialise la grille et vérifie l'état du jeu(calcul est relance si la grille n est pas prete)
+        InitGrilleEtVerifierEtatJeu(&etatJeu, &q);                                                        // initialise la grille et vérifie l'état du jeu
         PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP); // jouer musique de fond en arriere plan
 
         while (q.taille > 0) // Tant que la queue n'est pas vide on defile les actions

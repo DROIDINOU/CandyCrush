@@ -1,11 +1,12 @@
 
 #ifndef QUEUE_H
 #define QUEUE_H
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "constante.h"
-#include "erreur.h"
+// #include <stdio.h>   // Pour la fonction de debugging ImprimerQueue (à retirer plus tard)
+#include <stdbool.h>   // Pour le type bool
+#include "constante.h" // Constantes globales
+#include "erreur.h"    // Erreurs
+
+// Constante définissant la longueur de la file
 #define LONGUEURQ 10
 
 // structure Coordonnees
@@ -29,7 +30,6 @@ typedef enum
     ERREURACTION,
     CHUTECOLONNEENTIERE,
     CHUTELIGNEENTIERE,
-    DEUXIEMECHUTECOLONNEPARTIELLE,
     RELANCERCALCUL,
     CHUTECOLONNEPARTIELLE,
     CHUTEHORIZONTALEPARTIELLE,
@@ -64,5 +64,5 @@ bool EstVide(Queue *q);
 bool EstPleine(Queue *q);
 Actions Enfiler(Queue *q, Actions *action);
 Actions Defiler(Queue *q);
-void ImprimerQueue(Queue *q); // fonction de debugging a supprimer par après
+// void ImprimerQueue(Queue *q); // fonction de debugging
 #endif

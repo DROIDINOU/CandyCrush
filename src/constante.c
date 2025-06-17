@@ -1,6 +1,8 @@
-#include "constante.h"
-#include <stdio.h>
-#include <stdlib.h>
+
+#include <stdio.h>     // Fonctions d’entrée/sortie (printf, scanf, etc.)
+#include <stdlib.h>    // Fonctions utilitaires (rand, etc.)
+#include "constante.h" // Constantes globales
+
 // ****************************             CONSTANTES GLOBALES                     **************************** //
 
 // Definition des couleurs des bonbons (on va en rajouter)
@@ -55,12 +57,12 @@ MessagesEchangeBonbons MESSAGESECHANGEBONBONS[NOMBREMESSAGES] = {
 Niveaux NIVEAUX[FINALNIVEAU] = {
     {
         {7, 0},
-        {"Gelatine", 1},
+        {"Gelatine", 2},
         0,
         5,
         {false, 0, PASDESUPERBONBON},
     },                                                              // Niveau 1
-    {{6, 0}, {"Gelatine", 2}, -1, 6, {false, 0, PASDESUPERBONBON}}, // Niveau 2
+    {{6, 0}, {"Gelatine", 3}, -1, 6, {false, 0, PASDESUPERBONBON}}, // Niveau 2
     {{5, 0}, {"Gelatine", 4}, -1, 7, {true, 1, SUPPRIMERGRILLE}}    // Niveau 3
 };
 

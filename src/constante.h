@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 // GRILLE
-#define TAILLE 10    // Taille de la grille (10x10)
+#define TAILLE 10    // Taille de la grille (10x10) (maximum 20 vu que la grille est fixe ecran peut pas contenir plus)
 #define MAXCOULEUR 9 // Maximum de couleurs de bonbons (jokers exclus)
 #define VIDE -1      // Valeur pour une case vide dans la grille
 

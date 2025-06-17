@@ -1,13 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
-#include <locale.h>
-#include "affichage.h"
-#include "matrice.h"
-#include "constante.h"
-#include "erreur.h"
-#include <Windows.h>
+#include <stdio.h>     // Fonctions d’entrée/sortie (printf, scanf, etc.)
+#include <stdlib.h>    // Fonctions utilitaires (rand, etc.)
+#include <stdbool.h>   // Support du type bool
+#include <time.h>      // Pour time(), srand(), etc.
+#include <locale.h>    // Pour setlocale (affichage des caractères spéciaux)
+#include <windows.h>   // Fonctions Windows (Sleep, PlaySound, etc.)
+#include "constante.h" // Constantes globales
+#include "erreur.h"    // Gestion des erreurs
+#include "matrice.h"   // Structures et logique de la grille
+#include "affichage.h" // Affichage de la grille et messages
 
 // Efface tout l'écran (CMD sous Windows ou "clear" sur Unix)
 static void clearScreen(void)
@@ -59,12 +59,13 @@ int ObtenirReponseAuMessage(int index)
         while ((caractereLu = getchar()) != '\n' && caractereLu != EOF)
             ;
 
-        //  Contrôle de la conversion et de la plage
+        // si pas un chiffre erreur et retourne -1
         if (result != 1)
         {
             GererErreurNonFatale(ERREURENTREEINVALIDE);
             choixUtilisateur = -1;
         }
+        // controle si la plage est dan limite grille
         else if (choixUtilisateur < 1 || choixUtilisateur > TAILLE)
         {
             GererErreurNonFatale(ERREURNOMBREENTREEINCORRECTE);
@@ -99,20 +100,33 @@ bool LireQuatreCoordonnees(int *x1, int *y1, int *x2, int *y2)
 
 // lit les coordonnees des pions a changer et ajoute l'action DEPLACEMENT dans la queue
 // avec les coordonnees des bonbons
-void LirePionsAChanger(GrilleBonbons *grille, int *coordonneeXPremierPion,
-                       int *coordonneeYPremierPion, int *coordonneeXDeuxiemePion,
-                       int *coordonneeYDeuxiemePion, Queue *q)
+void LirePionsAChanger(GrilleBonbons *grille,
+                       int *coordonneeXPremierPion,
+                       int *coordonneeYPremierPion,
+                       int *coordonneeXDeuxiemePion,
+                       int *coordonneeYDeuxiemePion,
+                       Queue *q)
 {
-    if (LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion))
+    bool choixValide = false;
+
+    while (!choixValide)
     {
-        Actions action = {DEPLACEMENT, {*coordonneeXPremierPion, *coordonneeYPremierPion}, {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
-        Enfiler(q, &action);
-    }
-    else
-    {
-        GererErreurNonFatale(ERREURDEPLACEMENT); // message d'erreur si les pions ne sont pas adjacents (pas gere via
-        // affichage mais directement dans le prompt)
-        LireQuatreCoordonnees(coordonneeXPremierPion, coordonneeYPremierPion, coordonneeXDeuxiemePion, coordonneeYDeuxiemePion);
+        if (LireQuatreCoordonnees(coordonneeXPremierPion,
+                                  coordonneeYPremierPion,
+                                  coordonneeXDeuxiemePion,
+                                  coordonneeYDeuxiemePion))
+        {
+            Actions action = {
+                DEPLACEMENT,
+                {*coordonneeXPremierPion, *coordonneeYPremierPion},
+                {*coordonneeXDeuxiemePion, *coordonneeYDeuxiemePion}};
+            Enfiler(q, &action);
+            choixValide = true;
+        }
+        else
+        { // message d erreur utilisateur
+            GererErreurNonFatale(ERREURDEPLACEMENT);
+        }
     }
 }
 
@@ -183,7 +197,8 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     }
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
     PAUSE(50);     // donne au terminal le temps d'afficher
-    /*if (etatJeu->findepartie == 1) Affichage de la grille */
+
+    // afficher message fin de partie (coups epuises ou fin de jeu)
     if (etatJeu->findepartie == 1)
     {
         const char *texte = etatJeu->coupsepuises
@@ -194,7 +209,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         PAUSE(2000);
         return;
     }
-
+    // afficher message niveau suivant
     if (etatJeu->niveausuivant == 1)
     {
         PAUSE(400);
@@ -204,6 +219,9 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         PAUSE(2000);
         return;
     }
+    // les colonnes sont fixees a max 20 (la grille fixe et le  hud ne peuvent pas en contenir plus)
+    // dans ce cas il faudra prevoir un hud reduit mais vu que des jokers jouant sur la taille de grille
+    // demande d'utiliser des tableaux dynamiques cela n a pas ete mis en oeuvre
     const char *emojiColonnes[20] = {
         "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
         "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"};
@@ -212,31 +230,28 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
     for (int col = 0; col < grille->colonnes; col++)
         printf("  %s ", emojiColonnes[col]);
     printf("\n");
+
     const char *emojiLignes[20] = {
         "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
         "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"};
     // Affichage des lignes
     for (int row = 0; row < grille->lignes; row++)
     {
-        if (row < 9)
-        {
-            printf("%s  ", emojiLignes[row]);
-        }
-        else
-        {
-            printf("%s  ", emojiLignes[row]);
-        }
+        // en-têtes lignes
+        printf("%s  ", emojiLignes[row]);
+        // affichage des cases
         for (int col = 0; col < grille->colonnes; col++)
         {
             int pion = grille->tableau[row][col].pion;
             bool gelatine = grille->tableau[row][col].gelatine;
 
             const char *emoji;
-
+            // cases de chute
             if (pion == VIDE)
             {
                 emoji = "⬇️";
             }
+            // pions
             else
             {
                 switch (pion)
@@ -268,6 +283,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                 case ROSE:
                     emoji = "🍓";
                     break; // fraise
+                // jOKERS
                 case SUPPRIMERGRILLE:
                     emoji = "💣";
                     break;
@@ -280,7 +296,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                     break;
                 }
             }
-
+            // Affichage gelatine
             if (gelatine)
                 printf("\033[48;5;225m %s \033[0m", emoji); // fond rose clair
             else
@@ -289,7 +305,6 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
 
         printf("\n");
     }
-    // MODIFIER HUD COUP DISPONIBLES BARRE PROGRESSION COUPS RESTANT PLUS BARE PROGRESSION GELATINES
     // === HUD + Barre de progression ===
     // Affichage de la barre de progression et des informations du niveau (niveau,coups joués, jockers et explications)
     int coupsJoues = NIVEAUX[NIVEAUX[0].compteurNiveau].coupsNiveau.coupsJoues;
