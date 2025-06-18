@@ -1,21 +1,33 @@
-#include <stdio.h>     // Fonctions d’entrée/sortie (printf, scanf, etc.)
-#include <stdlib.h>    // Fonctions utilitaires (rand, etc.)
-#include <stdbool.h>   // Support du type bool
-#include <time.h>      // Pour time(), srand(), etc.
-#include <locale.h>    // Pour setlocale (affichage des caractères spéciaux)
-#include <windows.h>   // Fonctions Windows (Sleep, PlaySound, etc.)
-#include "constante.h" // Constantes globales
-#include "erreur.h"    // Gestion des erreurs
-#include "matrice.h"   // Structures et logique de la grille
-#include "affichage.h" // Affichage de la grille et messages
+// Inclure la bonne bibliothèque selon le système d'exploitation
+#ifdef _WIN32
+#include <windows.h> // Pour Sleep() sur Windows
+#else
+#include <unistd.h> // Pour usleep() sur Linux/macOS
+#endif
 
-// Efface tout l'écran (CMD sous Windows ou "clear" sur Unix)
+#include <stdio.h>     // Pour printf, etc.
+#include "constante.h" // Constantes du jeu
+#include "erreur.h"    // Gestion des erreurs
+#include "matrice.h"   // Structures de la grille
+#include "affichage.h" // Déclarations des fonctions d'affichage
+
+// Efface tout l'écran du terminal selon le système
 static void clearScreen(void)
 {
 #ifdef _WIN32
-    system("cls");
+    system("cls"); // Windows : commande pour effacer la console
 #else
-    system("clear");
+    system("clear"); // Unix/Linux/macOS : commande pour effacer la console
+#endif
+}
+
+// Utilise Sleep() sur Windows, usleep() sur Unix
+void pause_ms(int ms)
+{
+#ifdef _WIN32
+    Sleep(ms); // Windows : millisecondes
+#else
+    usleep(ms * 1000);
 #endif
 }
 
@@ -196,7 +208,7 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
         return;
     }
     clearScreen(); // permet d'avoir une grille fixe tout au long du jeu
-    PAUSE(50);     // donne au terminal le temps d'afficher
+    pause_ms(50);  // donne au terminal le temps d'afficher
 
     // afficher message fin de partie (coups epuises ou fin de jeu)
     if (etatJeu->findepartie == 1)
@@ -206,17 +218,17 @@ void afficherGrille(GrilleBonbons *grille, Queue *q, EtatJeu *etatJeu)
                                 : MESSAGEETATJEU[MESSAGEFINJEU];
 
         afficherMessagePleinEcran(texte, grille->colonnes * 4, grille->lignes);
-        PAUSE(2000);
+        pause_ms(2000);
         return;
     }
     // afficher message niveau suivant
     if (etatJeu->niveausuivant == 1)
     {
-        PAUSE(400);
+        pause_ms(400);
         afficherMessagePleinEcran(MESSAGEETATJEU[MESSAGEFELICITATIONS],
                                   grille->colonnes * 4,
                                   grille->lignes);
-        PAUSE(2000);
+        pause_ms(2000);
         return;
     }
     // les colonnes sont fixees a max 20 (la grille fixe et le  hud ne peuvent pas en contenir plus)

@@ -563,7 +563,7 @@ void ActiverJokerHorizontalVictoire(GrilleBonbons *grille, CouleurBonbons joker,
     }
     Actions jokerAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &jokerAffichage);
-    PAUSE(400);
+    pause_ms(400);
     // On relance le calcul depuis le début avec calcx et calcy remis à 0
     // pas strictement necessaire mais respecte la logique des fonctions de suppression
     grille->relancerDepuisDebut = true;
@@ -613,7 +613,7 @@ void SupprimerColonne(GrilleBonbons *grille, int col, Queue *q)
     // Lancer la cascade pion par pion en partant du bas
     Actions supprimerColonneChuteRecurse = {CHUTECOLONNEENTIERE, {grille->lignes - 1, col}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &supprimerColonneChuteRecurse);
-    PAUSE(200);
+    pause_ms(200);
 }
 
 // remplace les bonbons par d 'autres bonbons (sens pas important vu que tout est affiché d'un coup)
@@ -627,7 +627,7 @@ void AppliquerChuteColonneEntiere(GrilleBonbons *grille, int row, int col, Queue
     grille->tableau[row][col].gelatine = false;
     Actions chuteColonneEntiereAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &chuteColonneEntiereAffichage);
-    PAUSE(200);
+    pause_ms(200);
 
     // relancer calcul a la fin de la cascade (attention crucial! tjs relancer calcul a la fin de la  chute)
     if (row == 0)
@@ -668,7 +668,7 @@ void SupprimerLigne(GrilleBonbons *grille, int row, Queue *q)
     //  Affiche la ligne vide AVANT toute chute
     Actions supprimerLigneAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &supprimerLigneAffichage);
-    PAUSE(50);
+    pause_ms(50);
 
     // déclenche la chute des pions superieurs en un seul coup
     Actions supprimerLigneChuteLigneEntiere = {CHUTELIGNEENTIERE, {0, row}, {0, 0}, false, PASDESUPERBONBON};
@@ -694,7 +694,7 @@ void AppliquerChuteLigneEntiere(GrilleBonbons *grille, int row, Queue *q)
     // Affiche la grille après que tout soit tombé
     Actions chuteLigneEntierAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &chuteLigneEntierAffichage);
-    PAUSE(50);
+    pause_ms(50);
     grille->relancerDepuisDebut = true;
     Actions supprimerLigneEntierRelance = {CALCUL, {0, 0}, {0, 0}, false, PASDESUPERBONBON}; // FIN DE LA CHUTE
     Enfiler(q, &supprimerLigneEntierRelance);
@@ -736,7 +736,7 @@ void AppliquerChuteColonnePartielle(GrilleBonbons *grille, int ligneDebutMatch, 
         grille->tableau[ligneCible][colonne].gelatine = false;
         Actions chuteColonnePartielleAffichagePionsHauts = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
         Enfiler(q, &chuteColonnePartielleAffichagePionsHauts);
-        PAUSE(100);
+        pause_ms(100);
     }
 }
 
@@ -780,7 +780,7 @@ void AppliquerChuteHorizontalePartielle(GrilleBonbons *grille, int destRow, int 
 
     Actions chuteColonneHorizontalePartielleAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &chuteColonneHorizontalePartielleAffichage);
-    PAUSE(100);
+    pause_ms(100);
 }
 
 void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
@@ -790,7 +790,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
     grille->tableau[row][col].gelatine = false;
     Actions appliquerGenerationHautAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &appliquerGenerationHautAffichage);
-    PAUSE(150);
+    pause_ms(150);
 }
 
 /*****************************************************************************************************************************
@@ -801,7 +801,7 @@ void AppliquerGenerationHaut(GrilleBonbons *grille, int row, int col, Queue *q)
 void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
-    Sleep(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
+    pause_ms(200); // attendre que le son soit entendu (ajuste en fonction de la longueur du son)
     PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     //  Cas Match4 ou +
     if (QuatreALaSuiteVerticale(grille, x1, x2))
@@ -839,7 +839,7 @@ void SuppressionV(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
 void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Queue *q)
 {
     PlaySound(CHEMINSMUSIQUESCHUTES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC);
-    Sleep(200); // attendre que le son soit entendu
+    pause_ms(200); // attendre que le son soit entendu
     PlaySound(CHEMINSMUSIQUES[NIVEAUX[0].compteurNiveau], NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     CouleurBonbons joker = VictoireHorizontaleAJoker(grille, x1, y1, y2); // tu peux passer les adresses
@@ -864,7 +864,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
         // Affiche la partie de ligne vide avant la chute
         Actions suppressionHAffichage = {AFFICHAGE, {0, 0}, {0, 0}, false, joker + DECALAGEAFFICHAGEJOKER};
         Enfiler(q, &suppressionHAffichage);
-        PAUSE(50);
+        pause_ms(50);
         Actions suppressionHHorizontalJoker = {HORIZONTALDJOKER, {0, 0}, {0, 0}, false, joker};
         Enfiler(q, &suppressionHHorizontalJoker);
 
@@ -897,7 +897,7 @@ void SuppressionH(GrilleBonbons *grille, int *x1, int *y1, int *x2, int *y2, Que
     // Affiche la partie de ligne vide avant la chute
     Actions suppressionHAffichageBis = {AFFICHAGE, {0, 0}, {0, 0}, false, PASDESUPERBONBON};
     Enfiler(q, &suppressionHAffichageBis);
-    PAUSE(50);
+    pause_ms(50);
 
     // Fait tomber les pions supérieurs
     for (int coordonneeColonneCible = colonneDebut; coordonneeColonneCible <= colonneFin; coordonneeColonneCible++)

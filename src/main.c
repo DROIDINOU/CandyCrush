@@ -66,11 +66,9 @@ int main(int argc, char *argv[]) // obligatoire pour playsound
                 break;
             case CHUTELIGNEENTIERE:
                 AppliquerChuteLigneEntiere(&maGrille, action.pion1.y, &q);
-                // PAUSE(100);
                 break;
             case CHUTECOLONNEENTIERE:
                 AppliquerChuteColonneEntiere(&maGrille, action.pion1.x, action.pion1.y, &q);
-                // PAUSE(100);
                 break;
             case GENERATIONHAUT:
                 AppliquerGenerationHaut(&maGrille, action.pion1.x, action.pion1.y, &q);
@@ -84,11 +82,11 @@ int main(int argc, char *argv[]) // obligatoire pour playsound
             case HORIZONTALDJOKER:
                 ActiverJokerHorizontalVictoire(&maGrille, action.joker, &q);
 
-                PAUSE(200);
+                (200);
                 break;
             case AFFICHAGE:
                 afficherGrille(&maGrille, &q, &etatJeu);
-                PAUSE(200);
+                pause_ms(200);
                 break;
             case DEPLACEMENT:
                 Deplacement(&q, &maGrille, action.pion1.x, action.pion1.y,
